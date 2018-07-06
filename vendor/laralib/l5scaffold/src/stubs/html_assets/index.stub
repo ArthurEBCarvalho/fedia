@@ -1,0 +1,88 @@
+@extends('template')
+
+@section('content')
+@if (Session::has('message'))
+<div class="templatemo-content-widget green-bg">
+    <i class="fa fa-times"></i>                
+    <div class="media">
+        <div class="media-body">
+            <h2>{{Session::get('message')}}</h2>
+        </div>        
+    </div>                
+</div>
+@endif
+
+<div class="templatemo-content-widget white-bg">
+    <h2 class="margin-bottom-10">{{prefix}}{{Class}}</h2>
+    <div class="row">
+        <div class="col-md-8 col-sm-12 form-group">
+            <form role="form" class="form-search" method="get">
+                <div class="input-group">
+                    <select class="form-control search-filtro" name="filtro">
+                        <option>Limpar</option>
+                        {{search_fields}}
+                    </select>
+                    <input type="text" class="form-control search-valor" name="valor" value="{{prefix}}{{$valor}}">
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-info search-button"><i class="fa fa-search"></i> Pesquisar</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div class="pull-right">
+                <div class="pull-right"><a href="{{ route('{{prefix}}{{class}}.create') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Novo {{substr_replace("{{prefix}}{{Class}}", "", -1)}}</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if(${{class}}->count())
+<div class="templatemo-content-widget no-padding">
+    <div class="panel panel-default table-responsive">
+        <table class="table table-striped table-bordered templatemo-user-table">
+            <thead>
+                <tr>
+                    {{header_fields}}
+                    <th colspan="2"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach(${{class}} as ${{classSingle}})
+                <tr>
+                    {{content_fields}}
+                    <td class="small" align="center" alt="Editar {{ClassSingle}}">
+                        <a href="{{ route('{{class}}.edit', ${{classSingle}}->id) }}">
+                            {!! Html::image("images/icons/edit.png", "Editar {{ClassSingle}}") !!}
+                        </a>
+                    </td>
+                    <td class="small" align="center" alt="Deletar {{ClassSingle}}">
+                        <a onclick="confirm_delete('{{ route('{{class}}.destroy', ${{classSingle}}->id) }}')" href="javascript:;" data-toggle="modal" data-target="#confirm_delete">
+                            {!! Html::image("images/icons/delete.png", "Deletar {{ClassSingle}}") !!}
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="pagination-wrap">
+    <p class="text_pagination pull-left">Exibindo do <strong>{{${{class}}->firstItem()}}</strong> ao <strong>{{${{class}}->lastItem()}}</strong> de um total de <strong>{{${{class}}->total()}}</strong> registros</p>
+    {!! ${{class}}->render() !!}
+</div>
+@else
+<div class="templatemo-content-widget no-padding">
+    <div class="templatemo-content-widget yellow-bg">
+        <i class="fa fa-times"></i>                
+        <div class="media">
+            <div class="media-body">
+            <h2>Nenhum {{substr_replace("{{Class}}", "", -1)}} encontrado!</h2>
+            </div>        
+        </div>                
+    </div>
+</div>
+@endif
+@endsection

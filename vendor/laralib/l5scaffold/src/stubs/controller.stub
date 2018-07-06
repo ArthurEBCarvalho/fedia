@@ -1,0 +1,112 @@
+<?php namespace App\Http\Controllers;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+
+use {{model_path}};
+use Illuminate\Http\Request;
+
+class {{class}} extends Controller {
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return Response
+	 */
+	public function index(Request $request)
+	{
+		(strpos($request->fullUrl(),'order=')) ? $param = $request->order : $param = null;
+		(strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
+		(strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
+		(isset($request->order)) ? $order = $request->order : $order = "id";
+		if(isset($request->filtro)){
+			if($request->filtro == "Limpar"){
+				$request->valor = NULL;
+				${{model_name_var}} = {{model_name_class}}::orderByRaw($order)->paginate(30);
+			}
+			else{
+				switch ($request->filtro) {
+					case 'data':
+					$valor = date_format(date_create_from_format('d/m/Y', $request->valor), 'Y-m-d');
+					break;
+					case 'valor':
+					$valor = str_replace(",", ".", str_replace(".", "", $request->valor));
+					break;
+					default:
+					$valor = $request->valor;
+					break;
+				}
+				${{model_name_var}} = {{model_name_class}}::where($request->filtro, $valor)->orderByRaw($order)->paginate(30);
+			}
+		}
+		else
+			${{model_name_var}} = {{model_name_class}}::orderByRaw($order)->paginate(30);
+		return view('{{model_name_var}}.index', ["{{model_name_var}}" => ${{model_name_var}}, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
+	}
+
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return Response
+	 */
+	public function create()
+	{
+		${{model_name_var_sgl}} = new {{model_name_class}}();
+		return view('{{model_name_var}}.form', ["{{model_name_var_sgl}}" => ${{model_name_var_sgl}}, "url" => "{{model_name_var}}.store", "method" => "post"]);
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function store(Request $request)
+	{
+		${{model_name_var_sgl}} = new {{model_name_class}}();
+		{{model_fields}}
+		${{model_name_var_sgl}}->save();
+		return redirect()->route('{{prefix}}{{model_name_var}}.index')->with('message', '{{model_name_class}} cadastrado com sucesso!');
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function edit($id)
+	{
+		${{model_name_var_sgl}} = {{model_name_class}}::findOrFail($id);
+		return view('{{model_name_var}}.form', ["{{model_name_var_sgl}}" => ${{model_name_var_sgl}}, "url" => "{{model_name_var}}.update", "method" => "put"]);
+	}
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  int  $id
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function update(Request $request, $id)
+	{
+		${{model_name_var_sgl}} = {{model_name_class}}::findOrFail($id);
+		{{model_fields}}
+		${{model_name_var_sgl}}->save();
+		return redirect()->route('{{prefix}}{{model_name_var}}.index')->with('message', '{{model_name_class}} atualizado com sucesso!');
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function destroy($id)
+	{
+		${{model_name_var_sgl}} = {{model_name_class}}::findOrFail($id);
+		${{model_name_var_sgl}}->delete();
+		return redirect()->route('{{prefix}}{{model_name_var}}.index')->with('message', '{{model_name_class}} deletado com sucesso!');
+	}
+
+}
