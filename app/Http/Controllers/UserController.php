@@ -72,6 +72,7 @@ class UserController extends Controller
         $time = new Time();
         $time->nome = $request->time;
         $time->user_id = $user->id;
+        $time->dinheiro = 0;
         $time->escudo = $request->file('escudo')->getClientOriginalName();
         $time->save();
         Storage::put('times/'.$request->file('escudo')->getClientOriginalName(), file_get_contents($request->file('escudo')->getRealPath()));
