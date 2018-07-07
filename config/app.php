@@ -148,7 +148,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
-        Laralib\L5scaffold\GeneratorsServiceProvider::class,
+        // Laralib\L5scaffold\GeneratorsServiceProvider::class,
         // Barryvdh\Snappy\ServiceProvider::class, // Snappy PDF
         // Maatwebsite\Excel\ExcelServiceProvider::class, // Excel
 
