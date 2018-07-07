@@ -54,7 +54,6 @@
 			<nav class="templatemo-left-nav">          
 				<ul>
 					<li><a href="/" class="@if(Request::is('/')) active @endif"><i class="fa fa-home fa-fw"></i>Início</a></li>
-					<li class="@if(!Auth::user()->isAdmin()) hide @endif submenu">
 						<a href="#"><i class="fa fa-user-secret"></i> Administração <i class="caret-down fa fa-arrow-circle-down"></i></a>
 						<ul>
 							<li><a href="/administracao/users" class="@if(Request::is('administracao/users')) active @endif"><i class="fa fa-users fa-fw"></i>Usuários</a></li>
@@ -74,11 +73,9 @@
 				<div class="row">
 					<nav class="templatemo-top-nav col-lg-8 col-md-8 col-xs-12 form-group">
 						<ul class="text-uppercase">
-							<li><a href="{{ route('administracao.users.edit', ['id' => Auth::user()->id, 'config' => 'true']) }}" @if(!empty($config))class="active" @endif>Configurações</a></li>
 							<li><a href="javascript:;" data-toggle="modal" data-target="#confirmModal">Sair</a></li>
 						</ul>  
 					</nav>
-					<div class="col-md-4 col-xs-12"><span>Olá {{ Auth::user()->nome }}!</span></div>
 				</div>
 			</div>
 			<div class="templatemo-content-container">
