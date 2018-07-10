@@ -33,7 +33,7 @@ Route::group(['middleware' => 'auth'], function() {
 		$lesoes_grafico = App\Lesao::selectRaw('jogador_id,SUM(rodadas) as qtd')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
 		// Liga
 		if(isset($temporada)){
-			$partidas = App\Partida::where('temporada',$temporada)->where('campeonato','Liga')->whereRaw("resultado1 IS NOT NULL && resultado2 IS NOT NULL")->get();
+			$partidas = App\Partida::where('temporada',$temporada)->where('campeonato','Liga')->whereRaw("resultado1 IS NOT NULL and resultado2 IS NOT NULL")->get();
 			$times = App\Time::where('nome','!=','Mercado Externo')->get()->keyBy('id');
 			$classificacao = [];
 			foreach ($times as $key => $value) {
