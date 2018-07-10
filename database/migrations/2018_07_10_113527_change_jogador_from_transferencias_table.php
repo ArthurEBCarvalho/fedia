@@ -13,7 +13,7 @@ class ChangeJogadorFromTransferenciasTable extends Migration
     public function up()
     {
         Schema::table('transferencias', function (Blueprint $table) {
-            $table->integer('jogador')->change();
+            // $table->integer('jogador')->change();
         });
     }
 

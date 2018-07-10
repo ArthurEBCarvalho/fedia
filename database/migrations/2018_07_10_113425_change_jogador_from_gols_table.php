@@ -13,7 +13,7 @@ class ChangeJogadorFromGolsTable extends Migration
     public function up()
     {
         Schema::table('gols', function (Blueprint $table) {
-            $table->integer('jogador')->change();
+            // $table->integer('jogador')->change();
         });
     }
 

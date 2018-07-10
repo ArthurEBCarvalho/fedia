@@ -13,7 +13,7 @@ class ChangeJogadorFromCartaosTable extends Migration
     public function up()
     {
         Schema::table('cartaos', function (Blueprint $table) {
-            $table->integer('jogador')->change();
+            // $table->integer('jogador')->change();
         });
     }
 

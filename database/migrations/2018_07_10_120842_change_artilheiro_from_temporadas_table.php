@@ -13,8 +13,8 @@ class ChangeArtilheiroFromTemporadasTable extends Migration
     public function up()
     {
         Schema::table('temporadas', function (Blueprint $table) {
-            $table->integer('artilheiro_liga')->change();
-            $table->integer('artilheiro_copa')->change();
+            // $table->integer('artilheiro_liga')->change();
+            // $table->integer('artilheiro_copa')->change();
         });
     }
 
