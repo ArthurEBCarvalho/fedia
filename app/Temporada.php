@@ -45,4 +45,28 @@ class Temporada extends Model
     {
         return $this->hasOne('App\Time', 'id', 'copa2_id')->first();
     }
+
+    /**
+     * Get the jogador record associated with the user.
+     */
+    public function artilheiro_liga()
+    {
+        $nomes = [];
+        foreach ($this->hasMany('App\Artilheiro','temporada_id')->where('campeonato','Liga')->get() as $value) {
+            $nomes[] = $value->jogador()->nome;
+        }
+        return $nomes;
+    }
+
+    /**
+     * Get the jogador record associated with the user.
+     */
+    public function artilheiro_copa()
+    {
+        $nomes = [];
+        foreach ($this->hasMany('App\Artilheiro','temporada_id')->where('campeonato','Copa')->get() as $value) {
+            $nomes[] = $value->jogador()->nome;
+        }
+        return $nomes;
+    }
 }

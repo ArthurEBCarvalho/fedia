@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 
 use App\Transferencium;
 use App\Time;
+use App\Financeiro;
+use App\Jogador;
 use Illuminate\Http\Request;
 
 class TransferenciumController extends Controller {
@@ -54,7 +56,13 @@ class TransferenciumController extends Controller {
 	{
 		$transferencium = new Transferencium();
 		$times = Time::lists('nome','id')->all();
-		return view('administracao.transferencias.form', ["transferencium" => $transferencium, "url" => "administracao.transferencias.store", "method" => "post", "times" => $times]);
+		$jogadores = [];
+		foreach (Jogador::all() as $key => $value) {
+			if(empty($jogadores[$value->time_id]))
+				$jogadores[$value->time_id] = [];
+			$jogadores[$value->time_id][] = $value;
+		}
+		return view('administracao.transferencias.form', ["transferencium" => $transferencium, "url" => "administracao.transferencias.store", "method" => "post", "times" => $times, "jogadores" => $jogadores]);
 	}
 
 	/**
@@ -66,20 +74,32 @@ class TransferenciumController extends Controller {
 	public function store(Request $request)
 	{
 		$transferencium = new Transferencium();
-		$transferencium->jogador = $request->input("jogador");
 		$transferencium->valor = str_replace(",", ".", str_replace(".", "", $request->input("valor")));
-		$transferencium->time1 = $request->input("time1");
-		$transferencium->time2 = $request->input("time2");
+		$transferencium->time1_id = $request->input("time1_id");
+		$transferencium->time2_id = $request->input("time2_id");
+		$time1 = Time::findOrFail($request->input("time1_id"));
+		if($time1->nome == "Mercado Externo"){
+			$jogador = new Jogador();
+			$jogador->nome = $request->input("jogador");
+			$jogador->time_id = $request->input("time2_id");
+			$jogador->save();
+		} else {
+			$jogador = Jogador::findOrFail($request->input("jogador_id"));
+			$jogador->time_id = $request->input("time2_id");
+			$jogador->save();
+		}
+		$transferencium->jogador_id = $jogador->id;
 		$transferencium->save();
-		$time1 = Time::where('nome',$request->input("time1"))->first();
 		if(!is_null($time1)){
 			$time1->dinheiro += floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor"))));
 			$time1->save();
+			Financeiro::create(['valor' => floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor")))), 'operacao' => 0, 'descricao' => 'Venda de Jogador ('.$jogador->nome.')', 'time_id' => $time1->id]);
 		}
-		$time2 = Time::where('nome',$request->input("time2"))->first();
+		$time2 = Time::findOrFail($request->input("time2_id"));
 		if(!is_null($time2)){
 			$time2->dinheiro -= floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor"))));
 			$time2->save();
+			Financeiro::create(['valor' => floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor")))), 'operacao' => 1, 'descricao' => 'Contratação de Jogador ('.$jogador->nome.')', 'time_id' => $time2->id]);
 		}
 		return redirect()->route('administracao.transferencias.index')->with('message', 'Transferência cadastrada com sucesso!');
 	}
@@ -124,6 +144,21 @@ class TransferenciumController extends Controller {
 	public function destroy($id)
 	{
 		$transferencium = Transferencium::findOrFail($id);
+		$jogador = Jogador::findOrFail($transferencium->jogador_id);
+		$jogador->time_id = $transferencium->time1_id;
+		$jogador->save();
+		$time1 = Time::findOrFail($transferencium->time1_id);
+		if(!is_null($time1)){
+			$time1->dinheiro -= $transferencium->valor;
+			$time1->save();
+			Financeiro::where('descricao',"Venda de Jogador ($jogador->nome)")->where('time_id',$time1->id)->delete();
+		}
+		$time2 = Time::findOrFail($transferencium->time2_id);
+		if(!is_null($time2)){
+			$time2->dinheiro += $transferencium->valor;
+			$time2->save();
+			Financeiro::where('descricao',"Contratação de Jogador ($jogador->nome)")->where('time_id',$time2->id)->delete();
+		}
 		$transferencium->delete();
 		return redirect()->route('administracao.transferencias.index')->with('message', 'Transferência deletado com sucesso!');
 	}

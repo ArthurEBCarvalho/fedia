@@ -15,6 +15,7 @@
 <link href="/css/font-awesome.min.css" rel="stylesheet">
 <link href="/css/bootstrap.min.css" rel="stylesheet">
 <link href="/css/templatemo-style.css" rel="stylesheet">
+<link href="/css/chosen.css" rel="stylesheet">
 <link rel="icon" href="/images/logo.png">
 
 <!-- jQuery -->
@@ -54,7 +55,9 @@
 			<nav class="templatemo-left-nav">          
 				<ul>
 					<li><a href="/" class="@if(Request::is('/')) active @endif"><i class="fa fa-home fa-fw"></i>Início</a></li>
-					<li class="@if(!Auth::user()->isAdmin()) hide @endif submenu">
+					<li><a href="/financeiros" class="@if(Request::is('financeiros')) active @endif"><i class="fa fa-money fa-fw"></i>Histórico Financeiro</a></li>
+					@if(Auth::user()->isAdmin())
+					<li class="submenu">
 						<a href="#"><i class="fa fa-user-secret"></i> Administração <i class="caret-down fa fa-arrow-circle-down"></i></a>
 						<ul>
 							<li><a href="/administracao/users" class="@if(Request::is('administracao/users')) active @endif"><i class="fa fa-users fa-fw"></i>Usuários</a></li>
@@ -62,8 +65,13 @@
 							<li><a href="/administracao/partidas?tipo=liga" class="@if(Request::is('administracao/partidas') && $tipo == 'liga') active @endif"><i class="fa fa-gamepad fa-fw"></i>Liga FEDIA</a></li>
 							<li><a href="/administracao/partidas?tipo=copa" class="@if(Request::is('administracao/partidas') && $tipo == 'copa') active @endif"><i class="fa fa-gamepad fa-fw"></i>Copa FEDIA</a></li>
 							<li><a href="/administracao/temporadas" class="@if(Request::is('administracao/temporadas')) active @endif"><i class="fa fa-list fa-fw"></i>Temporadas</a></li>
+							<li><a href="/administracao/indisponiveis" class="@if(Request::is('administracao/indisponiveis')) active @endif"><i class="fa fa-ambulance fa-fw"></i>Cartões e Lesões</a></li>
 						</ul>
 					</li>
+					@else
+					<li><a href="/administracao/partidas?tipo=liga" class="@if(Request::is('administracao/partidas') && $tipo == 'liga') active @endif"><i class="fa fa-gamepad fa-fw"></i>Liga FEDIA</a></li>
+					<li><a href="/administracao/partidas?tipo=copa" class="@if(Request::is('administracao/partidas') && $tipo == 'copa') active @endif"><i class="fa fa-gamepad fa-fw"></i>Copa FEDIA</a></li>
+					@endif
 					<li><a href="javascript:;" data-toggle="modal" data-target="#confirmModal"><i class="fa fa-eject fa-fw"></i>Sair</a></li>
 				</ul>  
 			</nav>
@@ -78,7 +86,7 @@
 							<li><a href="javascript:;" data-toggle="modal" data-target="#confirmModal">Sair</a></li>
 						</ul>  
 					</nav>
-					<div class="col-md-4 col-xs-12"><span>Olá {{ Auth::user()->nome }}!</span></div>
+					<div class="col-md-4 col-xs-12 user_online"><span>Olá {{ Auth::user()->nome }}!</span></div>
 				</div>
 			</div>
 			<div class="templatemo-content-container">
@@ -134,6 +142,10 @@
 	<script src="/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/js/bootstrap-filestyle.min.js"></script>  <!-- http://markusslima.github.io/bootstrap-filestyle/ -->
 	<script type="text/javascript" src="/js/templatemo-script.js"></script>
+	<script src="/js/chosen.js" type="text/javascript"></script>
 	@if(Request::is('administracao*')) <script type="text/javascript">$('.submenu > a').trigger( "click" );</script> @endif
+	<script type="text/javascript">
+		$(".chzn-select").chosen();
+	</script>
 </body>
 </html>

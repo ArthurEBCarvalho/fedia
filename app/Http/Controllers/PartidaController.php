@@ -9,6 +9,9 @@ use App\Temporada;
 use App\Gol;
 use App\Cartao;
 use App\Lesao;
+use App\Financeiro;
+use App\Jogador;
+use App\Artilheiro;
 use Log;
 use DB;
 use Illuminate\Http\Request;
@@ -34,19 +37,20 @@ class PartidaController extends Controller {
 			$partidas = Partida::where('temporada',$temporada)->where('rodada',$rodada)->where('campeonato','liga')->get();
 		else
 			$partidas = Partida::where('temporada',$temporada)->where('campeonato','copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
-		return view('administracao.partidas.index', ["partidas" => $partidas, "temporada" => $temporada, "rodada" => $rodada, "tipo" => $request->tipo]);
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		$partida = new Partida();
-		$times = Time::lists('nome','id')->all();
-		return view('administracao.partidas.form', ["partida" => $partida, "url" => "administracao.partidas.store", "method" => "post", "times" => $times]);
+		$indisponiveis = [];
+		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->selectRaw('jogadors.nome,COUNT(*) as qtd')->where('temporada',$temporada)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',0)->groupBy('jogador_id','cartaos.time_id')->having('qtd','=',3)->get() as $suspenso)
+			$indisponiveis[] = $suspenso->nome;
+		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->where('temporada',$temporada)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',1)->get() as $suspenso)
+			$indisponiveis[] = $suspenso->nome;
+		foreach(DB::table('lesaos')->join('jogadors','lesaos.jogador_id','=','jogadors.id')->where('temporada',$temporada)->where('restantes','>','0')->get() as $lesionado)
+			$indisponiveis[] = $lesionado->nome;
+		$jogadores = [];
+		foreach (Jogador::all() as $key => $value) {
+			if(empty($jogadores[$value->time_id]))
+				$jogadores[$value->time_id] = [];
+			$jogadores[$value->time_id][] = $value;
+		}
+		return view('administracao.partidas.index', ["partidas" => $partidas, "temporada" => $temporada, "rodada" => $rodada, "indisponiveis" => $indisponiveis, "lesionados" => $request->lesionados, "tipo" => $request->tipo, 'jogadores' => $jogadores]);
 	}
 
 	/**
@@ -65,10 +69,11 @@ class PartidaController extends Controller {
 			$partida->penalti2 = $request->penalti2;
 		}
 		$partida->save();
+		$lesionados = [];
 
 		// Finalizar suspensões e lesões
 		Cartao::whereRaw("time_id IN ('$partida->time1_id','$partida->time2_id')")->where('cumprido',0)->where('cor',1)->update(['cumprido' => 1]);
-		$acumulados = Cartao::selectRaw("GROUP_CONCAT(id SEPARATOR ',') as ids, COUNT(*) as qtd")->whereRaw("time_id IN ('$partida->time1_id','$partida->time2_id')")->where('cumprido',0)->where('cor',0)->groupBy('jogador')->having('qtd', '>', 2);
+		$acumulados = Cartao::selectRaw("GROUP_CONCAT(id SEPARATOR ',') as ids, COUNT(*) as qtd")->whereRaw("time_id IN ('$partida->time1_id','$partida->time2_id')")->where('cumprido',0)->where('cor',0)->groupBy('jogador_id','cor','time_id')->having('qtd', '>', 2)->get();
 		if(!blank($acumulados)){
 			foreach ($acumulados as $key => $value)
 				Cartao::whereRaw("id IN ($value->ids)")->update(['cumprido' => 1]);
@@ -78,7 +83,7 @@ class PartidaController extends Controller {
 			if($value == '')
 				continue;
 			$gol = new Gol();
-			$gol->jogador = $value;
+			$gol->jogador_id = $value;
 			$gol->quantidade = $request->gols_qtd1[$key];
 			$gol->campeonato = $request->campeonato;
 			$gol->temporada = $partida->temporada;
@@ -90,7 +95,7 @@ class PartidaController extends Controller {
 			if($value == '')
 				continue;
 			$gol = new Gol();
-			$gol->jogador = $value;
+			$gol->jogador_id = $value;
 			$gol->quantidade = $request->gols_qtd2[$key];
 			$gol->campeonato = $request->campeonato;
 			$gol->temporada = $partida->temporada;
@@ -102,7 +107,7 @@ class PartidaController extends Controller {
 			if($value == '')
 				continue;
 			$cartao = new Cartao();
-			$cartao->jogador = $value;
+			$cartao->jogador_id = $value;
 			$cartao->cor = $request->cartoes_cor1[$key];
 			$cartao->campeonato = $request->campeonato;
 			$cartao->cumprido = 0;
@@ -115,7 +120,7 @@ class PartidaController extends Controller {
 			if($value == '')
 				continue;
 			$cartao = new Cartao();
-			$cartao->jogador = $value;
+			$cartao->jogador_id = $value;
 			$cartao->cor = $request->cartoes_cor2[$key];
 			$cartao->campeonato = $request->campeonato;
 			$cartao->temporada = $partida->temporada;
@@ -128,8 +133,10 @@ class PartidaController extends Controller {
 			if($value == '')
 				continue;
 			$lesao = new Lesao();
-			$lesao->jogador = $value;
+			$lesao->jogador_id = $value;
 			$rodadas = rand(1,7);
+			$jogador = Jogador::findOrFail($value);
+			$lesionados[$jogador->nome] = $rodadas;
 			$lesao->rodadas = $rodadas;
 			$lesao->restantes = $rodadas;
 			$lesao->temporada = $partida->temporada;
@@ -141,8 +148,10 @@ class PartidaController extends Controller {
 			if($value == '')
 				continue;
 			$lesao = new Lesao();
-			$lesao->jogador = $value;
+			$lesao->jogador_id = $value;
 			$rodadas = rand(1,7);
+			$jogador = Jogador::findOrFail($value);
+			$lesionados[$jogador->nome] = $rodadas;
 			$lesao->rodadas = $rodadas;
 			$lesao->restantes = $rodadas;
 			$lesao->temporada = $partida->temporada;
@@ -159,11 +168,15 @@ class PartidaController extends Controller {
 			$time2 = Time::findOrFail($partida->time2_id);
 			if($partida->resultado1 > $partida->resultado2){
 				$time1->dinheiro += 3000000;
+				Financeiro::create(['valor' => 3000000, 'operacao' => 0, 'descricao' => 'Vitória na Liga', 'time_id' => $time1->id]);
 			} elseif ($partida->resultado1 == $partida->resultado2) {
 				$time1->dinheiro += 1000000;
 				$time2->dinheiro += 1000000;
+				Financeiro::create(['valor' => 1000000, 'operacao' => 0, 'descricao' => 'Empate na Liga', 'time_id' => $time1->id]);
+				Financeiro::create(['valor' => 1000000, 'operacao' => 0, 'descricao' => 'Empate na Liga', 'time_id' => $time2->id]);
 			} else {
 				$time2->dinheiro += 3000000;
+				Financeiro::create(['valor' => 3000000, 'operacao' => 0, 'descricao' => 'Vitória na Liga', 'time_id' => $time2->id]);
 			}
 			$time1->save();
 			$time2->save();
@@ -215,14 +228,16 @@ class PartidaController extends Controller {
 				$v1 = Time::findOrFail($classificacao[0]['id']);
 				$v1->dinheiro += 20000000;
 				$v1->save();
+				Financeiro::create(['valor' => 20000000, 'operacao' => 0, 'descricao' => 'Campeão da Liga FEDIA', 'time_id' => $v1->id]);
 				$v2 = Time::findOrFail($classificacao[1]['id']);
 				$v2->dinheiro += 10000000;
 				$v2->save();
+				Financeiro::create(['valor' => 10000000, 'operacao' => 0, 'descricao' => 'Vice Campeão da Liga FEDIA', 'time_id' => $v2->id]);
 				$v3 = Time::findOrFail($classificacao[2]['id']);
 				$v3->dinheiro += 5000000;
 				$v3->save();
-				$artilheiro = DB::table('gols')->join('times','gols.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador,SUM(quantidade) as qtd')->where('temporada',$temporada->id)->where('campeonato','Liga')->groupBy('jogador')->orderBy('qtd','DESC')->get();
-				$a = [];
+				Financeiro::create(['valor' => 5000000, 'operacao' => 0, 'descricao' => 'Terceiro Lugar da Liga FEDIA', 'time_id' => $v3->id]);
+				$artilheiro = DB::table('gols')->join('times','gols.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,SUM(quantidade) as qtd')->where('temporada',$temporada->id)->where('campeonato','Liga')->groupBy('jogador_id')->orderBy('qtd','DESC')->get();
 				$t = [];
 				$gols = null;
 				foreach ($artilheiro as $key => $value) {
@@ -230,16 +245,19 @@ class PartidaController extends Controller {
 						$gols = $value->qtd;
 					if($gols != $value->qtd)
 						break;
-					Log::info("GOL ($value->jogador): $value->qtd");
-					$a[] = $value->jogador;
+					$a = new Artilheiro();
+					$a->jogador_id = $value->jogador_id;
+					$a->campeonato = 'Liga';
+					$a->temporada_id = $temporada->id;
+					$a->save();
 					$t[] = $value->id;
 				}
 				foreach ($t as $key => $value) {
 					$v = Time::findOrFail($value);
 					$v->dinheiro += (5000000/count($t));
 					$v->save();
+					Financeiro::create(['valor' => (5000000/count($t)), 'operacao' => 0, 'descricao' => 'Artilheiro da Liga FEDIA', 'time_id' => $value]);
 				}
-				$temporada->artilheiro_liga = join(', ',$a);
 				$temporada->liga1_id = $classificacao[0]['id'];
 				$temporada->liga2_id = $classificacao[1]['id'];
 				$temporada->liga3_id = $classificacao[2]['id'];
@@ -276,11 +294,12 @@ class PartidaController extends Controller {
 			}
 			$v->dinheiro += 20000000;
 			$v->save();
+			Financeiro::create(['valor' => 20000000, 'operacao' => 0, 'descricao' => 'Campeão da Copa FEDIA', 'time_id' => $v->id]);
 			$d->dinheiro += 10000000;
 			$d->save();
+			Financeiro::create(['valor' => 10000000, 'operacao' => 0, 'descricao' => 'Vice Campeão da Copa FEDIA', 'time_id' => $d->id]);
 
-			$artilheiro = DB::table('gols')->join('times','gols.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador,SUM(quantidade) as qtd')->where('temporada',$temporada->id)->where('campeonato','Copa')->groupBy('jogador')->orderBy('qtd','DESC')->get();
-			$a = [];
+			$artilheiro = DB::table('gols')->join('times','gols.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,SUM(quantidade) as qtd')->where('temporada',$temporada->id)->where('campeonato','Copa')->groupBy('jogador_id')->orderBy('qtd','DESC')->get();
 			$t = [];
 			$gols = null;
 			foreach ($artilheiro as $key => $value) {
@@ -288,15 +307,19 @@ class PartidaController extends Controller {
 					$gols = $value->qtd;
 				if($gols != $value->qtd)
 					break;
-				$a[] = $value->jogador;
+				$a = new Artilheiro();
+				$a->jogador_id = $value->jogador_id;
+				$a->campeonato = 'Copa';
+				$a->temporada_id = $temporada->id;
+				$a->save();
 				$t[] = $value->id;
 			}
 			foreach ($t as $key => $value) {
 				$v = Time::findOrFail($value);
 				$v->dinheiro += (5000000/count($t));
 				$v->save();
+				Financeiro::create(['valor' => (5000000/count($t)), 'operacao' => 0, 'descricao' => 'Artilheiro da Copa FEDIA', 'time_id' => $value]);
 			}
-			$temporada->artilheiro_copa = join(', ',$a);
 			$temporada->save();
 		}
 
@@ -327,16 +350,19 @@ class PartidaController extends Controller {
 				case 1:
 				$ordem = 4;
 				$v->dinheiro += 6000000;
+				Financeiro::create(['valor' => 6000000, 'operacao' => 0, 'descricao' => 'Passou das Quartas de Finais da Copa FEDIA', 'time_id' => $v->id]);
 				break;
 				case 2:
 				case 3:
 				$ordem = 5;
 				$v->dinheiro += 6000000;
+				Financeiro::create(['valor' => 6000000, 'operacao' => 0, 'descricao' => 'Passou das Quartas de Finais da Copa FEDIA', 'time_id' => $v->id]);
 				break;
 				case 4:
 				case 5:
 				$ordem = 6;
 				$v->dinheiro += 10000000;
+				Financeiro::create(['valor' => 6000000, 'operacao' => 0, 'descricao' => 'Passou das Semi Finais da Copa FEDIA', 'time_id' => $v->id]);
 				break;
 			}
 			$v->save();
@@ -379,56 +405,7 @@ class PartidaController extends Controller {
 			}
 		}
 		
-		return redirect()->route('administracao.partidas.index', ['tipo' => strtolower($request->campeonato), 'temporada' => $request->temporada, 'rodada' => $request->rodada])->with('message', 'Resultado cadastrado com sucesso!');
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		$partida = Partida::findOrFail($id);
-		$times = Time::lists('nome','id')->all();
-		return view('administracao.partidas.form', ["partida" => $partida, "url" => "administracao.partidas.update", "method" => "put", "times" => $times]);
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @param Request $request
-	 * @return Response
-	 */
-	public function update(Request $request, $id)
-	{
-		$partida = Partida::findOrFail($id);
-		$partida->campeonato = $request->input("campeonato");
-		$partida->rodada = $request->input("rodada");
-		$partida->temporada = $request->input("temporada");
-		$partida->time1_id = $request->input("time1_id");
-		$partida->time2_id = $request->input("time2_id");
-		$partida->resultado1 = $request->input("resultado1");
-		$partida->resultado2 = $request->input("resultado2");
-		$partida->penalti1 = $request->input("penalti1");
-		$partida->penalti2 = $request->input("penalti2");
-		$partida->save();
-		return redirect()->route('administracao.partidas.index')->with('message', 'Partida atualizado com sucesso!');
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		$partida = Partida::findOrFail($id);
-		$partida->delete();
-		return redirect()->route('administracao.partidas.index')->with('message', 'Partida deletado com sucesso!');
+		return redirect()->route('administracao.partidas.index', ['tipo' => strtolower($request->campeonato), 'temporada' => $request->temporada, 'rodada' => $request->rodada, 'lesionados' => $lesionados])->with('message', 'Resultado cadastrado com sucesso!');
 	}
 
 	/**
@@ -461,7 +438,7 @@ class PartidaController extends Controller {
 		$temporada->numero = $temporadas->count()+1;
 		$temporada->save();
 		do {
-			$times = Time::inRandomOrder()->get();
+			$times = Time::where('nome','!=','Mercado Externo')->inRandomOrder()->get();
 			Log::info('AAAA');
 			// Sorteio da liga
 			Partida::where('campeonato','Liga')->where('temporada',$temporada->id)->delete();
@@ -526,11 +503,57 @@ class PartidaController extends Controller {
 
 		// Dinheiro do patrocínio
 		foreach ($times as $key => $time) {
-			$time->dinheiro += 50000000;
+			$time->dinheiro += 30000000;
 			$time->save();
 		}
 
 		return redirect()->route('administracao.partidas.temporadas')->with('message', 'Temporada '.$temporada->numero.' cadastrada com sucesso!');
+	}
+
+	/**
+	 * Lista todos os status (cartão e lesão) dos jogadores.
+	 *
+	 * @return Response
+	 */
+	public function indisponiveis(Request $request)
+	{
+		if(isset($request->temporada))
+			$temporada = $request->temporada;
+		else
+			$temporada = Temporada::all()->max('id');
+		if(isset($request->time) && $request->time != "Todos"){
+			$times = Time::where('id',$request->time)->get()->keyBy('id');
+			$clausures = "time_id = $request->time";
+		} else {
+			$times = Time::where('nome','!=','Mercado Externo')->get()->keyBy('id');
+			$clausures = "1 = 1";
+		}
+		if(isset($request->time))
+			$time = $request->time;
+		else
+			$time = null;
+		$indisponiveis = [];
+		foreach (Cartao::selectRaw('jogador_id,cor,time_id,campeonato,COUNT(*) as qtd')->where('temporada',$temporada)->where('cumprido',0)->whereRaw($clausures)->groupBy('jogador_id','cor','campeonato','time_id')->get() as $value) {
+			if(empty($indisponiveis[$value->time_id]))
+				$indisponiveis[$value->time_id] = ['amarelo' => [], 'vermelho' => [], 'lesao' => [], 'nome' => $times[$value->time_id]->nome, 'escudo' => $times[$value->time_id]->escudo];
+			if($value->qtd == 1)
+				$palavra = 'cartão';
+			else
+				$palavra = 'cartões';
+			if($value->cor == 0)
+				$indisponiveis[$value->time_id]['amarelo'][] = $value->jogador()->nome.": $value->qtd $palavra amarelo pela $value->campeonato FEDIA.";
+			else
+				$indisponiveis[$value->time_id]['vermelho'][] = $value->jogador()->nome.": $value->qtd $palavra vermelho pela $value->campeonato FEDIA.";
+		}
+		foreach (Lesao::where('temporada',$temporada)->where('restantes','>',0)->whereRaw($clausures)->get() as $value){
+			if(empty($indisponiveis[$value->time_id]))
+				$indisponiveis[$value->time_id] = ['amarelo' => [], 'vermelho' => [], 'lesao' => [], 'nome' => $times[$value->time_id]->nome, 'escudo' => $times[$value->time_id]->escudo];
+			$indisponiveis[$value->time_id]['lesao'][] = $value->jogador()->nome.": Lesionado por $value->restantes rodadas restantes.";
+		}
+		$times = Time::where('nome','!=','Mercado Externo')->get();
+		$temporadas = Temporada::all();
+
+		return view('administracao.partidas.indisponivel', ["indisponiveis" => $indisponiveis, "times" => $times, "temporadas" => $temporadas, "time" => $time, "temporada" => $temporada]);
 	}
 
 }

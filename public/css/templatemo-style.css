@@ -769,3 +769,8 @@ footer #logo { width: 20px; }
 	width: 50px;
 	max-height: 50px;
 }
+
+.user_online {
+	font-weight: bold;
+	text-align: right;
+}

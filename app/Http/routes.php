@@ -13,7 +13,7 @@
 
 Route::get("auth/logout", function () {
 	Auth::logout();
-	return redirect('/administracao/users');
+	return redirect('/');
 });
 
 
@@ -25,11 +25,16 @@ Route::post('auth/login', 'Auth\AuthController@postLogin');
 
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/', function () {
-		// Liga
 		$temporada = App\Partida::all()->max('temporada');
+		$contratacoes = App\Financeiro::selectRaw('valor, SUBSTRING(descricao, 25, CHAR_LENGTH(descricao)-25) as nome')->where('time_id',Auth::user()->time()->id)->where('descricao','LIKE','%Contratação de Jogador%')->limit(5)->get();
+		$cartoes = App\Cartao::selectRaw('jogador_id,cor,campeonato,COUNT(*) as qtd')->where('time_id',Auth::user()->time()->id)->where('cumprido',0)->groupBy('jogador_id','cor','campeonato')->get();
+		$lesoes = App\Lesao::selectRaw('jogador_id,restantes')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->get();
+		$gols = App\Gol::selectRaw('jogador_id,SUM(quantidade) as qtd')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
+		$lesoes_grafico = App\Lesao::selectRaw('jogador_id,SUM(rodadas) as qtd')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
+		// Liga
 		if(isset($temporada)){
 			$partidas = App\Partida::where('temporada',$temporada)->where('campeonato','Liga')->whereRaw("resultado1 IS NOT NULL && resultado2 IS NOT NULL")->get();
-			$times = App\Time::all()->keyBy('id');
+			$times = App\Time::where('nome','!=','Mercado Externo')->get()->keyBy('id');
 			$classificacao = [];
 			foreach ($times as $key => $value) {
 				$classificacao[$value->id] = ['P' => 0, 'J' => 0, 'V' => 0, 'E' => 0, 'D' => 0, 'GP' => 0, 'GC' => 0, 'SG' => 0, 'nome' => $times[$value->id]->nome, 'escudo' => $times[$value->id]->escudo];
@@ -71,18 +76,18 @@ Route::group(['middleware' => 'auth'], function() {
 			array_multisort($sort['P'], SORT_DESC, $sort['V'], SORT_DESC, $sort['SG'], SORT_DESC, $sort['GP'], SORT_DESC, $classificacao);
 
 			$artilheiros = [];
-		// Artilheiros Liga
-			$artilheiros['Liga'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Liga')->groupBy('jogador')->orderBy('qtd','desc')->get();
+			// Artilheiros Liga
+			$artilheiros['Liga'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->join('jogadors','gols.jogador_id','=','jogadors.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Liga')->groupBy('jogador_id')->orderBy('qtd','desc')->limit(8)->get();
 
-		// Copa
+			// Copa
 			$copa = App\Partida::where('temporada',$temporada)->where('campeonato','copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
 
-		// Artilheiros Copa
-			$artilheiros['Copa'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Copa')->groupBy('jogador')->orderBy('qtd','desc')->get();
+			// Artilheiros Copa
+			$artilheiros['Copa'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->join('jogadors','gols.jogador_id','=','jogadors.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Copa')->groupBy('jogador_id')->orderBy('qtd','desc')->limit(8)->get();
 
-			return view("index", ['temporada' => $temporada, 'classificacao' => $classificacao, 'copa' => $copa, 'times' => $times, 'artilheiros' => $artilheiros]);
+			return view("index", ['temporada' => $temporada, 'classificacao' => $classificacao, 'copa' => $copa, 'times' => $times, 'artilheiros' => $artilheiros, 'contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'lesoes_grafico' => $lesoes_grafico]);
 		} else {
-			return view("index");
+			return view("index", ['contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'lesoes_grafico' => $lesoes_grafico]);
 		}
 
 	});
@@ -91,11 +96,13 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::resource("times","TimeController");
 	Route::resource("administracao/transferencias","TransferenciumController");
 	Route::resource("administracao/partidas","PartidaController");
+	Route::resource("financeiros","FinanceiroController");
 
 	Route::get('user_verificar_password', 'UserController@verificar_senha');
 	Route::get('user_verificar_login', 'UserController@verificar_login');
 
 	Route::get("administracao/temporadas", ['as' => 'administracao.partidas.temporadas', 'uses' => 'PartidaController@temporadas']);
 	Route::get("administracao/temporada_store", ['as' => 'administracao.partidas.temporada_store', 'uses' => 'PartidaController@temporada_store']);
+	Route::get("administracao/indisponiveis", ['as' => 'administracao.partidas.indisponiveis', 'uses' => 'PartidaController@indisponiveis']);
 
 });

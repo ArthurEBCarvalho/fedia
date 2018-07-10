@@ -70,10 +70,10 @@
                     <td>{{@$temporada->liga1()->nome}}</td>
                     <td>{{@$temporada->liga2()->nome}}</td>
                     <td>{{@$temporada->liga3()->nome}}</td>
-                    <td>{{$temporada->artilheiro_liga}}</td>
+                    <td>{{join(', ',@$temporada->artilheiro_liga())}}</td>
                     <td>{{@$temporada->copa1()->nome}}</td>
                     <td>{{@$temporada->copa2()->nome}}</td>
-                    <td>{{$temporada->artilheiro_copa}}</td>
+                    <td>{{join(', ',@$temporada->artilheiro_copa())}}</td>
                 </tr>
                 @endforeach
             </tbody>

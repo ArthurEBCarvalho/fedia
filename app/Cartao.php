@@ -21,4 +21,12 @@ class Cartao extends Model
     {
         return $this->hasOne('App\Partida')->first();
     }
+
+    /**
+     * Get the jogador record associated with the user.
+     */
+    public function jogador()
+    {
+        return $this->belongsTo('App\Jogador')->first();
+    }
 }
