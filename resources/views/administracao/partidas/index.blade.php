@@ -71,6 +71,7 @@
         @endif
     </div>
 </div>
+{{Request::url()}}
 @if($partidas->count())
 @if($tipo == "liga")
 <div class="templatemo-content-widget no-padding">
@@ -495,11 +496,11 @@
         $(".gols").val(0);
         $array = $img_path.split('/');
         $array[$array.length-1] = img1;
-        $(".img_1").attr('src',$array.join('/'));
+        $(".img_1").attr('src',"{{Request::url()}}"+$array.join('/'));
         $(".time_1").html(time1);
         $array = $img_path.split('/');
         $array[$array.length-1] = img2;
-        $(".img_2").attr('src',$array.join('/'));
+        $(".img_2").attr('src',"{{Request::url()}}"+$array.join('/'));
         $(".time_2").html(time2);
         $("#modal_resultado").find('select.chzn-select > option').remove();
         $("#modal_resultado").find('select.time1').each(function( index ) {
