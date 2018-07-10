@@ -71,7 +71,7 @@
         @endif
     </div>
 </div>
-{{Request::url()}}
+{{Request::root()}}
 @if($partidas->count())
 @if($tipo == "liga")
 <div class="templatemo-content-widget no-padding">
