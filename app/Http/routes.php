@@ -77,13 +77,13 @@ Route::group(['middleware' => 'auth'], function() {
 
 			$artilheiros = [];
 			// Artilheiros Liga
-			$artilheiros['Liga'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->join('jogadors','gols.jogador_id','=','jogadors.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Liga')->groupBy('jogador_id')->orderBy('qtd','desc')->limit(8)->get();
+			$artilheiros['Liga'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->join('jogadors','gols.jogador_id','=','jogadors.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Liga')->groupBy('jogadors.nome')->orderBy('qtd','desc')->limit(8)->get();
 
 			// Copa
 			$copa = App\Partida::where('temporada',$temporada)->where('campeonato','copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
 
 			// Artilheiros Copa
-			$artilheiros['Copa'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->join('jogadors','gols.jogador_id','=','jogadors.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Copa')->groupBy('jogador_id')->orderBy('qtd','desc')->limit(8)->get();
+			$artilheiros['Copa'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->join('jogadors','gols.jogador_id','=','jogadors.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Copa')->groupBy('jogadors.nome')->orderBy('qtd','desc')->limit(8)->get();
 
 			return view("index", ['temporada' => $temporada, 'classificacao' => $classificacao, 'copa' => $copa, 'times' => $times, 'artilheiros' => $artilheiros, 'contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'lesoes_grafico' => $lesoes_grafico]);
 		} else {
