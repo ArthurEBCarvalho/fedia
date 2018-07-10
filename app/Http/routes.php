@@ -80,7 +80,7 @@ Route::group(['middleware' => 'auth'], function() {
 			$artilheiros['Liga'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->join('jogadors','gols.jogador_id','=','jogadors.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Liga')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
 
 			// Copa
-			$copa = App\Partida::where('temporada',$temporada)->where('campeonato','copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
+			$copa = App\Partida::where('temporada',$temporada)->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
 
 			// Artilheiros Copa
 			$artilheiros['Copa'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->join('jogadors','gols.jogador_id','=','jogadors.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Copa')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
