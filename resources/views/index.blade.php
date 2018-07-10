@@ -66,7 +66,7 @@
             <?php $count = 1; ?>
             @foreach($classificacao as $key => $value)
             <tr @if($key == count($classificacao)-1) bgcolor="#FFF0F0" @endif @if($key == 0) bgcolor="#F0FFF0" @endif>
-              <td align="center">{!! Html::image(Storage::url('times/'.$value['escudo']), $value['nome'], ['style' => 'max-height:50px;']) !!}</td>
+              <td align="center">{!! Html::image('/images/times'.$value['escudo'], $value['nome'], ['style' => 'max-height:50px;']) !!}</td>
               <td>{{$value['nome']}}</td>
               <td align="center">{{$value['P']}}</td>
               <td align="center">{{$value['J']}}</td>
