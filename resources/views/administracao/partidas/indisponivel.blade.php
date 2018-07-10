@@ -63,7 +63,7 @@
             <tbody>
                 @foreach($indisponiveis as $time_id => $array)
                 <tr>
-                <td align="center">{!! Html::image(Storage::url('times/'.$array['escudo']), $array['nome'], ['class' => 'time_img']) !!}</td>
+                <td align="center">{!! Html::image('images/times/'.$array['escudo'], $array['nome'], ['class' => 'time_img']) !!}</td>
                 <td>{{$array['nome']}}</td>
                     <td>
                         @foreach($array['amarelo'] as $value)
