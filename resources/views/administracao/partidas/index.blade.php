@@ -11,6 +11,7 @@
     </div>                
 </div>
 @endif
+@if(isset($lesionados))
 @if(count($lesionados))
 <div class="templatemo-content-widget yellow-bg">
     <i class="fa fa-times"></i>                
@@ -25,6 +26,7 @@
         </div>        
     </div>                
 </div>
+@endif
 @endif
 
 @if(count($indisponiveis))
