@@ -66,8 +66,5 @@
 		</div>
 		{!! Form::close() !!}
 	</div>
-	<div class="templatemo-content-widget templatemo-login-widget templatemo-register-widget white-bg">
-		<p>Ainda não é registrado? <strong><a href="#" class="blue-text">Cadastre-se Agora!</a></strong></p>
-	</div>
 </body>
 </html>
