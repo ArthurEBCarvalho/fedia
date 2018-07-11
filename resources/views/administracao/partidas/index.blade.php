@@ -473,7 +473,8 @@
     .chzn-container, .chzn-drop, .chzn-search input { width: 100% !important; }
 
     #modal_resultado { overflow-y:scroll;overflow-x:scroll; }
-
+    #modal_resultado .modal-content { width: 640px; }
+    #modal_resultado table { width: 600px; }
     #modal_resultado input { min-width: 60px; }
 </style>
 <script type="text/javascript">
