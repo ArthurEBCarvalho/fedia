@@ -473,8 +473,10 @@
     .chzn-container, .chzn-drop, .chzn-search input { width: 100% !important; }
 
     #modal_resultado { overflow-y:scroll;overflow-x:scroll; }
-    #modal_resultado .modal-content { width: 680px; }
-    #modal_resultado table { width: 640px; }
+    @media screen and (max-width: 992px) {
+        #modal_resultado .modal-content { width: 680px; }
+        #modal_resultado table { width: 640px; }
+    }
     #modal_resultado input { min-width: 60px; }
 </style>
 <script type="text/javascript">
@@ -488,7 +490,7 @@
         foreach ($list as $key => $value)
             echo '$jogadores[\''.$time_id.'\'].push({\'id\': '.$value->id.', \'nome\': \''.$value->nome.'\'});';
     }
-        ?>
+    ?>
 
     function resultado(id,img1,time1,img2,time2,id1,id2,campeonato,rodada){
         if(campeonato == "Copa" && rodada == "Volta")
