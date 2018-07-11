@@ -49,9 +49,9 @@ class PartidaController extends Controller {
 			$indisponiveis[$suspenso->time][] = $suspenso->jogador;
 		}
 		foreach(DB::table('lesaos')->join('jogadors','lesaos.jogador_id','=','jogadors.id')->join('times','lesaos.time_id','=','times.id')->selectRaw('jogadors.nome as jogador,times.nome as time')->where('temporada',$temporada)->where('restantes','>','0')->get() as $lesionado){
-			if(is_null($indisponiveis[$suspenso->time]))
-				$indisponiveis[$suspenso->time] = [];
-			$indisponiveis[$suspenso->time][] = $suspenso->jogador;
+			if(is_null($indisponiveis[$lesionado->time]))
+				$indisponiveis[$lesionado->time] = [];
+			$indisponiveis[$lesionado->time][] = $lesionado->jogador;
 		}
 		$jogadores = [];
 		foreach (Jogador::all() as $key => $value) {
