@@ -15,10 +15,11 @@
 <div class="templatemo-content-widget white-bg">
     <h2 class="margin-bottom-10">Cartões e Lesões</h2>
     <div class="row">
+        @if(Auth::user()->isAdmin())
         <form role="form" method="get">
             <div class="col-md-6 col-sm-12 form-group">
                 <div class="input-group">
-                    <span style="width: 200px" class="input-group-addon">Time: </span>
+                    <span class="input-group-addon">Time: </span>
                     <select class="form-control search-filtro" name="time">
                         <option>Todos</option>
                         @foreach($times as $id => $t)
@@ -31,10 +32,11 @@
                 </div>
             </div>
         </form>
+        @endif
         <form role="form" method="get">
             <div class="col-md-6 col-sm-12 form-group">
                 <div class="input-group">
-                    <span style="width: 200px" class="input-group-addon">Temporada: </span>
+                    <span class="input-group-addon">Temporada: </span>
                     <select class="form-control search-filtro" name="temporada">
                         @foreach($temporadas as $temporada)
                         <option value="{{$temporada->id}}" @if ($temporada->id == $temporada->id) selected @endif>{{$temporada->numero}}</option>
@@ -63,8 +65,8 @@
             <tbody>
                 @foreach($indisponiveis as $time_id => $array)
                 <tr>
-                <td align="center">{!! Html::image('images/times/'.$array['escudo'], $array['nome'], ['class' => 'time_img']) !!}</td>
-                <td>{{$array['nome']}}</td>
+                    <td align="center">{!! Html::image('images/times/'.$array['escudo'], $array['nome'], ['class' => 'time_img']) !!}</td>
+                    <td>{{$array['nome']}}</td>
                     <td>
                         @foreach($array['amarelo'] as $value)
                         <p>{{$value}}</p>

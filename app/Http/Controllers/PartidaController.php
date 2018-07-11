@@ -531,6 +531,8 @@ class PartidaController extends Controller {
 			$temporada = $request->temporada;
 		else
 			$temporada = Temporada::all()->max('id');
+		if(!Auth::user()->isAdmin())
+			$request->time = Auth::user()->time()->id;
 		if(isset($request->time) && $request->time != "Todos"){
 			$times = Time::where('id',$request->time)->get()->keyBy('id');
 			$clausures = "time_id = $request->time";
