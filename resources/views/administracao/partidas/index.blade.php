@@ -471,6 +471,8 @@
     }
 
     .chzn-container, .chzn-drop, .chzn-search input { width: 100% !important; }
+
+    #modal_resultado { overflow-y:scroll; }
 </style>
 <script type="text/javascript">
     $img_path = "images/times/image.png";

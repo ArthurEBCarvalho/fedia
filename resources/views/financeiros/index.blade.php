@@ -76,7 +76,7 @@
 
             <tbody>
                 @foreach($financeiros as $financeiro)
-                <tr>
+                <tr style="color: @if($financeiro->operacao == 0) green @else red @endif;">
                     <td align="right">{{number_format($financeiro->valor,2,',','.')}}</td>
                     <td align="center">@if($financeiro->operacao == 1) Saída @else Entrada @endif</td>
                     <td align="center">{{$financeiro->descricao}}</td>
