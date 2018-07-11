@@ -37,6 +37,7 @@
     <ul>
         @foreach($$jogadores as $jogador)
         <li>{{$jogador}}</li>
+        @endforeach
     </ul>
     @endforeach
 </div>
