@@ -432,9 +432,9 @@
                     <tbody>
                         <tr>
                             <td colspan="2">{!! Form::select('cartoes_jogador1[]', [], null, ['class' => 'chzn-select time1 form-control']) !!}</td>
-                            <td>{!! Form::select('cartoes_cor1[]', ['Amarelo','Vermelho'], null, ['class' => 'form-control', 'style' => 'padding-left: 2px;']) !!}</td>
+                            <td>{!! Form::select('cartoes_cor1[]', ['Amarelo','Vermelho'], null, ['class' => 'form-control', 'style' => 'padding:0;']) !!}</td>
                             <td></td>
-                            <td>{!! Form::select('cartoes_cor2[]', ['Amarelo','Vermelho'], null, ['class' => 'form-control', 'style' => 'padding-left: 2px;']) !!}</td>
+                            <td>{!! Form::select('cartoes_cor2[]', ['Amarelo','Vermelho'], null, ['class' => 'form-control', 'style' => 'padding:0;']) !!}</td>
                             <td colspan="2">{!! Form::select('cartoes_jogador2[]', [], null, ['class' => 'chzn-select time2 form-control']) !!}</td>
                             <td>{!! Html::image('images/icons/plus.png', 'add_linha', ['class' => 'add_linha', 'onClick' => 'add_linha(this)']) !!}</td>
                         </tr>
@@ -473,6 +473,8 @@
     .chzn-container, .chzn-drop, .chzn-search input { width: 100% !important; }
 
     #modal_resultado { overflow-y:scroll;overflow-x:scroll; }
+
+    #modal_resultado input { min-width: 60px; }
 </style>
 <script type="text/javascript">
     $img_path = "images/times/image.png";
