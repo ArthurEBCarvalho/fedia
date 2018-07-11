@@ -39,17 +39,17 @@ class PartidaController extends Controller {
 			$partidas = Partida::where('temporada',$temporada)->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
 		$indisponiveis = [];
 		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','cartaos.time_id','=','times.id')->selectRaw('jogadors.nome as jogador,times.nome as time,COUNT(*) as qtd')->where('temporada',$temporada)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',0)->groupBy('jogadors.nome','cartaos.time_id','times.nome')->having(DB::raw('COUNT(*)'),'=',3)->get() as $suspenso){
-			if(is_null($indisponiveis[$suspenso->time]))
+			if(!isset($indisponiveis[$suspenso->time]))
 				$indisponiveis[$suspenso->time] = [];
 			$indisponiveis[$suspenso->time][] = $suspenso->jogador;
 		}
 		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','cartaos.time_id','=','times.id')->selectRaw('jogadors.nome as jogador,times.nome as time')->where('temporada',$temporada)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',1)->get() as $suspenso){
-			if(is_null($indisponiveis[$suspenso->time]))
+			if(!isset($indisponiveis[$suspenso->time]))
 				$indisponiveis[$suspenso->time] = [];
 			$indisponiveis[$suspenso->time][] = $suspenso->jogador;
 		}
 		foreach(DB::table('lesaos')->join('jogadors','lesaos.jogador_id','=','jogadors.id')->join('times','lesaos.time_id','=','times.id')->selectRaw('jogadors.nome as jogador,times.nome as time')->where('temporada',$temporada)->where('restantes','>','0')->get() as $lesionado){
-			if(is_null($indisponiveis[$lesionado->time]))
+			if(!isset($indisponiveis[$lesionado->time]))
 				$indisponiveis[$lesionado->time] = [];
 			$indisponiveis[$lesionado->time][] = $lesionado->jogador;
 		}
