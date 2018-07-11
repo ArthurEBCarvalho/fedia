@@ -474,7 +474,7 @@
 
     #modal_resultado { overflow-y:scroll;overflow-x:scroll; }
     @media screen and (max-width: 992px) {
-        #modal_resultado .modal-content { width: 680px; }
+        #modal_resultado .modal-content { width: 685px; }
         #modal_resultado table { width: 640px; }
     }
     #modal_resultado input { min-width: 60px; }
