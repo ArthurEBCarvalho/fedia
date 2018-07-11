@@ -35,7 +35,7 @@
     @foreach($indisponiveis as $time => $jogadores)
     <p><strong>{{$time}}:</strong></p>
     <ul>
-        @foreach($$jogadores as $jogador)
+        @foreach($jogadores as $jogador)
         <li>{{$jogador}}</li>
         @endforeach
     </ul>
