@@ -14,6 +14,7 @@ use App\Jogador;
 use App\Artilheiro;
 use Log;
 use DB;
+use Auth;
 use Illuminate\Http\Request;
 
 class PartidaController extends Controller {

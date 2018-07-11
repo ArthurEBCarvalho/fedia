@@ -65,6 +65,7 @@
 					@else
 					<li><a href="/administracao/partidas?tipo=liga" class="@if(Request::is('administracao/partidas') && $tipo == 'liga') active @endif"><i class="fa fa-gamepad fa-fw"></i>Liga FEDIA</a></li>
 					<li><a href="/administracao/partidas?tipo=copa" class="@if(Request::is('administracao/partidas') && $tipo == 'copa') active @endif"><i class="fa fa-gamepad fa-fw"></i>Copa FEDIA</a></li>
+					<li><a href="/administracao/indisponiveis" class="@if(Request::is('administracao/indisponiveis')) active @endif"><i class="fa fa-ambulance fa-fw"></i>Cartões e Lesões</a></li>
 					@endif
 					<li><a href="javascript:;" data-toggle="modal" data-target="#confirmModal"><i class="fa fa-eject fa-fw"></i>Sair</a></li>
 				</ul>  
