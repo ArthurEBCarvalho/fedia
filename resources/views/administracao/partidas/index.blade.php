@@ -32,10 +32,10 @@
 @if(count($indisponiveis))
 <div class="templatemo-content-widget white-bg">
     <h2 class="margin-bottom-10">Jogadores Indisponíveis:</h2>
-    @foreach($indisponiveis as $time => $jogadores)
+    @foreach($indisponiveis as $time => $array)
     <p><strong>{{$time}}:</strong></p>
     <ul>
-        @foreach($jogadores as $jogador)
+        @foreach($array as $jogador)
         <li>{{$jogador}}</li>
         @endforeach
     </ul>
