@@ -52,14 +52,14 @@
           <thead>
             <tr class="bold">
               <td colspan="2" width="25%">Classificação</td>
-              <td align="center">Pontos</td>
-              <td align="center">Jogos</td>
-              <td align="center">Vitórias</td>
-              <td align="center">Empates</td>
-              <td align="center">Derrotas</td>
-              <td align="center">Gols Pró</td>
-              <td align="center">Gols Contra</td>
-              <td align="center">Saldo de Gols</td>
+              <td align="center" class="tooltip" title="Pontos">P</td>
+              <td align="center" class="tooltip" title="Jogos">J</td>
+              <td align="center" class="tooltip" title="Vitórias">V</td>
+              <td align="center" class="tooltip" title="Empates">E</td>
+              <td align="center" class="tooltip" title="Derrotas">D</td>
+              <td align="center" class="tooltip" title="Gols Pró">GP</td>
+              <td align="center" class="tooltip" title="Gols Contra">GC</td>
+              <td align="center" class="tooltip" title="Saldo de Gols">SG</td>
             </tr>
           </thead>
           <tbody>
@@ -426,7 +426,7 @@
             <?php 
             foreach ($gols as $value)
               echo "['".$value->jogador()->nome."', $value->qtd],"
-             ?>
+            ?>
             ]);
 
           var lesoes = new google.visualization.DataTable();
@@ -436,7 +436,7 @@
             <?php 
             foreach ($lesoes_grafico as $value)
               echo "['".$value->jogador()->nome."', $value->qtd],"
-             ?>
+            ?>
             ]);
 
           // Instantiate and draw our chart, passing in some options.
