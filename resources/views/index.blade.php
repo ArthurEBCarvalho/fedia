@@ -52,14 +52,14 @@
           <thead>
             <tr class="bold">
               <td colspan="2" width="25%">Classificação</td>
-              <td align="center" class="tooltip" title="Pontos">P</td>
-              <td align="center" class="tooltip" title="Jogos">J</td>
-              <td align="center" class="tooltip" title="Vitórias">V</td>
-              <td align="center" class="tooltip" title="Empates">E</td>
-              <td align="center" class="tooltip" title="Derrotas">D</td>
-              <td align="center" class="tooltip" title="Gols Pró">GP</td>
-              <td align="center" class="tooltip" title="Gols Contra">GC</td>
-              <td align="center" class="tooltip" title="Saldo de Gols">SG</td>
+              <td align="center" title="Pontos">P</td>
+              <td align="center" title="Jogos">J</td>
+              <td align="center" title="Vitórias">V</td>
+              <td align="center" title="Empates">E</td>
+              <td align="center" title="Derrotas">D</td>
+              <td align="center" title="Gols Pró">GP</td>
+              <td align="center" title="Gols Contra">GC</td>
+              <td align="center" title="Saldo de Gols">SG</td>
             </tr>
           </thead>
           <tbody>
