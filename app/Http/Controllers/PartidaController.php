@@ -355,25 +355,18 @@ class PartidaController extends Controller {
 				}
 			}
 			$v = Time::findOrFail($vencedor);
-			switch ($partida->ordem) {
-				case 0:
-				case 1:
+			if(in_array($partida->ordem, [0,1])){
 				$ordem = 4;
 				$v->dinheiro += 6000000;
 				Financeiro::create(['valor' => 6000000, 'operacao' => 0, 'descricao' => 'Passou das Quartas de Finais da Copa FEDIA', 'time_id' => $v->id]);
-				break;
-				case 2:
-				case 3:
+			} elseif(in_array($partida->ordem, [2,3])){
 				$ordem = 5;
 				$v->dinheiro += 6000000;
 				Financeiro::create(['valor' => 6000000, 'operacao' => 0, 'descricao' => 'Passou das Quartas de Finais da Copa FEDIA', 'time_id' => $v->id]);
-				break;
-				case 4:
-				case 5:
+			} elseif(in_array($partida->ordem, [4,5])){
 				$ordem = 6;
 				$v->dinheiro += 10000000;
-				Financeiro::create(['valor' => 6000000, 'operacao' => 0, 'descricao' => 'Passou das Semi Finais da Copa FEDIA', 'time_id' => $v->id]);
-				break;
+				Financeiro::create(['valor' => 10000000, 'operacao' => 0, 'descricao' => 'Passou das Semi Finais da Copa FEDIA', 'time_id' => $v->id]);
 			}
 			$v->save();
 			if($partida->rodada == 2){
