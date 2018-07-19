@@ -55,7 +55,7 @@ class TransferenciumController extends Controller {
 	public function create()
 	{
 		$transferencium = new Transferencium();
-		$times = Time::lists('nome','id')->all();
+		$times = Time::orderBy('nome')->lists('nome','id')->all();
 		$jogadores = [];
 		foreach (Jogador::all() as $key => $value) {
 			if(empty($jogadores[$value->time_id]))
