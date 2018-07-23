@@ -773,3 +773,12 @@ footer #logo { width: 20px; }
 	font-weight: bold;
 	text-align: right;
 }
+
+.linha_total {
+	background-color: #CCC !important;
+	font-weight: bold;
+}
+
+.linha_total td{
+	text-align: right;
+}

@@ -49,7 +49,8 @@
 			<nav class="templatemo-left-nav">          
 				<ul>
 					<li><a href="/" class="@if(Request::is('/')) active @endif"><i class="fa fa-home fa-fw"></i>Início</a></li>
-					<li><a href="/financeiros" class="@if(Request::is('financeiros')) active @endif"><i class="fa fa-money fa-fw"></i>Histórico Financeiro</a></li>
+					<li><a href="/financeiros" class="@if(Request::is('financeiros*')) active @endif"><i class="fa fa-money fa-fw"></i>Histórico Financeiro</a></li>
+					<li><a href="/partidas" class="@if(Request::is('partidas*')) active @endif"><i class="fa fa-list-alt fa-fw"></i>Partidas</a></li>
 					@if(Auth::user()->isAdmin())
 					<li class="submenu">
 						<a href="#"><i class="fa fa-user-secret"></i> Administração <i class="caret-down fa fa-arrow-circle-down"></i></a>

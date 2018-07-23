@@ -23,7 +23,7 @@ class FinanceiroController extends Controller {
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
-				$financeiros = Financeiro::where('time_id',Auth::user()->time()->id)->orderByRaw($order)->paginate(30);
+				$financeiros = Financeiro::where('time_id',Auth::user()->time()->id)->orderByRaw($order);
 			}
 			else{
 				switch ($request->filtro) {
@@ -37,12 +37,20 @@ class FinanceiroController extends Controller {
 					$valor = $request->valor;
 					break;
 				}
-				$financeiros = Financeiro::where('time_id',Auth::user()->time()->id)->where($request->filtro, $valor)->orderByRaw($order)->paginate(30);
+				$financeiros = Financeiro::where('time_id',Auth::user()->time()->id)->where($request->filtro, $valor)->orderByRaw($order);
 			}
 		}
 		else
-			$financeiros = Financeiro::where('time_id',Auth::user()->time()->id)->orderByRaw($order)->paginate(30);
-		return view('financeiros.index', ["financeiros" => $financeiros, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
+			$financeiros = Financeiro::where('time_id',Auth::user()->time()->id)->orderByRaw($order);
+		$total = 0;
+		foreach ($financeiros->get() as $value) {
+			if($value->operacao == 0)
+				$total += $value->valor;
+			else
+				$total -= $value->valor;
+		}
+		$financeiros = $financeiros->paginate(30);
+		return view('financeiros.index', ["financeiros" => $financeiros, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "total" => $total]);
 	}
 
 }

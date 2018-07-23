@@ -26,7 +26,7 @@ Route::post('auth/login', 'Auth\AuthController@postLogin');
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/', function () {
 		$temporada = App\Partida::all()->max('temporada');
-		$contratacoes = App\Financeiro::selectRaw('valor, SUBSTRING(descricao, 25, CHAR_LENGTH(descricao)-25) as nome')->where('time_id',Auth::user()->time()->id)->where('descricao','LIKE','%Contratação de Jogador%')->limit(5)->get();
+		$contratacoes = App\Financeiro::selectRaw('valor, SUBSTRING(descricao, 25, CHAR_LENGTH(descricao)-25) as nome')->where('time_id',Auth::user()->time()->id)->where('descricao','LIKE','%Contratação de Jogador%')->orderBy('id','DESC')->limit(5)->get();
 		$cartoes = App\Cartao::selectRaw('jogador_id,cor,campeonato,COUNT(*) as qtd')->where('time_id',Auth::user()->time()->id)->where('cumprido',0)->groupBy('jogador_id','cor','campeonato')->get();
 		$lesoes = App\Lesao::selectRaw('jogador_id,restantes')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->get();
 		$gols = App\Gol::selectRaw('jogador_id,SUM(quantidade) as qtd')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function() {
 			$times = App\Time::where('nome','!=','Mercado Externo')->get()->keyBy('id');
 			$classificacao = [];
 			foreach ($times as $key => $value) {
-				$classificacao[$value->id] = ['P' => 0, 'J' => 0, 'V' => 0, 'E' => 0, 'D' => 0, 'GP' => 0, 'GC' => 0, 'SG' => 0, 'nome' => $times[$value->id]->nome, 'escudo' => $times[$value->id]->escudo];
+				$classificacao[$value->id] = ['P' => 0, 'J' => 0, 'V' => 0, 'E' => 0, 'D' => 0, 'GP' => 0, 'GC' => 0, 'SG' => 0, 'id' => $value->id, 'nome' => $times[$value->id]->nome, 'escudo' => $times[$value->id]->escudo];
 			}
 			foreach ($partidas as $key => $value) {
 				$classificacao[$value->time1_id]["J"] += 1;
@@ -77,13 +77,13 @@ Route::group(['middleware' => 'auth'], function() {
 
 			$artilheiros = [];
 			// Artilheiros Liga
-			$artilheiros['Liga'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->join('jogadors','gols.jogador_id','=','jogadors.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Liga')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
+			$artilheiros['Liga'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Liga')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
 
 			// Copa
 			$copa = App\Partida::where('temporada',$temporada)->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
 
 			// Artilheiros Copa
-			$artilheiros['Copa'] = DB::table('gols')->join('times','gols.time_id','=','times.id')->join('jogadors','gols.jogador_id','=','jogadors.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Copa')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
+			$artilheiros['Copa'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Copa')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
 
 			return view("index", ['temporada' => $temporada, 'classificacao' => $classificacao, 'copa' => $copa, 'times' => $times, 'artilheiros' => $artilheiros, 'contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'lesoes_grafico' => $lesoes_grafico]);
 		} else {
@@ -104,5 +104,6 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get("administracao/temporadas", ['as' => 'administracao.partidas.temporadas', 'uses' => 'PartidaController@temporadas']);
 	Route::get("administracao/temporada_store", ['as' => 'administracao.partidas.temporada_store', 'uses' => 'PartidaController@temporada_store']);
 	Route::get("administracao/indisponiveis", ['as' => 'administracao.partidas.indisponiveis', 'uses' => 'PartidaController@indisponiveis']);
+	Route::get("partidas", ['as' => 'administracao.partidas.partidas', 'uses' => 'PartidaController@partidas']);
 
 });

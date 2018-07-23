@@ -66,8 +66,8 @@
             <?php $count = 1; ?>
             @foreach($classificacao as $key => $value)
             <tr @if($key == count($classificacao)-1) bgcolor="#FFF0F0" @endif @if($key == 0) bgcolor="#F0FFF0" @endif>
-              <td align="center">{!! Html::image('images/times/'.$value['escudo'], $value['nome'], ['style' => 'max-height:50px;']) !!}</td>
-              <td>{{$value['nome']}}</td>
+              <td align="center"><a href="{{ route('administracao.partidas.partidas',['time_id' => $value['id']]) }}">{!! Html::image('images/times/'.$value['escudo'], $value['nome'], ['style' => 'max-height:50px;']) !!}</a></td>
+              <td><a href="{{ route('administracao.partidas.partidas',['time_id' => $value['id']]) }}">{{$value['nome']}}</a></td>
               <td align="center">{{$value['P']}}</td>
               <td align="center">{{$value['J']}}</td>
               <td align="center">{{$value['V']}}</td>
