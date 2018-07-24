@@ -60,7 +60,7 @@
                     <td @if($partida->resultado1 > $partida->resultado2) bgcolor="F0FFF0" @endif @if($partida->resultado1 < $partida->resultado2) bgcolor="FFF0F0" @endif align="center">{!! Html::image('images/times/'.$partida->time1()->escudo, $partida->time1()->nome, ['class' => 'time_img']) !!}</td>
                     <td @if($partida->resultado1 > $partida->resultado2) bgcolor="F0FFF0" @endif @if($partida->resultado1 < $partida->resultado2) bgcolor="FFF0F0" @endif align="right">{{$partida->time1()->nome}}</td>
                     <td @if($partida->resultado1 > $partida->resultado2) bgcolor="F0FFF0" @endif @if($partida->resultado1 < $partida->resultado2) bgcolor="FFF0F0" @endif align="center">{{$partida->resultado1}}</td>
-                    <td align="center">{!! Html::image('images/icons/plus.png', 'Visualizar Resultado') !!}</td>
+                    <td align="center">@if(isset($partida->resultado1) && isset($partida->resultado2)) <a href="javascript:;" onClick="resultado('{{$partida->id}}','{{$partida->time1()->escudo}}','{{$partida->time1()->nome}}','{{$partida->time2()->escudo}}','{{$partida->time2()->nome}}','{{$partida->time1()->id}}','{{$partida->time2()->id}}','{{$partida->resultado1}}','{{$partida->resultado2}}',null,null,'Liga',null,'{{$partida->rodada}}','show')" data-toggle="modal" data-target="#modal_show">{!! Html::image('images/icons/plus.png', 'Visualizar Resultado') !!}</a> @else @if(Auth::user()->isAdmin()) <a href="javascript:;" onClick="resultado('{{$partida->id}}','{{$partida->time1()->escudo}}','{{$partida->time1()->nome}}','{{$partida->time2()->escudo}}','{{$partida->time2()->nome}}','{{$partida->time1()->id}}','{{$partida->time2()->id}}','{{$partida->resultado1}}','{{$partida->resultado2}}',null,null,'Liga',null,'{{$partida->rodada}}','store')" data-toggle="modal" data-target="#modal_store">{!! Html::image('images/icons/plus.png', 'Cadastrar Resultado') !!}</a> @endif @endif</td>
                     <td @if($partida->resultado1 < $partida->resultado2) bgcolor="F0FFF0" @endif @if($partida->resultado1 > $partida->resultado2) bgcolor="FFF0F0" @endif align="center">{{$partida->resultado2}}</td>
                     <td @if($partida->resultado1 < $partida->resultado2) bgcolor="F0FFF0" @endif @if($partida->resultado1 > $partida->resultado2) bgcolor="FFF0F0" @endif align="left">{{$partida->time2()->nome}}</td>
                     <td @if($partida->resultado1 < $partida->resultado2) bgcolor="F0FFF0" @endif @if($partida->resultado1 > $partida->resultado2) bgcolor="FFF0F0" @endif align="center">{!! Html::image('images/times/'.$partida->time2()->escudo, $partida->time2()->nome, ['class' => 'time_img']) !!}</td>
@@ -84,6 +84,7 @@
             <tbody>
                 @foreach($partidas['Copa'] as $partida)
                 <tr>
+                    <?php if($partida->rodada == 1){$texto = 'Ida';}else{$texto = 'Volta';} ?>
                     @if(in_array($partida->ordem,[0,1,2,3]))
                     <td align="center">Quartas de Final</td>
                     @else
@@ -93,13 +94,13 @@
                     <td align="center">Final</td>
                     @endif
                     @endif
-                    <td @if(($partida->resultado1 > $partida->resultado2) || ($partida->penalti1 > $partida->penalti2)) bgcolor="F0FFF0" @endif @if(($partida->resultado1 < $partida->resultado2) || ($partida->penalti1 < $partida->penalti2)) bgcolor="FFF0F0" @endif align="center">{!! Html::image('images/times/'.$partida->time1()->escudo, $partida->time1()->nome, ['class' => 'time_img']) !!}</td>
-                    <td @if(($partida->resultado1 > $partida->resultado2) || ($partida->penalti1 > $partida->penalti2)) bgcolor="F0FFF0" @endif @if(($partida->resultado1 < $partida->resultado2) || ($partida->penalti1 < $partida->penalti2)) bgcolor="FFF0F0" @endif align="right">{{$partida->time1()->nome}}</td>
+                    <td @if(($partida->resultado1 > $partida->resultado2) || ($partida->penalti1 > $partida->penalti2)) bgcolor="F0FFF0" @endif @if(($partida->resultado1 < $partida->resultado2) || ($partida->penalti1 < $partida->penalti2)) bgcolor="FFF0F0" @endif align="center"> @if(isset($partida->time1_id)) {!! Html::image('images/times/'.@$partida->time1()->escudo, @$partida->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
+                    <td @if(($partida->resultado1 > $partida->resultado2) || ($partida->penalti1 > $partida->penalti2)) bgcolor="F0FFF0" @endif @if(($partida->resultado1 < $partida->resultado2) || ($partida->penalti1 < $partida->penalti2)) bgcolor="FFF0F0" @endif align="right">{{@$partida->time1()->nome}}</td>
                     <td @if(($partida->resultado1 > $partida->resultado2) || ($partida->penalti1 > $partida->penalti2)) bgcolor="F0FFF0" @endif @if(($partida->resultado1 < $partida->resultado2) || ($partida->penalti1 < $partida->penalti2)) bgcolor="FFF0F0" @endif align="center">{{$partida->resultado1}} @if(isset($partida->penalti1)) ({{$partida->penalti1}}) @endif</td>
-                    <td align="center">{!! Html::image('images/icons/plus.png', 'Visualizar Resultado') !!}</td>
+                    <td align="center">@if(isset($partida) && isset($partida->time1_id) && isset($partida->time2_id)) @if(Auth::user()->isAdmin() && is_null($partida->resultado1) && is_null($partida->resultado2)) <a href="javascript:;" onClick="resultado('{{$partida->id}}','{{$partida->time1()->escudo}}','{{$partida->time1()->nome}}','{{$partida->time2()->escudo}}','{{$partida->time2()->nome}}','{{$partida->time1()->id}}','{{$partida->time2()->id}}','{{$partida->resultado1}}','{{$partida->resultado2}}','{{$partida->penalti1}}','{{$partida->penalti2}}','Copa',{{$partida->ordem}},'{{$texto}}','store')" data-toggle="modal" data-target="#modal_store">{!! Html::image('images/icons/plus.png', 'Cadastrar Resultado') !!}</a> @else <a href="javascript:;" onClick="resultado('{{$partida->id}}','{{$partida->time1()->escudo}}','{{$partida->time1()->nome}}','{{$partida->time2()->escudo}}','{{$partida->time2()->nome}}','{{$partida->time1()->id}}','{{$partida->time2()->id}}','{{$partida->resultado1}}','{{$partida->resultado2}}','{{$partida->penalti1}}','{{$partida->penalti2}}','Copa',{{$partida->ordem}},'{{$texto}}','show')" data-toggle="modal" data-target="#modal_show">{!! Html::image('images/icons/plus.png', 'Visualizar Resultado') !!}</a> @endif @endif</td>
                     <td @if(($partida->resultado1 < $partida->resultado2) || ($partida->penalti1 < $partida->penalti2)) bgcolor="F0FFF0" @endif @if(($partida->resultado1 > $partida->resultado2) || ($partida->penalti1 > $partida->penalti2)) bgcolor="FFF0F0" @endif align="center">{{$partida->resultado2}} @if(isset($partida->penalti2)) ({{$partida->penalti2}}) @endif</td>
-                    <td @if(($partida->resultado1 < $partida->resultado2) || ($partida->penalti1 < $partida->penalti2)) bgcolor="F0FFF0" @endif @if(($partida->resultado1 > $partida->resultado2) || ($partida->penalti1 > $partida->penalti2)) bgcolor="FFF0F0" @endif align="left">{{$partida->time2()->nome}}</td>
-                    <td @if(($partida->resultado1 < $partida->resultado2) || ($partida->penalti1 < $partida->penalti2)) bgcolor="F0FFF0" @endif @if(($partida->resultado1 > $partida->resultado2) || ($partida->penalti1 > $partida->penalti2)) bgcolor="FFF0F0" @endif align="center">{!! Html::image('images/times/'.$partida->time2()->escudo, $partida->time2()->nome, ['class' => 'time_img']) !!}</td>
+                    <td @if(($partida->resultado1 < $partida->resultado2) || ($partida->penalti1 < $partida->penalti2)) bgcolor="F0FFF0" @endif @if(($partida->resultado1 > $partida->resultado2) || ($partida->penalti1 > $partida->penalti2)) bgcolor="FFF0F0" @endif align="left">{{@$partida->time2()->nome}}</td>
+                    <td @if(($partida->resultado1 < $partida->resultado2) || ($partida->penalti1 < $partida->penalti2)) bgcolor="F0FFF0" @endif @if(($partida->resultado1 > $partida->resultado2) || ($partida->penalti1 > $partida->penalti2)) bgcolor="FFF0F0" @endif align="center"> @if(isset($partida->time2_id)) {!! Html::image('images/times/'.@$partida->time2()->escudo, @$partida->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -108,4 +109,6 @@
 </div>
 @endif
 @endif
+
+@include('template_resultado')
 @endsection

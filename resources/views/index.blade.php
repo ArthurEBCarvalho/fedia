@@ -429,13 +429,13 @@
             ?>
             ]);
 
-          var lesoes = new google.visualization.DataTable();
-          lesoes.addColumn('string', 'Topping');
-          lesoes.addColumn('number', 'Slices');
-          lesoes.addRows([
+          var aproveitamento = new google.visualization.DataTable();
+          aproveitamento.addColumn('string', 'Topping');
+          aproveitamento.addColumn('number', 'Slices');
+          aproveitamento.addRows([
             <?php 
-            foreach ($lesoes_grafico as $value)
-              echo "['".$value->jogador()->nome."', $value->qtd],"
+            foreach ($aproveitamento as $key => $value)
+              echo "['".$key."', $value],"
             ?>
             ]);
 
@@ -444,7 +444,7 @@
           pieChartGol.draw(gols, null);
 
           var pieChartLesao = new google.visualization.PieChart(document.getElementById('pie_chart_div_lesao'));
-          pieChartLesao.draw(lesoes, null);
+          pieChartLesao.draw(aproveitamento, null);
         }
 
         $(document).ready(function(){

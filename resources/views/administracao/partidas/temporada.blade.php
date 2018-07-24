@@ -66,7 +66,7 @@
             <tbody>
                 @foreach($temporadas as $temporada)
                 <tr>
-                    <td>Temporada {{$temporada->numero}}</td>
+                    <td width="125">{{$temporada->numero}}ª Temporada</td>
                     <td>{{@$temporada->liga1()->nome}}</td>
                     <td>{{@$temporada->liga2()->nome}}</td>
                     <td>{{@$temporada->liga3()->nome}}</td>
