@@ -8,6 +8,7 @@ use App\Time;
 use App\Financeiro;
 use App\Jogador;
 use Illuminate\Http\Request;
+use DB;
 
 class TransferenciumController extends Controller {
 
@@ -25,7 +26,7 @@ class TransferenciumController extends Controller {
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
-				$transferencias = \DB::table('transferencias')->join('times time1','time1.id','=','transferencias.time1_id')->join('times time2','time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
+				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
 			}
 			else{
 				switch ($request->filtro) {
@@ -46,11 +47,11 @@ class TransferenciumController extends Controller {
 					break;
 				}
 				// $transferencias = Transferencium::whereRaw($clausure)->havingRaw($having)->orderByRaw($order)->paginate(30);
-				$transferencias = \DB::table('transferencias')->join('times time1','time1.id','=','transferencias.time1_id')->join('times time2','time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->whereRaw($clausure)->orderByRaw($order)->paginate(30);
+				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->whereRaw($clausure)->orderByRaw($order)->paginate(30);
 			}
 		}
 		else
-			$transferencias = \DB::table('transferencias')->join('times time1','time1.id','=','transferencias.time1_id')->join('times time2','time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
+			$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
 		return view('administracao.transferencias.index', ["transferencias" => $transferencias, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
 	}
 

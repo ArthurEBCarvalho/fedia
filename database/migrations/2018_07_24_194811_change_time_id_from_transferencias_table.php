@@ -13,8 +13,8 @@ class ChangeTimeIdFromTransferenciasTable extends Migration
     public function up()
     {
         Schema::table('transferencias', function (Blueprint $table) {
-            $table->integer('time1_id')->change();
-            $table->integer('time2_id')->change();
+            // $table->integer('time1_id')->change();
+            // $table->integer('time2_id')->change();
         });
     }
 
