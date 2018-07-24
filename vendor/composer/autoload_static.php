@@ -319,6 +319,7 @@ class ComposerStaticInitf1a39921c2c519affe51e8b2fba61365
         'ChangeNullableFromTimesTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_09_190533_change_nullable_from_times_table.php',
         'ChangeRestantesFromCartoesTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_120635_change_restantes_from_cartoes_table.php',
         'ChangeTimeFromPartidasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_135701_change_time_from_partidas_table.php',
+        'ChangeTimeIdFromTransferenciasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_24_194811_change_time_id_from_transferencias_table.php',
         'ChangeTimesFromTransferenciasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_04_115314_change_times_from_transferencias_table.php',
         'ChangeTimesStringFromTransferenciasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_04_115920_change_times_string_from_transferencias_table.php',
         'CreateArtilheirosTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_10_121300_create_artilheiros_table.php',

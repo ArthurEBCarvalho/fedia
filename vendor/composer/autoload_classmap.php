@@ -26,6 +26,7 @@ return array(
     'ChangeNullableFromTimesTable' => $baseDir . '/database/migrations/2018_07_09_190533_change_nullable_from_times_table.php',
     'ChangeRestantesFromCartoesTable' => $baseDir . '/database/migrations/2018_07_05_120635_change_restantes_from_cartoes_table.php',
     'ChangeTimeFromPartidasTable' => $baseDir . '/database/migrations/2018_07_05_135701_change_time_from_partidas_table.php',
+    'ChangeTimeIdFromTransferenciasTable' => $baseDir . '/database/migrations/2018_07_24_194811_change_time_id_from_transferencias_table.php',
     'ChangeTimesFromTransferenciasTable' => $baseDir . '/database/migrations/2018_07_04_115314_change_times_from_transferencias_table.php',
     'ChangeTimesStringFromTransferenciasTable' => $baseDir . '/database/migrations/2018_07_04_115920_change_times_string_from_transferencias_table.php',
     'CreateArtilheirosTable' => $baseDir . '/database/migrations/2018_07_10_121300_create_artilheiros_table.php',
