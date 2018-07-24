@@ -8,6 +8,7 @@ use App\Time;
 use App\Financeiro;
 use App\Jogador;
 use Illuminate\Http\Request;
+use DB;
 
 class TransferenciumController extends Controller {
 
@@ -25,25 +26,32 @@ class TransferenciumController extends Controller {
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
-				$transferencias = Transferencium::orderByRaw($order)->paginate(30);
+				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
 			}
 			else{
 				switch ($request->filtro) {
 					case 'data':
-					$valor = date_format(date_create_from_format('d/m/Y', $request->valor), 'Y-m-d');
+					$clausure = "transferencias.created_at between '".date_format(date_create_from_format('d/m/Y', $request->valor), 'Y-m-d')." 00:00:00' and '".date_format(date_create_from_format('d/m/Y', $request->valor), 'Y-m-d')." 23:59:59'";
 					break;
 					case 'valor':
-					$valor = str_replace(",", ".", str_replace(".", "", $request->valor));
+					$clausure = "valor = ".str_replace(",", ".", str_replace(".", "", str_replace("€", "", $request->valor)));
 					break;
-					default:
-					$valor = $request->valor;
+					case 'jogador':
+					$clausure = "jogadors.nome LIKE '%$request->valor%'";
+					break;
+					case 'time1':
+					$clausure = "time1.nome LIKE '%$request->valor%'";
+					break;
+					case 'time2':
+					$clausure = "time2.nome LIKE '%$request->valor%'";
 					break;
 				}
-				$transferencias = Transferencium::where($request->filtro, $valor)->orderByRaw($order)->paginate(30);
+				// $transferencias = Transferencium::whereRaw($clausure)->havingRaw($having)->orderByRaw($order)->paginate(30);
+				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->whereRaw($clausure)->orderByRaw($order)->paginate(30);
 			}
 		}
 		else
-			$transferencias = Transferencium::orderByRaw($order)->paginate(30);
+			$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
 		return view('administracao.transferencias.index', ["transferencias" => $transferencias, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
 	}
 

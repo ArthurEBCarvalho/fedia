@@ -21,8 +21,8 @@
                     <select class="form-control search-filtro" name="filtro">
                         <option>Limpar</option>
                         <option value="descricao" @if ($filtro == "descricao") selected @endif>Descrição</option>
-                        <option value="valor" @if ($filtro == "valor") selected @endif>Valor</option>
                         <option value="operacao" @if ($filtro == "operacao") selected @endif>Operação</option>
+                        <option value="valor" @if ($filtro == "valor") selected @endif>Valor</option>
                     </select>
                     <input type="text" class="form-control search-valor" name="valor" value="{{$valor}}">
                     <span class="input-group-btn">

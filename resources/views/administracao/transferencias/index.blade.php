@@ -106,13 +106,13 @@
                 @foreach($transferencias as $transferencium)
                 <tr>
                     <td>{{date_format(date_create_from_format('Y-m-d H:s:i', $transferencium->created_at), 'd/m/Y')}}</td>
-                    <td>{{$transferencium->jogador()->nome}}</td>
+                    <td>{{$transferencium->jogador}}</td>
                     <td>€ {{number_format($transferencium->valor,2,',','.')}}</td>
-                    <td>{{$transferencium->time1()->nome}}</td>
-                    <td>{{$transferencium->time2()->nome}}</td>
-                    <td class="small" align="center" alt="Deletar Transferencium">
+                    <td>{{$transferencium->time1}}</td>
+                    <td>{{$transferencium->time2}}</td>
+                    <td class="small" align="center" alt="Deletar Transferência">
                         <a onclick="confirm_delete('{{ route('administracao.transferencias.destroy', $transferencium->id) }}')" href="javascript:;" data-toggle="modal" data-target="#confirm_delete">
-                            {!! Html::image("images/icons/delete.png", "Deletar Transferencium") !!}
+                            {!! Html::image("images/icons/delete.png", "Deletar Transferência") !!}
                         </a>
                     </td>
                 </tr>

@@ -27,17 +27,20 @@ class FinanceiroController extends Controller {
 			}
 			else{
 				switch ($request->filtro) {
-					case 'data':
-					$valor = date_format(date_create_from_format('d/m/Y', $request->valor), 'Y-m-d');
-					break;
 					case 'valor':
-					$valor = str_replace(",", ".", str_replace(".", "", $request->valor));
+					$clausure = "valor = ".str_replace(",", ".", str_replace(".", "", $request->valor));
 					break;
-					default:
-					$valor = $request->valor;
+					case 'descricao':
+					$clausure = "descricao LIKE '%$request->valor%'";
+					break;
+					case 'operacao':
+					if(strpos(strtoupper($request->valor), 'EN') !== false)
+						$clausure = "operacao = 0";
+					else
+						$clausure = "operacao = 1";
 					break;
 				}
-				$financeiros = Financeiro::where('time_id',Auth::user()->time()->id)->where($request->filtro, $valor)->orderByRaw($order);
+				$financeiros = Financeiro::whereRaw("time_id = ".Auth::user()->time()->id." and $clausure")->orderByRaw($order);
 			}
 		}
 		else
