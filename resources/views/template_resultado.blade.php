@@ -203,12 +203,12 @@
 
     .chzn-container, .chzn-drop, .chzn-search input { width: 100% !important; }
 
-    #modal_store { overflow-y:scroll;overflow-x:scroll; }
+    #modal_store, #modal_show { overflow-y:scroll;overflow-x:scroll; }
     @media screen and (max-width: 992px) {
-        #modal_store .modal-content { width: 685px; }
-        #modal_store table { width: 640px; }
+        #modal_store .modal-content, #modal_show .modal-content { width: 685px; }
+        #modal_store table, #modal_show table { width: 640px; }
     }
-    #modal_store input { min-width: 60px; }
+    #modal_store input, #modal_show input { min-width: 60px; }
 </style>
 <script type="text/javascript">
     $img_path = "images/times/image.png";
