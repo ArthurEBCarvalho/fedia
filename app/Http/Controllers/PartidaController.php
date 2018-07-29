@@ -199,7 +199,7 @@ class PartidaController extends Controller {
 
 			// Premiação Final da Liga
 			if(!Partida::whereRaw("temporada = $partida->temporada and campeonato = 'Liga' and resultado1 IS NULL and resultado2 IS NULL")->count()){
-				$p = Partida::whereRaw("temporada = $partida->temporada and campeonato = 'Liga' and resultado1 IS NOT NULL && resultado2 IS NOT NULL")->get();
+				$p = Partida::whereRaw("temporada = $partida->temporada and campeonato = 'Liga' and resultado1 IS NOT NULL and resultado2 IS NOT NULL")->get();
 				$t = Time::all()->keyBy('id');
 				$classificacao = [];
 				foreach ($t as $key => $value) {
