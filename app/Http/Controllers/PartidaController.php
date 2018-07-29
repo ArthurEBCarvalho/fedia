@@ -198,8 +198,8 @@ class PartidaController extends Controller {
 			$time2->save();
 
 			// Premiação Final da Liga
-			if(!Partida::where('temporada',$partida->temporada)->where('campeonato','Liga')->whereRaw("resultado1 IS NULL and resultado2 IS NULL")->count()){
-				$p = Partida::where('temporada',$partida->temporada)->where('campeonato','Liga')->whereRaw("resultado1 IS NOT NULL && resultado2 IS NOT NULL")->get();
+			if(!Partida::whereRaw("temporada = $partida->temporada and campeonato = 'Liga' and resultado1 IS NULL and resultado2 IS NULL")->count()){
+				$p = Partida::whereRaw("temporada = $partida->temporada and campeonato = 'Liga' and resultado1 IS NOT NULL && resultado2 IS NOT NULL")->get();
 				$t = Time::all()->keyBy('id');
 				$classificacao = [];
 				foreach ($t as $key => $value) {
@@ -269,7 +269,7 @@ class PartidaController extends Controller {
 				$v7->dinheiro += 500000;
 				$v7->save();
 				Financeiro::create(['valor' => 500000, 'operacao' => 0, 'descricao' => 'Sétimo Lugar da Liga FEDIA', 'time_id' => $v7->id]);
-				$artilheiro = DB::table('gols')->join('times','gols.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,SUM(quantidade) as qtd')->where('temporada',$temporada->id)->where('campeonato','Liga')->groupBy('jogador_id')->orderBy('qtd','DESC')->get();
+				$artilheiro = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,SUM(quantidade) as qtd')->where('temporada',$temporada->id)->where('campeonato','Liga')->groupBy('jogador_id','times.id')->orderBy('qtd','DESC')->get();
 				$t = [];
 				$gols = null;
 				foreach ($artilheiro as $key => $value) {
@@ -299,7 +299,7 @@ class PartidaController extends Controller {
 
 		// Premiação Final da Copa
 		if($partida->campeonato == "Copa" && $partida->ordem == 6){
-			if(!blank($request->penalti1) || !blank($request->penalti2)){
+			if(!blank($request->penalti1) && !blank($request->penalti2)){
 				if($request->penalti1 > $request->penalti2){
 					$v = Time::findOrFail($partida->time1_id);
 					$d = Time::findOrFail($partida->time2_id);
@@ -319,7 +319,7 @@ class PartidaController extends Controller {
 					$temporada->copa2_id = $partida->time2_id;
 				} else {
 					$v = Time::findOrFail($partida->time2_id);
-					$d = Time::findOrFail($partida->time2_id);
+					$d = Time::findOrFail($partida->time1_id);
 					$temporada->copa1_id = $partida->time2_id;
 					$temporada->copa2_id = $partida->time1_id;
 				}
@@ -331,7 +331,7 @@ class PartidaController extends Controller {
 			$d->save();
 			Financeiro::create(['valor' => 10000000, 'operacao' => 0, 'descricao' => 'Vice Campeão da Copa FEDIA', 'time_id' => $d->id]);
 
-			$artilheiro = DB::table('gols')->join('times','gols.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,SUM(quantidade) as qtd')->where('temporada',$temporada->id)->where('campeonato','Copa')->groupBy('jogador_id')->orderBy('qtd','DESC')->get();
+			$artilheiro = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,SUM(quantidade) as qtd')->where('temporada',$temporada->id)->where('campeonato','Copa')->groupBy('jogador_id','times.id')->orderBy('qtd','DESC')->get();
 			$t = [];
 			$gols = null;
 			foreach ($artilheiro as $key => $value) {
