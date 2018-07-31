@@ -27,8 +27,8 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('/', function () {
 		$temporada = App\Partida::all()->max('temporada');
 		$contratacoes = App\Financeiro::selectRaw('valor, SUBSTRING(descricao, 25, CHAR_LENGTH(descricao)-25) as nome')->where('time_id',Auth::user()->time()->id)->where('descricao','LIKE','%Contratação de Jogador%')->orderBy('id','DESC')->limit(5)->get();
-		$cartoes = App\Cartao::selectRaw('jogador_id,cor,campeonato,COUNT(*) as qtd')->where('time_id',Auth::user()->time()->id)->where('cumprido',0)->groupBy('jogador_id','cor','campeonato')->get();
-		$lesoes = App\Lesao::selectRaw('jogador_id,restantes')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->get();
+		$cartoes = App\Cartao::selectRaw('jogador_id,cor,campeonato,COUNT(*) as qtd')->where('time_id',Auth::user()->time()->id)->where('cumprido',0)->where('campeonato','!=','Amistoso')->where('temporada',$temporada)->groupBy('jogador_id','cor','campeonato')->get();
+		$lesoes = App\Lesao::selectRaw('jogador_id,restantes')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->where('restantes','!=',0)->get();
 		$gols = App\Gol::selectRaw('jogador_id,SUM(quantidade) as qtd')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
 		// $lesoes_grafico = App\Lesao::selectRaw('jogador_id,SUM(rodadas) as qtd')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
 		$aproveitamento = ['Vitória' => 0, 'Empate' => 0, 'Derrota' => 0];
@@ -124,16 +124,18 @@ Route::group(['middleware' => 'auth'], function() {
 
 Route::resource("administracao/users","UserController");
 Route::resource("times","TimeController");
-Route::resource("administracao/transferencias","TransferenciumController");
-Route::resource("administracao/partidas","PartidaController");
+Route::resource("transferencias","TransferenciumController");
+Route::resource("partidas","PartidaController");
 Route::resource("financeiros","FinanceiroController");
+Route::resource("amistosos","AmistosoController");
 
 Route::get('user_verificar_password', 'UserController@verificar_senha');
 Route::get('user_verificar_login', 'UserController@verificar_login');
 
-Route::get("administracao/temporadas", ['as' => 'administracao.partidas.temporadas', 'uses' => 'PartidaController@temporadas']);
-Route::get("administracao/temporada_store", ['as' => 'administracao.partidas.temporada_store', 'uses' => 'PartidaController@temporada_store']);
-Route::get("administracao/indisponiveis", ['as' => 'administracao.partidas.indisponiveis', 'uses' => 'PartidaController@indisponiveis']);
-Route::get("partidas", ['as' => 'administracao.partidas.partidas', 'uses' => 'PartidaController@partidas']);
+Route::get("partidas_temporadas", ['as' => 'partidas.temporadas', 'uses' => 'PartidaController@temporadas']);
+Route::get("partidas_temporada_store", ['as' => 'partidas.temporada_store', 'uses' => 'PartidaController@temporada_store']);
+Route::post("partidas_temporada_fotos", ['as' => 'partidas.temporada_fotos', 'uses' => 'PartidaController@temporada_fotos']);
+Route::get("indisponiveis", ['as' => 'partidas.indisponiveis', 'uses' => 'PartidaController@indisponiveis']);
+Route::get("partidas_time", ['as' => 'partidas.partidas', 'uses' => 'PartidaController@partidas']);
 
 });

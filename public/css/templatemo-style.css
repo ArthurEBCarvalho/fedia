@@ -33,7 +33,7 @@ a:hover { text-decoration: none; }
 nav li {
 	font-size: 1.1em;
 	list-style: none;	
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
 }
 .templatemo-inline-block {
 	display: inline-block;

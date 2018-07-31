@@ -33,11 +33,13 @@
                 </div>
             </form>
         </div>
+        @if(Auth::user()->isAdmin())
         <div class="col-md-4 col-sm-12 form-group">
             <div class="pull-right">
-                <div class="pull-right"><a href="{{ route('administracao.transferencias.create') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Nova {{substr_replace("Transferências", "", -1)}}</a></div>
+                <div class="pull-right"><a href="{{ route('transferencias.create') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Nova {{substr_replace("Transferências", "", -1)}}</a></div>
             </div>
         </div>
+        @endif
     </div>
 </div>
 
@@ -98,7 +100,7 @@
                     @endif
                     @endif
 
-                    <th></th>
+                    @if(Auth::user()->isAdmin())<th></th>@endif
                 </tr>
             </thead>
 
@@ -110,11 +112,13 @@
                     <td>€ {{number_format($transferencium->valor,2,',','.')}}</td>
                     <td>{{$transferencium->time1}}</td>
                     <td>{{$transferencium->time2}}</td>
+                    @if(Auth::user()->isAdmin())
                     <td class="small" align="center" alt="Deletar Transferência">
-                        <a onclick="confirm_delete('{{ route('administracao.transferencias.destroy', $transferencium->id) }}')" href="javascript:;" data-toggle="modal" data-target="#confirm_delete">
+                        <a onclick="confirm_delete('{{ route('transferencias.destroy', $transferencium->id) }}')" href="javascript:;" data-toggle="modal" data-target="#confirm_delete">
                             {!! Html::image("images/icons/delete.png", "Deletar Transferência") !!}
                         </a>
                     </td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>

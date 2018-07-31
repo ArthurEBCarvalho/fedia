@@ -50,23 +50,20 @@
 				<ul>
 					<li><a href="/" class="@if(Request::is('/')) active @endif"><i class="fa fa-home fa-fw"></i>Início</a></li>
 					<li><a href="/financeiros" class="@if(Request::is('financeiros*')) active @endif"><i class="fa fa-money fa-fw"></i>Histórico Financeiro</a></li>
-					<li><a href="/partidas" class="@if(Request::is('partidas*')) active @endif"><i class="fa fa-list-alt fa-fw"></i>Partidas</a></li>
+					<li><a href="/partidas_time" class="@if(Request::is('partidas_time*')) active @endif"><i class="fa fa-list-alt fa-fw"></i>Partidas</a></li>
+					<li><a href="/transferencias" class="@if(Request::is('transferencias')) active @endif"><i class="fa fa-money fa-fw"></i>Transferências</a></li>
+					<li><a href="/amistosos" class="@if(Request::is('amistosos')) active @endif"><i class="fa fa-angellist fa-fw"></i>Amistosos</a></li>
+					<li><a href="/partidas?tipo=liga" class="@if(Request::is('partidas') && @$tipo == 'liga') active @endif"><i class="fa fa-gamepad fa-fw"></i>Liga FEDIA</a></li>
+					<li><a href="/partidas?tipo=copa" class="@if(Request::is('partidas') && @$tipo == 'copa') active @endif"><i class="fa fa-gamepad fa-fw"></i>Copa FEDIA</a></li>
+					<li><a href="/partidas_temporadas" class="@if(Request::is('partidas_temporadas')) active @endif"><i class="fa fa-list fa-fw"></i>Temporadas</a></li>
+					<li><a href="/indisponiveis" class="@if(Request::is('indisponiveis')) active @endif"><i class="fa fa-ambulance fa-fw"></i>Cartões e Lesões</a></li>
 					@if(Auth::user()->isAdmin())
 					<li class="submenu">
 						<a href="#"><i class="fa fa-user-secret"></i> Administração <i class="caret-down fa fa-arrow-circle-down"></i></a>
 						<ul>
 							<li><a href="/administracao/users" class="@if(Request::is('administracao/users')) active @endif"><i class="fa fa-users fa-fw"></i>Usuários</a></li>
-							<li><a href="/administracao/transferencias" class="@if(Request::is('administracao/transferencias')) active @endif"><i class="fa fa-money fa-fw"></i>Transferências</a></li>
-							<li><a href="/administracao/partidas?tipo=liga" class="@if(Request::is('administracao/partidas') && $tipo == 'liga') active @endif"><i class="fa fa-gamepad fa-fw"></i>Liga FEDIA</a></li>
-							<li><a href="/administracao/partidas?tipo=copa" class="@if(Request::is('administracao/partidas') && $tipo == 'copa') active @endif"><i class="fa fa-gamepad fa-fw"></i>Copa FEDIA</a></li>
-							<li><a href="/administracao/temporadas" class="@if(Request::is('administracao/temporadas')) active @endif"><i class="fa fa-list fa-fw"></i>Temporadas</a></li>
-							<li><a href="/administracao/indisponiveis" class="@if(Request::is('administracao/indisponiveis')) active @endif"><i class="fa fa-ambulance fa-fw"></i>Cartões e Lesões</a></li>
 						</ul>
 					</li>
-					@else
-					<li><a href="/administracao/partidas?tipo=liga" class="@if(Request::is('administracao/partidas') && $tipo == 'liga') active @endif"><i class="fa fa-gamepad fa-fw"></i>Liga FEDIA</a></li>
-					<li><a href="/administracao/partidas?tipo=copa" class="@if(Request::is('administracao/partidas') && $tipo == 'copa') active @endif"><i class="fa fa-gamepad fa-fw"></i>Copa FEDIA</a></li>
-					<li><a href="/administracao/indisponiveis" class="@if(Request::is('administracao/indisponiveis')) active @endif"><i class="fa fa-ambulance fa-fw"></i>Cartões e Lesões</a></li>
 					@endif
 					<li><a href="javascript:;" data-toggle="modal" data-target="#confirmModal"><i class="fa fa-eject fa-fw"></i>Sair</a></li>
 				</ul>  

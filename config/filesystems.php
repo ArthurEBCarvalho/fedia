@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'cloud' => 's3',
+    'cloud' => 'public',
 
     /*
     |--------------------------------------------------------------------------
@@ -60,6 +60,11 @@ return [
             'secret' => 'your-secret',
             'region' => 'your-region',
             'bucket' => 'your-bucket',
+        ],
+
+        'public_temporadas' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/images/temporadas',
         ],
 
     ],

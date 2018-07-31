@@ -2,15 +2,15 @@
 <div class="modal fade" id="modal_store" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            {!! Form::open(['route' => 'administracao.partidas.store', 'method' => 'post', 'class' => 'form-horizontal']) !!}
+            {!! Form::open(['route' => 'partidas.store', 'method' => 'post', 'class' => 'form-horizontal']) !!}
             <input type="hidden" id="partida_id" name="partida_id">
             <input type="hidden" id="campeonato" name="campeonato">
             <input type="hidden" id="temporada" name="temporada" value="{{@$temporada}}">
             <input type="hidden" id="rodada" name="rodada">
-            @if(Request::is('administracao*'))
-            <input type="hidden" id="view" name="view" value="administracao.partidas.index">
+            @if(Request::is('partidas_time*'))
+            <input type="hidden" id="view" name="view" value="partidas.partidas">
             @else
-            <input type="hidden" id="view" name="view" value="administracao.partidas.partidas">
+            <input type="hidden" id="view" name="view" value="partidas.index">
             @endif
             <div class="modal-header">
                 <h4 class="modal-title"></h4>
@@ -100,9 +100,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="3">{!! Form::select('lesoes_jogador1[]', [], null, ['class' => 'chzn-select time1 lesao form-control store']) !!}</td>
+                            <td colspan="2">{!! Form::select('lesoes_jogador1[]', [], null, ['class' => 'chzn-select time1 lesao form-control store']) !!}</td>
+                            <td>{!! Form::select('lesoes_tipo1[]', ['Band-Aid','Ambulância'], null, ['class' => 'form-control', 'style' => 'padding:0;']) !!}</td>
                             <td></td>
-                            <td colspan="3">{!! Form::select('lesoes_jogador2[]', [], null, ['class' => 'chzn-select time2 lesao form-control store']) !!}</td>
+                            <td>{!! Form::select('lesoes_tipo2[]', ['Band-Aid','Ambulância'], null, ['class' => 'form-control', 'style' => 'padding:0;']) !!}</td>
+                            <td colspan="2">{!! Form::select('lesoes_jogador2[]', [], null, ['class' => 'chzn-select time2 lesao form-control store']) !!}</td>
                             <td>{!! Html::image('images/icons/plus.png', 'add_linha', ['class' => 'add_linha', 'onClick' => 'add_linha(this)']) !!}</td>
                         </tr>
                     </tbody>
@@ -244,11 +246,20 @@
     }
     ?>
 
-    function resultado(id,img1,time1,img2,time2,id1,id2,resultado1,resultado2,penalti1,penalti2,campeonato,ordem,rodada,tipo){
-        if(campeonato == "Copa" && (rodada == "Volta" || ordem == 6))
+    function resultado(id,img1,time1,img2,time2,id1,id2,resultado1,resultado2,penalti1,penalti2,campeonato,ordem,rodada,tipo,time12,time22){
+        if(campeonato == "Amistoso"){
+            $("#modal_store form").attr('action','{{Request::root()}}/amistosos/'+id);
+            $("#modal_store form").append('<input name="_method" type="hidden" value="PUT">');
             $(".penaltis").show();
-        else
-            $(".penaltis").hide();
+            $("#modal_store .body-title").html('Amistoso');
+            $("#modal_show .body-title").html('Amistoso');
+        } else {
+            $("#modal_store form").attr('action','{{Request::root()}}/partidas');
+            if(campeonato == "Copa" && (rodada == "Volta" || ordem == 6))
+                $(".penaltis").show();
+            else
+                $(".penaltis").hide();
+        }
         $("#partida_id").val(id);
         $("#campeonato").val(campeonato);
         $(".resultado").val(0);
@@ -261,6 +272,10 @@
         $array[$array.length-1] = img2;
         $(".img_2").attr('src',"{{Request::root()}}/"+$array.join('/'));
         $(".time_2").html(time2);
+        if(time12 != null && time22 != null){
+            $(".time_1").html($(".time_1").html()+" e "+time12);
+            $(".time_2").html($(".time_2").html()+" e "+time22);
+        }
         if(tipo == 'show'){
             $("#modal_show").find('.modal-title').html('Visualizar Resultado da '+campeonato+' FEDIA');
             if(campeonato == 'Copa'){
@@ -271,7 +286,7 @@
                 else
                     $message = 'Final';
                 $("#modal_show").find('.body-title').html($message);
-            } else {
+            } else if(campeonato == 'Liga') {
                 $("#modal_show").find('.body-title').html('Rodada '+rodada);
             }
             $("#modal_show").find('tbody#gols').html('');
@@ -370,7 +385,7 @@
                 else
                     $message = 'Final';
                 $("#modal_store").find('.body-title').html($message);
-            } else {
+            } else if(campeonato == 'Liga') {
                 $("#modal_store").find('.body-title').html('Rodada '+rodada);
             }
             $("#modal_store").find('select.chzn-select > option').remove();

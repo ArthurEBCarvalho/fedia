@@ -66,8 +66,8 @@
             <?php $count = 1; ?>
             @foreach($classificacao as $key => $value)
             <tr @if($key == count($classificacao)-1) bgcolor="#FFF0F0" @endif @if($key == 0) bgcolor="#F0FFF0" @endif>
-              <td align="center"><a href="{{ route('administracao.partidas.partidas',['time_id' => $value['id']]) }}">{!! Html::image('images/times/'.$value['escudo'], $value['nome'], ['style' => 'max-height:50px;']) !!}</a></td>
-              <td><a href="{{ route('administracao.partidas.partidas',['time_id' => $value['id']]) }}">{{$value['nome']}}</a></td>
+              <td align="center"><a href="{{ route('partidas.partidas',['time_id' => $value['id']]) }}">{!! Html::image('images/times/'.$value['escudo'], $value['nome'], ['style' => 'max-height:50px;']) !!}</a></td>
+              <td><a href="{{ route('partidas.partidas',['time_id' => $value['id']]) }}">{{$value['nome']}}</a></td>
               <td align="center">{{$value['P']}}</td>
               <td align="center">{{$value['J']}}</td>
               <td align="center">{{$value['V']}}</td>
@@ -84,7 +84,7 @@
       </div>                          
     </div>
   </div>
-  <div class="col-3">
+  <div class="col-2">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
       <i class="fa fa-times"></i>
       <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Artilharia da Liga - Temporada {{$temporada}}</h2></div>
@@ -353,7 +353,7 @@
       </div>                          
     </div>
   </div>
-  <div class="col-3">
+  <div class="col-2">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
       <i class="fa fa-times"></i>
       <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Artilharia da Copa - Temporada {{$temporada}}</h2></div>
@@ -395,7 +395,7 @@
           <div id="pie_chart_div_gol" class="templatemo-chart"></div> <!-- Pie chart div -->
         </div>
         <div class="col-1 col-lg-4 col-md-12">
-          <h2 class="text-center">Lesões na Temporada {{$temporada}}</h2>
+          <h2 class="text-center">Aproveitamento na Temporada {{$temporada}}</h2>
           <div id="pie_chart_div_lesao" class="templatemo-chart"></div> <!-- Pie chart div -->
         </div>
       </div>                

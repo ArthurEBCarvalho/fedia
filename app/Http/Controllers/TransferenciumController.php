@@ -52,7 +52,7 @@ class TransferenciumController extends Controller {
 		}
 		else
 			$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
-		return view('administracao.transferencias.index', ["transferencias" => $transferencias, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
+		return view('transferencias.index', ["transferencias" => $transferencias, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
 	}
 
 	/**
@@ -70,7 +70,7 @@ class TransferenciumController extends Controller {
 				$jogadores[$value->time_id] = [];
 			$jogadores[$value->time_id][] = $value;
 		}
-		return view('administracao.transferencias.form', ["transferencium" => $transferencium, "url" => "administracao.transferencias.store", "method" => "post", "times" => $times, "jogadores" => $jogadores]);
+		return view('transferencias.form', ["transferencium" => $transferencium, "url" => "transferencias.store", "method" => "post", "times" => $times, "jogadores" => $jogadores]);
 	}
 
 	/**
@@ -109,7 +109,7 @@ class TransferenciumController extends Controller {
 			$time2->save();
 			Financeiro::create(['valor' => floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor")))), 'operacao' => 1, 'descricao' => 'Contratação de Jogador ('.$jogador->nome.')', 'time_id' => $time2->id]);
 		}
-		return redirect()->route('administracao.transferencias.index')->with('message', 'Transferência cadastrada com sucesso!');
+		return redirect()->route('transferencias.index')->with('message', 'Transferência cadastrada com sucesso!');
 	}
 
 	/**
@@ -122,7 +122,7 @@ class TransferenciumController extends Controller {
 	{
 		$transferencium = Transferencium::findOrFail($id);
 		$times = Time::lists('nome','id')->all();
-		return view('administracao.transferencias.form', ["transferencium" => $transferencium, "url" => "administracao.transferencias.update", "method" => "put", "times" => $times]);
+		return view('transferencias.form', ["transferencium" => $transferencium, "url" => "transferencias.update", "method" => "put", "times" => $times]);
 	}
 
 	/**
@@ -140,7 +140,7 @@ class TransferenciumController extends Controller {
 		$transferencium->time1 = $request->input("time1");
 		$transferencium->time2 = $request->input("time2");
 		$transferencium->save();
-		return redirect()->route('administracao.transferencias.index')->with('message', 'Transferência atualizada com sucesso!');
+		return redirect()->route('transferencias.index')->with('message', 'Transferência atualizada com sucesso!');
 	}
 
 	/**
@@ -168,7 +168,7 @@ class TransferenciumController extends Controller {
 			Financeiro::where('descricao',"Contratação de Jogador ($jogador->nome)")->where('time_id',$time2->id)->delete();
 		}
 		$transferencium->delete();
-		return redirect()->route('administracao.transferencias.index')->with('message', 'Transferência deletado com sucesso!');
+		return redirect()->route('transferencias.index')->with('message', 'Transferência deletado com sucesso!');
 	}
 
 }
