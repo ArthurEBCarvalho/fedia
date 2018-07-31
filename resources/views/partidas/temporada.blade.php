@@ -113,8 +113,9 @@
             <div class="iso-box-wrapper col4-iso-box">
                 @foreach($temporadas as $temporada)
                 @foreach(explode('|',$temporada->fotos) as $foto)
+                <?php if(blank($foto)){continue;} ?>
                 <div class="iso-box temporada{{$temporada->id}} col-md-3 col-sm-6 col-xs-6">
-                    <a href="images/temporadas/{{$temporada->id}}/{{$foto}}" data-lightbox-gallery="portfolio-all">{!! Html::image("images/temporadas/$temporada->id/$foto", '$foto') !!}</a>
+                    <a href="images/temporadas/{{$temporada->id}}/{{$foto}}" data-lightbox-gallery="portfolio-all">{!! Html::image("images/temporadas/$temporada->id/$foto", $foto) !!}</a>
                 </div>
                 @endforeach
                 @endforeach
@@ -223,6 +224,7 @@
 </style>
 
 <link href="/css/nivo-lightbox.css" rel="stylesheet">
+<link href="css/nivo_themes/default/default.css" rel="stylesheet">
 <script src="/js/isotope.js"></script>
 <script src="/js/nivo-lightbox.min.js"></script>
 <script src="/js/imagesloaded.min.js"></script>
