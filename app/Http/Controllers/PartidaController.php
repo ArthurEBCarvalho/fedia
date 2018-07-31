@@ -448,7 +448,7 @@ class PartidaController extends Controller {
 	 */
 	public function temporadas(Request $request)
 	{
-		$temporadas = Temporada::orderBy('numero');
+		$temporadas = Temporada::orderBy('numero')->get();
 		(strpos($request->fullUrl(),'order=')) ? $param = $request->order : $param = null;
 		(strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
 		(strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
