@@ -13,7 +13,7 @@ class AddFotosToTemporadasTable extends Migration
     public function up()
     {
         Schema::table('temporadas', function (Blueprint $table) {
-            $table->text('fotos');
+            $table->text('fotos')->nullable();
         });
     }
 
