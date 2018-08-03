@@ -29,7 +29,7 @@
             <div class="input-group">
                 <input type="text" id="url" class="form-control" name="url" value="{{Request::root()}}/noticia/{{$noticium->id}}" readonly>
                 <span class="input-group-btn">
-                    <button id="btn-copiar" class="btn btn-info" data-toggle="tooltip" data-placement="right" title="URL copiada com sucesso!"><i class="fa fa-copy"></i> Copiar</button>
+                <button id="btn-copiar" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="URL copiada com sucesso!"><i class="fa fa-copy"></i> Copiar</button>
                 </span>
             </div>
         </div>
