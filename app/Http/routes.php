@@ -128,6 +128,7 @@ Route::resource("transferencias","TransferenciumController");
 Route::resource("partidas","PartidaController");
 Route::resource("financeiros","FinanceiroController");
 Route::resource("amistosos","AmistosoController");
+Route::resource("noticias","NoticiumController");
 
 Route::get('user_verificar_password', 'UserController@verificar_senha');
 Route::get('user_verificar_login', 'UserController@verificar_login');

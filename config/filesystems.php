@@ -67,6 +67,11 @@ return [
             'root'   => public_path() . '/images/temporadas',
         ],
 
+        'public_noticias' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/images/noticias',
+        ],
+
     ],
 
 ];

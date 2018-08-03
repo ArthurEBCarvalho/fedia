@@ -49,6 +49,7 @@
 			<nav class="templatemo-left-nav">          
 				<ul>
 					<li><a href="/" class="@if(Request::is('/')) active @endif"><i class="fa fa-home fa-fw"></i>Início</a></li>
+					<li><a href="/noticias" class="@if(Request::is('noticias*')) active @endif"><i class="fa fa-newspaper-o fa-fw"></i>Notícias</a></li>
 					<li><a href="/financeiros" class="@if(Request::is('financeiros*')) active @endif"><i class="fa fa-money fa-fw"></i>Histórico Financeiro</a></li>
 					<li><a href="/partidas_time" class="@if(Request::is('partidas_time*')) active @endif"><i class="fa fa-list-alt fa-fw"></i>Partidas</a></li>
 					<li><a href="/transferencias" class="@if(Request::is('transferencias')) active @endif"><i class="fa fa-money fa-fw"></i>Transferências</a></li>

@@ -18,7 +18,7 @@
 
 <div class="templatemo-content-widget white-bg">
     <h2 class="margin-bottom-10">
-    Novo {{substr_replace("Amistosos", "", -1)}}</h5>
+    Novo {{substr_replace("Amistosos", "", -1)}}
     </h2>
 
     {!! Form::open(['route' => 'amistosos.store', 'method' => 'post', 'class' => 'form-horizontal']) !!}

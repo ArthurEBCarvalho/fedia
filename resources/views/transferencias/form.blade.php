@@ -18,7 +18,7 @@
 
 <div class="templatemo-content-widget white-bg">
     <h2 class="margin-bottom-10">
-        Nova {{substr_replace("Transferências", "", -1)}}</h5>
+        Nova {{substr_replace("Transferências", "", -1)}}
     </h2>
 
     {!! Form::open(['route' => [$url, $transferencium->id], 'method' => $method, 'class' => 'form-horizontal']) !!}
