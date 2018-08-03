@@ -8,6 +8,7 @@ use App\Time;
 use Illuminate\Http\Request;
 use File;
 use Storage;
+use Auth;
 
 class NoticiumController extends Controller {
 
@@ -52,8 +53,7 @@ class NoticiumController extends Controller {
 	public function create()
 	{
 		$noticium = new Noticium();
-		$times = Time::where('nome','!=','Mercado Externo')->orderBy('nome')->lists('nome','id')->all();
-		return view('noticias.form', ["noticium" => $noticium, "url" => "noticias.store", "method" => "post", "times" => $times]);
+		return view('noticias.form', ["noticium" => $noticium, "url" => "noticias.store", "method" => "post"]);
 	}
 
 	/**
@@ -68,7 +68,7 @@ class NoticiumController extends Controller {
 		$noticium->titulo = $request->input("titulo");
 		$noticium->subtitulo = $request->input("subtitulo");
 		$noticium->conteudo = $request->input("conteudo");
-		$noticium->time_id = $request->input("time_id");
+		$noticium->time_id = Auth::user()->time()->id;
 		// Imagem de Anexo
 		$path = public_path()."/images/noticias/$noticium->id";
 		if(!File::exists($path))

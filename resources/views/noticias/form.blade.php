@@ -46,12 +46,6 @@
             {!! Form::file('imagem', ['class' => 'filestyle', 'data-placeholder' => $noticium->imagem]) !!}
         </div>
     </div>
-    <div class="row form-group">
-        <div class="col-md-12">
-            {!! Html::decode(Form::label('time_id', 'Time <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
-            {!! Form::select('time_id', $times, $noticium->time_id, ['class' => 'chzn-select form-control']) !!}
-        </div>
-    </div>
     <div class="form-group text-right">
         <button type="submit" class="templatemo-blue-button"><i class="fa fa-plus"></i> Salvar</button>
         <a class="templatemo-white-button" href="{{ route('noticias.index') }}"><i class="fa fa-arrow-left"></i> Voltar</a>
