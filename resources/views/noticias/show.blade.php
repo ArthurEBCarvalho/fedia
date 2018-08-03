@@ -6,12 +6,12 @@
     <div class="row">
         <div class="col-md-2 col-sm-0 col-xs-0"></div>
         <div class="col-md-8 col-sm-12 col-xs-12">
-            <h1 class="margin-bottom-10">
+            <h2 class="margin-bottom-10">
                 {{$noticium->titulo}}
-            </h1>
-            <h3 class="margin-bottom-10">
+            </h2>
+            <h5 class="margin-bottom-10">
                 {{$noticium->subtitulo}}
-            </h3>
+            </h5>
             <div class="row margin-bottom-10">
                 <div class="col-md-2 col-sm-0 col-xs-0"></div>
                 <div class="col-md-8 col-sm-12 col-xs-12">
@@ -20,7 +20,9 @@
                 <div class="col-md-2 col-sm-0 col-xs-0"></div>
             </div>
             <hr>
-            <?=$noticium->conteudo?>
+            <div class="conteudo">
+                <?=$noticium->conteudo?>
+            </div>
         </div>
         <div class="col-md-2 col-sm-0 col-xs-0"></div>
     </div>
@@ -28,10 +30,11 @@
 </div>
 
 <style type="text/css">
-    h1, h3 {font-weight: bold;text-align: center;}
-    h1 { color: #39ADB4; }
-    h3, p { color: #7f7f7f; }
+    h2, h5 {font-weight: bold;text-align: center;}
+    h2 { color: #39ADB4; }
+    h5, .conteudo { color: #7f7f7f; }
     img {width: 100%;}
-    p { font-size: 14px; }
+    .conteudo { font-size: 14px; }
+    .conteudo ul { list-style-type: disc;margin-top: 0;margin-bottom: 10px;padding: 0 0 0 40px; }
 </style>
 @endsection

@@ -43,6 +43,7 @@
 				<div class="profile-photo-overlay"></div>
 			</div>       -->
 			<!-- Search box -->
+			@if(Auth::check())
 			<div class="mobile-menu-icon">
 				<i class="fa fa-bars"></i>
 			</div>
@@ -69,9 +70,11 @@
 					<li><a href="javascript:;" data-toggle="modal" data-target="#confirmModal"><i class="fa fa-eject fa-fw"></i>Sair</a></li>
 				</ul>  
 			</nav>
+			@endif
 		</div>
 		<!-- Main content --> 
 		<div class="templatemo-content col-1 light-gray-bg">
+			@if(Auth::check())
 			<div class="templatemo-top-nav-container">
 				<div class="row">
 					<nav class="templatemo-top-nav col-lg-8 col-md-8 col-xs-12 form-group">
@@ -83,6 +86,7 @@
 					<div class="col-md-4 col-xs-12 user_online"><span>Olá {{ Auth::user()->nome }}!</span></div>
 				</div>
 			</div>
+			@endif
 			<div class="templatemo-content-container">
 				@yield('content')
 				<footer class="text-right">

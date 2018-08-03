@@ -25,12 +25,12 @@ Route::post('auth/login', 'Auth\AuthController@postLogin');
 
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/', function () {
+		$noticias = App\Noticium::join('times','noticias.time_id','=','times.id')->select('noticias.id','noticias.titulo','noticias.subtitulo','noticias.imagem','noticias.created_at','times.nome')->orderBy('id','DESC')->limit(3)->get();
 		$temporada = App\Partida::all()->max('temporada');
 		$contratacoes = App\Financeiro::selectRaw('valor, SUBSTRING(descricao, 25, CHAR_LENGTH(descricao)-25) as nome')->where('time_id',Auth::user()->time()->id)->where('descricao','LIKE','%Contratação de Jogador%')->orderBy('id','DESC')->limit(5)->get();
 		$cartoes = App\Cartao::selectRaw('jogador_id,cor,campeonato,COUNT(*) as qtd')->where('time_id',Auth::user()->time()->id)->where('cumprido',0)->where('campeonato','!=','Amistoso')->where('temporada',$temporada)->groupBy('jogador_id','cor','campeonato')->get();
 		$lesoes = App\Lesao::selectRaw('jogador_id,restantes')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->where('restantes','!=',0)->get();
 		$gols = App\Gol::selectRaw('jogador_id,SUM(quantidade) as qtd')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
-		// $lesoes_grafico = App\Lesao::selectRaw('jogador_id,SUM(rodadas) as qtd')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
 		$aproveitamento = ['Vitória' => 0, 'Empate' => 0, 'Derrota' => 0];
 		// Liga
 		if(isset($temporada)){
@@ -115,9 +115,9 @@ Route::group(['middleware' => 'auth'], function() {
 			// Artilheiros Copa
 			$artilheiros['Copa'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Copa')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
 
-			return view("index", ['temporada' => $temporada, 'classificacao' => $classificacao, 'copa' => $copa, 'times' => $times, 'artilheiros' => $artilheiros, 'contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'aproveitamento' => $aproveitamento]);
+			return view("index", ['temporada' => $temporada, 'classificacao' => $classificacao, 'copa' => $copa, 'times' => $times, 'artilheiros' => $artilheiros, 'contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'noticias' => $noticias, 'aproveitamento' => $aproveitamento]);
 		} else {
-			return view("index", ['contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'lesoes_grafico' => $lesoes_grafico]);
+			return view("index", ['contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'noticias' => $noticias, 'lesoes_grafico' => $lesoes_grafico]);
 		}
 
 	});
@@ -140,3 +140,5 @@ Route::get("indisponiveis", ['as' => 'partidas.indisponiveis', 'uses' => 'Partid
 Route::get("partidas_time", ['as' => 'partidas.partidas', 'uses' => 'PartidaController@partidas']);
 
 });
+
+Route::get("noticia/{id}","NoticiumController@show");

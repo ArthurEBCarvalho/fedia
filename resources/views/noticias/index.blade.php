@@ -47,16 +47,18 @@
         <a href="/noticias/{{$noticia->id}}">
             <div class="noticia">
                 <div class="row">
+                    @if(!is_null($noticia->imagem))
                     <div class="col-md-2 col-sm-12 col-xs-12">
                         {!! Html::image("images/noticias/$noticia->id/$noticia->imagem", $noticia->imagem) !!}
                     </div>
-                    <div class="col-md-6 col-sm-12 col-xs-12">
+                    @endif
+                    <div class="col-md-8 col-sm-12 col-xs-12">
                         <h2>{{$noticia->titulo}}</h2>
                     </div>
-                    <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="col-md-8 col-sm-12 col-xs-12">
                         <h5>{{$noticia->subtitulo}}</h5>
                     </div>
-                    <div class="col-md-6 col-sm-12 col-xs-12 footer">
+                    <div class="col-md-8 col-sm-12 col-xs-12 footer">
                         <p>{{date_format(date_create_from_format('Y-m-d H:s:i', $noticia->created_at), 'd/m/Y H:s:i')}} - {{$noticia->nome}}</p>
                     </div>
                 </div>
