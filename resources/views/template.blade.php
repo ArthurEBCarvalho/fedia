@@ -20,6 +20,7 @@
 
 <!-- jQuery -->
 <script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

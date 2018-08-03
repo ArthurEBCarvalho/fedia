@@ -48,7 +48,7 @@
             <div class="noticia">
                 <div class="row">
                     @if(!is_null($noticia->imagem))
-                    <div class="col-md-2 col-sm-12 col-xs-12">
+                    <div class="col-md-2 col-sm-12 col-xs-12 margin-bottom-10">
                         {!! Html::image("images/noticias/$noticia->id/$noticia->imagem", $noticia->imagem) !!}
                     </div>
                     @endif
@@ -85,21 +85,4 @@
 </div>
 @endif
 
-<style type="text/css">
-    .noticia {
-        margin: 20px;
-        padding: 10px;
-        border-radius: 10px;
-        height: 170px;
-        transition: all 0.3s ease;
-    }
-    .noticia img {
-        width: 100%;
-        height: 100%;
-        border-radius: 10px;
-    }
-    .noticia h2, .noticia h5 {font-weight: bold;}
-    .noticia h2 { color: #39ADB4; }
-    .noticia h5, .noticia p { color: #7f7f7f; }
-</style>
 @endsection

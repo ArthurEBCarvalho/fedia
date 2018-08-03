@@ -393,7 +393,7 @@
       <div class="noticia">
         <div class="row">
           @if(!is_null($noticia->imagem))
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-2 col-sm-12 col-xs-12 margin-bottom-10">
             {!! Html::image("images/noticias/$noticia->id/$noticia->imagem", $noticia->imagem) !!}
           </div>
           @endif
@@ -408,8 +408,8 @@
           </div>
         </div>
       </div>
-      <?php if ($key != $noticias->count()-1) {echo "<hr>";} ?>
     </a>
+    <?php if ($key != $noticias->count()-1) {echo "<hr>";} ?>
     @endforeach
     @endif
   </div>
@@ -422,11 +422,11 @@
       <i class="fa fa-times"></i>
       <div class="templatemo-flex-row flex-content-row">
         <div class="col-1 col-lg-4 col-md-12">
-        <h2 class="text-center"><strong>Gols na Temporada {{$temporada}}</strong></h2>
+          <h2 class="text-center"><strong>Gols na Temporada {{$temporada}}</strong></h2>
           <div id="pie_chart_div_gol" class="templatemo-chart"></div> <!-- Pie chart div -->
         </div>
         <div class="col-1 col-lg-4 col-md-12">
-        <h2 class="text-center"><strong>Aproveitamento na Temporada {{$temporada}}</strong></h2>
+          <h2 class="text-center"><strong>Aproveitamento na Temporada {{$temporada}}</strong></h2>
           <div id="pie_chart_div_lesao" class="templatemo-chart"></div> <!-- Pie chart div -->
         </div>
       </div>                
