@@ -91,7 +91,7 @@ class PartidaController extends Controller {
 
 		// Finalizar suspensões e lesões
 		Cartao::whereRaw("time_id IN ($partida->time1_id,$partida->time2_id) and cumprido = 0 and cor = '1' and campeonato = '$partida->campeonato'")->update(['cumprido' => 1]);
-		$acumulados = Cartao::selectRaw("array_agg(id) as ids, COUNT(*) as qtd")->whereRaw("time_id IN ($partida->time1_id,$partida->time2_id) and cumprido = 0 and cor = '0' and campeonato = '$partida->campeonato'")->groupBy('jogador_id')->having(DB::raw('COUNT(*)'), '=', 2)->get();
+		$acumulados = Cartao::selectRaw("array_to_string(array_agg(id), ',') as ids, COUNT(*) as qtd")->whereRaw("time_id IN ($partida->time1_id,$partida->time2_id) and cumprido = 0 and cor = '0' and campeonato = '$partida->campeonato'")->groupBy('jogador_id')->having(DB::raw('COUNT(*)'), '=', 2)->get();
 		if(!blank($acumulados)){
 			foreach ($acumulados as $key => $value)
 				Cartao::whereRaw("id IN ($value->ids)")->update(['cumprido' => 1]);
