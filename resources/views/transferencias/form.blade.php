@@ -34,16 +34,34 @@
             {!! Form::select('time2_id', $times, $transferencium->time2_id, ['class' => 'chzn-select form-control']) !!}
         </div>
     </div>
-    <div id="jogador_select" class="row form-group">
+    <div class="row form-group jogador_select">
         <div class="col-md-12">
             {!! Html::decode(Form::label('jogador_id', 'Jogador <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
             {!! Form::select('jogador_id', [], @$transferencium->jogador()->id, ['class' => 'chzn-select form-control']) !!}
         </div>
     </div>
-    <div id="jogador_text" class="row form-group">
+    <div class="row form-group jogador_text">
         <div class="col-md-12">
             {!! Html::decode(Form::label('jogador', 'Jogador <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
             {!! Form::text('jogador', null, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="row form-group jogador_text">
+        <div class="col-md-12">
+            {!! Html::decode(Form::label('overall', 'Overall <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
+            {!! Form::number('overall', null, ['class' => 'form-control', 'min' => 1, 'max' => 99]) !!}
+        </div>
+    </div>
+    <div class="row form-group jogador_text">
+        <div class="col-md-12">
+            {!! Html::decode(Form::label('idade', 'Idade <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
+            {!! Form::number('idade', null, ['class' => 'form-control', 'min' => 1, 'max' => 99]) !!}
+        </div>
+    </div>
+    <div class="row form-group jogador_text">
+        <div class="col-md-12">
+            {!! Html::decode(Form::label('posicoes', 'Posições <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
+            {!! Form::select('posicoes[]', ['GOL' => 'GOL','ADD' => 'ADD','LD' => 'LD','ZAG' => 'ZAG','LE' => 'LE','ADE' => 'ADE','VOL' => 'VOL','MD' => 'MD','MC' => 'MC','ME' => 'ME','MEI' => 'MEI','MAD' => 'MAD','SA' => 'SA','MAE' => 'MAE','PD' => 'PD','ATA' => 'ATA','PE' => 'PE'], null, ['class' => 'chzn-select form-control', 'multiple' => true]) !!}
         </div>
     </div>
     <div class="row form-group">
@@ -72,19 +90,19 @@
         echo "$('#jogador_id').append('<option value=\'$jogador->id\'>$jogador->nome</option>');";
     ?>
 
-    $("#jogador_text").hide();
+    $(".jogador_text").hide();
     $("#time1_id").change(function(){
         if($(this).find("option:selected").text() == "Mercado Externo"){
-            $("#jogador_text").show();
-            $("#jogador_select").hide();
+            $(".jogador_text").show();
+            $(".jogador_select").hide();
         } else {
-            $("#jogador_text").hide();
-            $("#jogador_select").show();
+            $(".jogador_text").hide();
+            $(".jogador_select").show();
         }
-        $('#jogador_id').find('option').remove();
+        $('.jogador_id').find('option').remove();
         for(var index in $jogadores[$(this).val()])
-            $('#jogador_id').append("<option value='"+$jogadores[$(this).val()][index]['id']+"'>"+$jogadores[$(this).val()][index]['nome']+"</option>");
-        $('#jogador_id').trigger("liszt:updated");
+            $('.jogador_id').append("<option value='"+$jogadores[$(this).val()][index]['id']+"'>"+$jogadores[$(this).val()][index]['nome']+"</option>");
+        $('.jogador_id').trigger("liszt:updated");
     });
 </script>
 @endsection

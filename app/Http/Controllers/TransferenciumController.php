@@ -26,7 +26,7 @@ class TransferenciumController extends Controller {
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
-				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
+				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
 			}
 			else{
 				switch ($request->filtro) {
@@ -47,11 +47,11 @@ class TransferenciumController extends Controller {
 					break;
 				}
 				// $transferencias = Transferencium::whereRaw($clausure)->havingRaw($having)->orderByRaw($order)->paginate(30);
-				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->whereRaw($clausure)->orderByRaw($order)->paginate(30);
+				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->whereRaw($clausure)->orderByRaw($order)->paginate(30);
 			}
 		}
 		else
-			$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
+			$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
 		return view('transferencias.index', ["transferencias" => $transferencias, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
 	}
 
@@ -89,6 +89,11 @@ class TransferenciumController extends Controller {
 		if($time1->nome == "Mercado Externo"){
 			$jogador = new Jogador();
 			$jogador->nome = $request->input("jogador");
+			$jogador->overall = $request->input("overall");
+			$jogador->idade = $request->input("idade");
+			$jogador->posicoes = join('|',$request->input("posicoes"));
+			$jogador->status = '0';
+			$jogador->valor = str_replace(",", ".", str_replace(".", "", $request->input("valor")));
 			$jogador->time_id = $request->input("time2_id");
 			$jogador->save();
 		} else {
@@ -169,6 +174,44 @@ class TransferenciumController extends Controller {
 		}
 		$transferencium->delete();
 		return redirect()->route('transferencias.index')->with('message', 'Transferência deletado com sucesso!');
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function elencos(Request $request)
+	{
+		$registros = [];
+		$posicoes = ['PE' => 'Ataque', 'ATA' => 'Ataque', 'PD' => 'Ataque', 'MAE' => 'Meio Campo', 'SA' => 'Ataque', 'MAD' => 'Meio Campo', 'MEI' => 'Meio Campo', 'ME' => 'Meio Campo', 'MC' => 'Meio Campo', 'MD' => 'Meio Campo', 'VOL' => 'Meio Campo', 'ADE' => 'Defesa', 'LE' => 'Defesa', 'ZAG' => 'Defesa', 'LD' => 'Defesa', 'ADD' => 'Defesa', 'GOL' => 'Goleiro'];
+		if(!blank($request->time) && $request->time != "Todos")
+			$times = Time::where('id',$request->time)->get();
+		else
+			$times = Time::where('nome','!=','Mercado Externo')->get();
+		$options = Time::where('nome','!=','Mercado Externo')->get();
+		$jogadores = Jogador::orderBy('overall','DESC')->get();
+		foreach ($times as $key => $value)
+			$registros[$value->id] = ['Goleiro' => [], 'Defesa' => [], 'Meio Campo' => [],'Ataque' => []];
+		foreach ($jogadores as $key => $value) {
+			if(!isset($registros[$value->time_id]))
+				continue;
+			$registros[$value->time_id][$value->posicao()][] = $value;
+		}
+		return view('transferencias.elencos', ["registros" => $registros, "times" => $times, "time" => $request->time, "options" => $options]);
+	}
+
+	/**
+	 * Update status from Jogador via Ajax GET request
+	 *
+	 * @param  Request  $request
+	 * @return Json
+	 */
+	public function update_status(Request $request)
+	{
+		Jogador::findOrFail($request->id)->update(['status' => $request->status]);
+		return response()->json(['response' => 'Status Atualizado com Sucesso!']);
 	}
 
 }

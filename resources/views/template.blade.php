@@ -51,6 +51,7 @@
 			<nav class="templatemo-left-nav">          
 				<ul>
 					<li><a href="/" class="@if(Request::is('/')) active @endif"><i class="fa fa-home fa-fw"></i>Início</a></li>
+					<li><a href="/elencos" class="@if(Request::is('elencos*')) active @endif"><i class="fa fa-user fa-fw"></i>Elencos</a></li>
 					<li><a href="/noticias" class="@if(Request::is('noticias*')) active @endif"><i class="fa fa-newspaper-o fa-fw"></i>Notícias</a></li>
 					<li><a href="/financeiros" class="@if(Request::is('financeiros*')) active @endif"><i class="fa fa-money fa-fw"></i>Histórico Financeiro</a></li>
 					<li><a href="/partidas_time" class="@if(Request::is('partidas_time*')) active @endif"><i class="fa fa-list-alt fa-fw"></i>Partidas</a></li>
@@ -142,9 +143,17 @@
 	<script type="text/javascript" src="/js/bootstrap-filestyle.min.js"></script>  <!-- http://markusslima.github.io/bootstrap-filestyle/ -->
 	<script type="text/javascript" src="/js/templatemo-script.js"></script>
 	<script src="/js/chosen.js" type="text/javascript"></script>
+	<script src="/js/collapse.js" type="text/javascript"></script>
+	<script src="/js/transition.js" type="text/javascript"></script>
 	@if(Request::is('administracao*')) <script type="text/javascript">$('.submenu > a').trigger( "click" );</script> @endif
 	<script type="text/javascript">
 		$(".chzn-select").chosen();
+		$('.collapse').collapse();
+		$(".chzn-container-multi").each(function( index ) {
+			$tamanho = $(this).width();
+			$(this).width('100%');
+			$(this).find(".chzn-drop").width(($tamanho-2)+"%");
+		});
 	</script>
 </body>
 </html>

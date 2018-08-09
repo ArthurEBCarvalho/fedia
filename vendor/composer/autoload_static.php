@@ -300,15 +300,18 @@ class ComposerStaticInitf1a39921c2c519affe51e8b2fba61365
 
     public static $classMap = array (
         'AddCampeonatoToGolsTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_124006_add_campeonato_to_gols_table.php',
+        'AddElencosToJogadorsTable' => __DIR__ . '/../..' . '/database/migrations/2018_08_08_183044_add_elencos_to_jogadors_table.php',
         'AddFotosToTemporadasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_31_135001_add_fotos_to_temporadas_table.php',
         'AddNumeroToTemporadasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_04_140630_add_numero_to_temporadas_table.php',
         'AddOrdemToPartidasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_131900_add_ordem_to_partidas_table.php',
         'AddRestantesToCartoesTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_112852_add_restantes_to_cartoes_table.php',
         'AddRestantesToLesoesTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_112903_add_restantes_to_lesoes_table.php',
+        'AddStatusToJogadorsTable' => __DIR__ . '/../..' . '/database/migrations/2018_08_08_192420_add_status_to_jogadors_table.php',
         'AddTemporadaToCartaosTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_124119_add_temporada_to_cartaos_table.php',
         'AddTemporadaToGolsTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_124109_add_temporada_to_gols_table.php',
         'AddTemporadaToLesaosTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_124125_add_temporada_to_lesaos_table.php',
         'AddUsuarioIdToTimesTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_03_134917_add_usuario_id_to_times_table.php',
+        'AddValorToJogadorsTable' => __DIR__ . '/../..' . '/database/migrations/2018_08_09_185905_add_valor_to_jogadors_table.php',
         'AmistosoTableSeeder' => __DIR__ . '/../..' . '/database/seeds/AmistosoTableSeeder.php',
         'ChangeArtilheiroFromTemporadasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_10_120842_change_artilheiro_from_temporadas_table.php',
         'ChangeColumnsFromTemporadasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_04_134731_change_columns_from_temporadas_table.php',

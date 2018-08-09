@@ -138,7 +138,8 @@ Route::get("partidas_temporada_store", ['as' => 'partidas.temporada_store', 'use
 Route::post("partidas_temporada_fotos", ['as' => 'partidas.temporada_fotos', 'uses' => 'PartidaController@temporada_fotos']);
 Route::get("indisponiveis", ['as' => 'partidas.indisponiveis', 'uses' => 'PartidaController@indisponiveis']);
 Route::get("partidas_time", ['as' => 'partidas.partidas', 'uses' => 'PartidaController@partidas']);
-
+Route::get("elencos", ['as' => 'transferencias.elencos', 'uses' => 'TransferenciumController@elencos']);
+Route::get("elencos_atualiza_status", 'TransferenciumController@update_status');
 });
 
 Route::get("noticia/{id}","NoticiumController@show");
