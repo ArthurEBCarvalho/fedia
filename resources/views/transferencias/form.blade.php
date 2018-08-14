@@ -99,10 +99,10 @@
             $(".jogador_text").hide();
             $(".jogador_select").show();
         }
-        $('.jogador_id').find('option').remove();
+        $('#jogador_id').find('option').remove();
         for(var index in $jogadores[$(this).val()])
-            $('.jogador_id').append("<option value='"+$jogadores[$(this).val()][index]['id']+"'>"+$jogadores[$(this).val()][index]['nome']+"</option>");
-        $('.jogador_id').trigger("liszt:updated");
+            $('#jogador_id').append("<option value='"+$jogadores[$(this).val()][index]['id']+"'>"+$jogadores[$(this).val()][index]['nome']+"</option>");
+        $('#jogador_id').trigger("liszt:updated");
     });
 </script>
 @endsection
