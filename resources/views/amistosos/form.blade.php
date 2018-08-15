@@ -55,7 +55,7 @@
     <div class="row form-group">
         <div class="col-md-12">
             {!! Html::decode(Form::label('valor', 'Valor <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
-            {!! Form::select('valor', ['1000000' => '€ 1.000.000,00', '2000000' => '€ 2.000.000,00', '3000000' => '€ 3.000.000,00'], NULL, ['class' => 'form-control','onKeyDown' => 'Formata(this,20,event,2)', 'required' => 'true']) !!}
+            {!! Form::select('valor', ['0' => '€ 0,00', '1000000' => '€ 1.000.000,00', '2000000' => '€ 2.000.000,00', '3000000' => '€ 3.000.000,00'], NULL, ['class' => 'form-control','onKeyDown' => 'Formata(this,20,event,2)', 'required' => 'true']) !!}
         </div>
     </div>
     <div class="form-group text-right">

@@ -32,7 +32,7 @@
         @if(Auth::user()->isAdmin())
         <div class="col-md-4">
             <div class="pull-right">
-                <div class="pull-right"><a href="{{ route('partidas.temporada_store') }}" type="button" class="btn btn-success" onClick="return confirm('Deseja realmente cadastrar a temporada {{$temporadas->count()+1}}?')"><i class="fa fa-plus"></i> Cadastrar Nova {{substr_replace("Temporadas", "", -1)}}</a></div>
+                <div class="pull-right"><a href="javascript:;" data-toggle="modal" data-target="#modal_times" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Cadastrar Nova {{substr_replace("Temporadas", "", -1)}}</a></div>
             </div>
         </div>
         @endif
@@ -143,6 +143,32 @@
             </div>
             {!! Form::close() !!}
         </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="modal_times" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        {!! Form::open(['route' => 'partidas.temporada_store', 'method' => 'get', 'onSubmit' => "if($('select.times').find('option:selected').length == 8){return confirm('Deseja realmente cadastrar a temporada ".($temporadas->count()+1)."?')}else{alert('É necessário selecionar 8 times!');return false;}"]) !!}
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Selecione os times da Copa da próxima temporada</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        {!! Html::decode(Form::label('times', 'Times da Copa FEDIA <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
+                        {!! Form::select('times[]', $times, array_keys($times->toArray()), ['class' => 'chzn-select form-control times', 'multiple' => true]) !!}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Sim</button>
+                <button type="reset" class="btn btn-default" data-dismiss="modal">Não</button>
+            </div>
+        </div>
+        {!! Form::close() !!}
     </div>
 </div>
 

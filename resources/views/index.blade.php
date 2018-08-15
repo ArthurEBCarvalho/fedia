@@ -436,67 +436,69 @@
 @endif
 <script src="https://www.google.com/jsapi"></script> <!-- Google Chart -->
 <script type="text/javascript">
-      /* Google Chart 
-      -------------------------------------------------------------------*/
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1.0', {'packages':['corechart']});
+  /* Google Chart 
+  -------------------------------------------------------------------*/
+  // Load the Visualization API and the piechart package.
+  google.load('visualization', '1.0', {'packages':['corechart']});
 
-      // Set a callback to run when the Google Visualization API is loaded.
-      google.setOnLoadCallback(drawChart); 
-      
-      // Callback that creates and populates a data table,
-      // instantiates the pie chart, passes in the data and
-      // draws it.
-      function drawChart() {
+  // Set a callback to run when the Google Visualization API is loaded.
+  google.setOnLoadCallback(drawChart); 
 
-          // Create the data table.
-          var gols = new google.visualization.DataTable();
-          gols.addColumn('string', 'Topping');
-          gols.addColumn('number', 'Slices');
-          gols.addRows([
-            <?php 
-            foreach ($gols as $value)
-              echo "['".$value->jogador()->nome."', $value->qtd],"
-            ?>
-            ]);
+  // Callback that creates and populates a data table,
+  // instantiates the pie chart, passes in the data and
+  // draws it.
+  function drawChart() {
 
-          var aproveitamento = new google.visualization.DataTable();
-          aproveitamento.addColumn('string', 'Topping');
-          aproveitamento.addColumn('number', 'Slices');
-          aproveitamento.addRows([
-            <?php 
-            foreach ($aproveitamento as $key => $value)
-              echo "['".$key."', $value],"
-            ?>
-            ]);
+    // Create the data table.
+    var gols = new google.visualization.DataTable();
+    gols.addColumn('string', 'Topping');
+    gols.addColumn('number', 'Slices');
+    gols.addRows([
+      <?php 
+      foreach ($gols as $value)
+        echo "['".$value->jogador()->nome."', $value->qtd],"
+      ?>
+      ]);
 
-          // Instantiate and draw our chart, passing in some options.
-          var pieChartGol = new google.visualization.PieChart(document.getElementById('pie_chart_div_gol'));
-          pieChartGol.draw(gols, null);
+    var aproveitamento = new google.visualization.DataTable();
+    aproveitamento.addColumn('string', 'Topping');
+    aproveitamento.addColumn('number', 'Slices');
+    aproveitamento.addRows([
+      <?php 
+      foreach ($aproveitamento as $key => $value)
+        echo "['".$key."', $value],"
+      ?>
+      ]);
 
-          var pieChartLesao = new google.visualization.PieChart(document.getElementById('pie_chart_div_lesao'));
-          pieChartLesao.draw(aproveitamento, null);
-        }
+    // Instantiate and draw our chart, passing in some options.
+    var pieChartGol = new google.visualization.PieChart(document.getElementById('pie_chart_div_gol'));
+    pieChartGol.draw(gols, null);
 
-        $(document).ready(function(){
-          if($.browser.mozilla) {
-          //refresh page on browser resize
-          // http://www.sitepoint.com/jquery-refresh-page-browser-resize/
-          $(window).bind('resize', function(e)
-          {
-            if (window.RT) clearTimeout(window.RT);
-            window.RT = setTimeout(function()
-            {
-              this.location.reload(false); /* false to get page from cache */
-            }, 200);
-          });      
-        } else {
-          $(window).resize(function(){
-            drawChart();
-          });  
-        }   
-      });
+    var pieChartLesao = new google.visualization.PieChart(document.getElementById('pie_chart_div_lesao'));
+    pieChartLesao.draw(aproveitamento, null);
+  }
 
-    </script>
-  </script>
-  @endsection
+  $(document).ready(function(){
+    if($.browser.mozilla) {
+      //refresh page on browser resize
+      // http://www.sitepoint.com/jquery-refresh-page-browser-resize/
+      $(window).bind('resize', function(e)
+      {
+        if (window.RT) clearTimeout(window.RT);
+        window.RT = setTimeout(function()
+        {
+          this.location.reload(false); /* false to get page from cache */
+        }, 200);
+      });      
+    } else {
+      $(window).resize(function(){
+        drawChart();
+      });  
+    }   
+  });
+
+</script>
+<style type="text/css">
+  .col-2 { max-width: 600px; }
+</style>
+@endsection
