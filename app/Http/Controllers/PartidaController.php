@@ -45,17 +45,17 @@ class PartidaController extends Controller {
 			$partidas_id = Partida::where('temporada',$temporada)->where('campeonato','Copa')->pluck('id');
 		}
 		$indisponiveis = [];
-		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time,COUNT(*) as qtd')->where('temporada',$temporada)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',0)->groupBy('jogadors.nome','cartaos.time_id','times.nome')->having(DB::raw('COUNT(*)'),'=',2)->get() as $suspenso){
+		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time,COUNT(*) as qtd')->where('temporada',$temporada)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',0)->where('jogadors.time_id','!=',11)->groupBy('jogadors.id','cartaos.time_id','times.nome')->having(DB::raw('COUNT(*)'),'=',2)->get() as $suspenso){
 			if(!isset($indisponiveis[$suspenso->time]))
 				$indisponiveis[$suspenso->time] = [];
 			$indisponiveis[$suspenso->time][$suspenso->id] = $suspenso->jogador;
 		}
-		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time')->where('temporada',$temporada)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',1)->get() as $suspenso){
+		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time')->where('temporada',$temporada)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',1)->where('jogadors.time_id','!=',11)->get() as $suspenso){
 			if(!isset($indisponiveis[$suspenso->time]))
 				$indisponiveis[$suspenso->time] = [];
 			$indisponiveis[$suspenso->time][$suspenso->id] = $suspenso->jogador;
 		}
-		foreach(DB::table('lesaos')->join('jogadors','lesaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time')->where('temporada',$temporada)->where('restantes','>','0')->get() as $lesionado){
+		foreach(DB::table('lesaos')->join('jogadors','lesaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time')->where('temporada',$temporada)->where('restantes','>','0')->where('jogadors.time_id','!=',11)->get() as $lesionado){
 			if(!isset($indisponiveis[$lesionado->time]))
 				$indisponiveis[$lesionado->time] = [];
 			$indisponiveis[$lesionado->time][$lesionado->id] = $lesionado->jogador;
