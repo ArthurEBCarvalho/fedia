@@ -12,6 +12,9 @@
             @else
             <input type="hidden" id="view" name="view" value="partidas.index">
             @endif
+            @if(Request::is('amistosos*'))
+            <input type="hidden" id="tipo" name="tipo" value="{{$tipo}}">
+            @endif
             <div class="modal-header">
                 <h4 class="modal-title"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
@@ -250,7 +253,9 @@
         if(campeonato == "Amistoso"){
             $("#modal_store form").attr('action','{{Request::root()}}/amistosos/'+id);
             $("#modal_store form").append('<input name="_method" type="hidden" value="PUT">');
+            @if($tipo != 1)
             $(".penaltis").show();
+            @endif
             $("#modal_store .body-title").html('Amistoso');
             $("#modal_show .body-title").html('Amistoso');
         } else {
@@ -272,7 +277,7 @@
         $array[$array.length-1] = img2;
         $(".img_2").attr('src',"{{Request::root()}}/"+$array.join('/'));
         $(".time_2").html(time2);
-        if(time12 != null && time22 != null){
+        if(!['',null].includes(time12) && !['',null].includes(time22)){
             $(".time_1").html($(".time_1").html()+" e "+time12);
             $(".time_2").html($(".time_2").html()+" e "+time22);
         }

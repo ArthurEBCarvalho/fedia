@@ -131,3 +131,16 @@ if (! function_exists('get_path')) {
             return "/public";
     }
 }
+
+if (! function_exists('get_tipo')) {
+    /**
+     * Return path, depending of the environment
+     *
+     * @param integer $tipo
+     *
+     * @return string
+     */
+    function get_tipo($tipo) {
+        return ['Amistosos','Classificatória da Copa FEDIA','SuperCopa FEDIA'][$tipo];
+    }
+}

@@ -51,21 +51,28 @@
 			<nav class="templatemo-left-nav">          
 				<ul>
 					<li><a href="/" class="@if(Request::is('/')) active @endif"><i class="fa fa-home fa-fw"></i>Início</a></li>
-					<li><a href="/elencos" class="@if(Request::is('elencos*')) active @endif"><i class="fa fa-user fa-fw"></i>Elencos</a></li>
+					<li><a href="/elencos" class="@if(Request::is('elencos*')) active @endif"><i class="fa fa-users fa-fw"></i>Elencos</a></li>
 					<li><a href="/noticias" class="@if(Request::is('noticias*')) active @endif"><i class="fa fa-newspaper-o fa-fw"></i>Notícias</a></li>
 					<li><a href="/financeiros" class="@if(Request::is('financeiros*')) active @endif"><i class="fa fa-money fa-fw"></i>Histórico Financeiro</a></li>
-					<li><a href="/partidas_time" class="@if(Request::is('partidas_time*')) active @endif"><i class="fa fa-list-alt fa-fw"></i>Partidas</a></li>
-					<li><a href="/transferencias" class="@if(Request::is('transferencias')) active @endif"><i class="fa fa-money fa-fw"></i>Transferências</a></li>
-					<li><a href="/amistosos" class="@if(Request::is('amistosos')) active @endif"><i class="fa fa-angellist fa-fw"></i>Amistosos</a></li>
-					<li><a href="/partidas?tipo=liga" class="@if(Request::is('partidas') && @$tipo == 'liga') active @endif"><i class="fa fa-gamepad fa-fw"></i>Liga FEDIA</a></li>
-					<li><a href="/partidas?tipo=copa" class="@if(Request::is('partidas') && @$tipo == 'copa') active @endif"><i class="fa fa-gamepad fa-fw"></i>Copa FEDIA</a></li>
+					<li><a href="/transferencias" class="@if(Request::is('transferencias')) active @endif"><i class="fa fa-exchange fa-fw"></i>Transferências</a></li>
+					<li class="submenu partidas">
+						<a href="#"><i class="fa fa-gamepad"></i> Partidas <i class="caret-down fa fa-arrow-circle-down"></i></a>
+						<ul>
+							<li><a href="/partidas_time" class="@if(Request::is('partidas_time*')) active @endif">Calendário de Partidas</a></li>
+							<li><a href="/amistosos?tipo=0" class="@if(Request::is('amistosos*') && $tipo == 0) active @endif">Amistosos</a></li>
+							<li><a href="/amistosos?tipo=1" class="@if(Request::is('amistosos*') && $tipo == 1) active @endif">Classificatória da Copa FEDIA</a></li>
+							<li><a href="/amistosos?tipo=2" class="@if(Request::is('amistosos*') && $tipo == 2) active @endif">SuperCopa FEDIA</a></li>
+							<li><a href="/partidas?tipo=liga" class="@if(Request::is('partidas*') && @$tipo == 'liga') active @endif">Liga FEDIA</a></li>
+							<li><a href="/partidas?tipo=copa" class="@if(Request::is('partidas*') && @$tipo == 'copa') active @endif">Copa FEDIA</a></li>
+						</ul>
+					</li>
 					<li><a href="/partidas_temporadas" class="@if(Request::is('partidas_temporadas')) active @endif"><i class="fa fa-list fa-fw"></i>Temporadas</a></li>
 					<li><a href="/indisponiveis" class="@if(Request::is('indisponiveis')) active @endif"><i class="fa fa-ambulance fa-fw"></i>Cartões e Lesões</a></li>
 					@if(Auth::user()->isAdmin())
-					<li class="submenu">
+					<li class="submenu admin">
 						<a href="#"><i class="fa fa-user-secret"></i> Administração <i class="caret-down fa fa-arrow-circle-down"></i></a>
 						<ul>
-							<li><a href="/administracao/users" class="@if(Request::is('administracao/users')) active @endif"><i class="fa fa-users fa-fw"></i>Usuários</a></li>
+							<li><a href="/administracao/users" class="@if(Request::is('administracao/users')) active @endif">Usuários</a></li>
 						</ul>
 					</li>
 					@endif
@@ -145,7 +152,8 @@
 	<script src="/js/chosen.js" type="text/javascript"></script>
 	<script src="/js/collapse.js" type="text/javascript"></script>
 	<script src="/js/transition.js" type="text/javascript"></script>
-	@if(Request::is('administracao*')) <script type="text/javascript">$('.submenu > a').trigger( "click" );</script> @endif
+	@if(Request::is('administracao*')) <script type="text/javascript">$('.submenu.admin > a').trigger( "click" );</script> @endif
+	@if(Request::is('partidas*') || Request::is('amistosos*')) <script type="text/javascript">$('.submenu.partidas > a').trigger( "click" );</script> @endif
 	<script type="text/javascript">
 		$(".chzn-select").chosen();
 		$('.collapse').collapse();

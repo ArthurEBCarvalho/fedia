@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Amistoso extends Model
 {
+
      /**
      * Get the time record associated with the user.
      */

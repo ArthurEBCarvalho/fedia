@@ -10,6 +10,7 @@ use App\Time;
 use App\Lesao;
 use App\Gol;
 use App\Cartao;
+use DB;
 use Illuminate\Http\Request;
 
 class AmistosoController extends Controller {
@@ -24,8 +25,8 @@ class AmistosoController extends Controller {
 		$temporada = Temporada::all()->max('id');
 		if(isset($request->temporada))
 			$temporada = $request->temporada;
-		$amistosos = Amistoso::where('temporada',$temporada)->get();
-		$amistosos_id = Amistoso::where('temporada',$temporada)->pluck('id');
+		$amistosos = Amistoso::where('temporada',$temporada)->where('tipo',$request->tipo)->get();
+		$amistosos_id = Amistoso::where('temporada',$temporada)->where('tipo',$request->tipo)->pluck('id');
 		$jogadores = [];
 		foreach (Jogador::all() as $key => $value) {
 			if(empty($jogadores[$value->time_id]))
@@ -35,7 +36,23 @@ class AmistosoController extends Controller {
 		$gols = Gol::whereIn('partida_id',$amistosos_id)->where('campeonato','Amistoso')->get();
 		$cartoes = Cartao::whereIn('partida_id',$amistosos_id)->where('campeonato','Amistoso')->get();
 		$lesoes = Lesao::whereIn('partida_id',$amistosos_id)->get();
-		return view('amistosos.index', ["amistosos" => $amistosos, "temporada" => $temporada, 'jogadores' => $jogadores, 'gols' => $gols, 'cartoes' => $cartoes, 'lesoes' => $lesoes, 'lesionados' => $request->lesionados]);
+		$indisponiveis = [];
+		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time,COUNT(*) as qtd')->where('temporada',$temporada)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',0)->groupBy('jogadors.nome','cartaos.time_id','times.nome')->having(DB::raw('COUNT(*)'),'=',2)->get() as $suspenso){
+			if(!isset($indisponiveis[$suspenso->time]))
+				$indisponiveis[$suspenso->time] = [];
+			$indisponiveis[$suspenso->time][$suspenso->id] = $suspenso->jogador;
+		}
+		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time')->where('temporada',$temporada)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',1)->get() as $suspenso){
+			if(!isset($indisponiveis[$suspenso->time]))
+				$indisponiveis[$suspenso->time] = [];
+			$indisponiveis[$suspenso->time][$suspenso->id] = $suspenso->jogador;
+		}
+		foreach(DB::table('lesaos')->join('jogadors','lesaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time')->where('temporada',$temporada)->where('restantes','>','0')->get() as $lesionado){
+			if(!isset($indisponiveis[$lesionado->time]))
+				$indisponiveis[$lesionado->time] = [];
+			$indisponiveis[$lesionado->time][$lesionado->id] = $lesionado->jogador;
+		}
+		return view('amistosos.index', ["amistosos" => $amistosos, "temporada" => $temporada, 'jogadores' => $jogadores, 'gols' => $gols, 'cartoes' => $cartoes, 'lesoes' => $lesoes, "indisponiveis" => $indisponiveis, 'lesionados' => $request->lesionados, 'tipo' => $request->tipo]);
 	}
 
 	/**
@@ -43,11 +60,11 @@ class AmistosoController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function create()
+	public function create(Request $request)
 	{
 		$amistoso = new Amistoso();
 		$times = Time::where('nome','!=','Mercado Externo')->orderBy('nome')->lists('nome','id')->all();
-		return view('amistosos.form', ["amistoso" => $amistoso, 'times' => $times]);
+		return view('amistosos.form', ["amistoso" => $amistoso, 'times' => $times, 'tipo' => $request->tipo]);
 	}
 
 	/**
@@ -60,15 +77,28 @@ class AmistosoController extends Controller {
 	{
 		$amistoso = new Amistoso();
 		$amistoso->temporada = $temporada = Temporada::all()->max('id');
+		$amistoso->tipo = $request->input("tipo");
 		$amistoso->time11_id = $request->input("time11_id");
 		$amistoso->time21_id = $request->input("time21_id");
-		if($request->tipo == "0"){
+		if($request->modelo == "0" && $request->tipo == 0){
 			$amistoso->time12_id = $request->input("time12_id");
 			$amistoso->time22_id = $request->input("time22_id");
 		}
-		$amistoso->valor = $request->input("valor");
+		if($request->tipo == 0)
+			$amistoso->valor = $request->input("valor");
+		else
+			$amistoso->valor = 0;
 		$amistoso->save();
-		return redirect()->route('amistosos.index')->with('message', 'Amistoso cadastrado com sucesso!');
+		if($request->tipo == 1){
+			$amistoso = new Amistoso();
+			$amistoso->temporada = $temporada = Temporada::all()->max('id');
+			$amistoso->tipo = $request->input("tipo");
+			$amistoso->time11_id = $request->input("time21_id");
+			$amistoso->time21_id = $request->input("time11_id");
+			$amistoso->valor = 0;
+			$amistoso->save();
+		}
+		return redirect()->route('amistosos.index', ['tipo' => $request->tipo])->with('message', 'Amistoso cadastrado com sucesso!');
 	}
 
 	/**
@@ -82,7 +112,7 @@ class AmistosoController extends Controller {
 		$amistoso = Amistoso::findOrFail($request->partida_id);
 		$amistoso->resultado1 = $request->input("resultado1");
 		$amistoso->resultado2 = $request->input("resultado2");
-		if(!blank($request->penalti1) && !blank($request->penalti2)){
+		if((isset($request->penalti1) && $request->penalti1 != '') && (isset($request->penalti2) && $request->penalti2 != '')){
 			$amistoso->penalti1 = $request->input("penalti1");
 			$amistoso->penalti2 = $request->input("penalti2");
 		}
@@ -177,42 +207,50 @@ class AmistosoController extends Controller {
 			$lesao->save();
 		}
 		// Premiação
-		if(!blank($amistoso->penalti1) && !blank($amistoso->penalti1)){
+		if((isset($request->penalti1) && $request->penalti1 != '') && (isset($request->penalti2) && $request->penalti2 != '')){
 			if($amistoso->penalti1 > $amistoso->penalti2){
 				$v = Time::findOrFail($amistoso->time11_id);
 				$v->dinheiro += $amistoso->valor;
 				$v->save();
-				$d = Time::findOrFail($amistoso->time21_id);
-				$d->dinheiro -= $amistoso->valor;
-				$d->save();
+				if($request->tipo == 0){
+					$d = Time::findOrFail($amistoso->time21_id);
+					$d->dinheiro -= $amistoso->valor;
+					$d->save();
+				}
 			} else {
 				$v = Time::findOrFail($amistoso->time21_id);
 				$v->dinheiro += $amistoso->valor;
 				$v->save();
-				$d = Time::findOrFail($amistoso->time11_id);
-				$d->dinheiro -= $amistoso->valor;
-				$d->save();
+				if($request->tipo == 0){
+					$d = Time::findOrFail($amistoso->time11_id);
+					$d->dinheiro -= $amistoso->valor;
+					$d->save();
+				}
 			}
 		} else {
 			if($amistoso->resultado1 > $amistoso->resultado2){
 				$v = Time::findOrFail($amistoso->time11_id);
 				$v->dinheiro += $amistoso->valor;
 				$v->save();
-				$d = Time::findOrFail($amistoso->time21_id);
-				$d->dinheiro -= $amistoso->valor;
-				$d->save();
+				if($request->tipo == 0){
+					$d = Time::findOrFail($amistoso->time21_id);
+					$d->dinheiro -= $amistoso->valor;
+					$d->save();
+				}
 			} else {
 				$v = Time::findOrFail($amistoso->time21_id);
 				$v->dinheiro += $amistoso->valor;
 				$v->save();
-				$d = Time::findOrFail($amistoso->time11_id);
-				$d->dinheiro -= $amistoso->valor;
-				$d->save();
+				if($request->tipo == 0){
+					$d = Time::findOrFail($amistoso->time11_id);
+					$d->dinheiro -= $amistoso->valor;
+					$d->save();
+				}
 			}
 		}
 		// Se for 2 contra 2
 		if(!blank($amistoso->time12_id) && !blank($amistoso->time22_id)){
-			if(!blank($amistoso->penalti1) && !blank($amistoso->penalti1)){
+			if((isset($request->penalti1) && $request->penalti1 != '') && (isset($request->penalti2) && $request->penalti2 != '')){
 				if($amistoso->penalti1 > $amistoso->penalti2){
 					$v = Time::findOrFail($amistoso->time12_id);
 					$v->dinheiro += $amistoso->valor;
@@ -246,7 +284,7 @@ class AmistosoController extends Controller {
 				}
 			}
 		}
-		return redirect()->route('amistosos.index',['lesionados' => $lesionados])->with('message', 'Amistoso cadastrado com sucesso!');
+		return redirect()->route('amistosos.index',['lesionados' => $lesionados, 'tipo' => $request->tipo])->with('message', 'Amistoso cadastrado com sucesso!');
 	}
 
 }

@@ -17,6 +17,7 @@ return array(
     'AddTemporadaToCartaosTable' => $baseDir . '/database/migrations/2018_07_05_124119_add_temporada_to_cartaos_table.php',
     'AddTemporadaToGolsTable' => $baseDir . '/database/migrations/2018_07_05_124109_add_temporada_to_gols_table.php',
     'AddTemporadaToLesaosTable' => $baseDir . '/database/migrations/2018_07_05_124125_add_temporada_to_lesaos_table.php',
+    'AddTipoToAmistososTable' => $baseDir . '/database/migrations/2018_08_16_204224_add_tipo_to_amistosos_table.php',
     'AddUsuarioIdToTimesTable' => $baseDir . '/database/migrations/2018_07_03_134917_add_usuario_id_to_times_table.php',
     'AddValorToJogadorsTable' => $baseDir . '/database/migrations/2018_08_09_185905_add_valor_to_jogadors_table.php',
     'AmistosoTableSeeder' => $baseDir . '/database/seeds/AmistosoTableSeeder.php',

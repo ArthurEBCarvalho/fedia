@@ -310,6 +310,7 @@ class ComposerStaticInitf1a39921c2c519affe51e8b2fba61365
         'AddTemporadaToCartaosTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_124119_add_temporada_to_cartaos_table.php',
         'AddTemporadaToGolsTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_124109_add_temporada_to_gols_table.php',
         'AddTemporadaToLesaosTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_124125_add_temporada_to_lesaos_table.php',
+        'AddTipoToAmistososTable' => __DIR__ . '/../..' . '/database/migrations/2018_08_16_204224_add_tipo_to_amistosos_table.php',
         'AddUsuarioIdToTimesTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_03_134917_add_usuario_id_to_times_table.php',
         'AddValorToJogadorsTable' => __DIR__ . '/../..' . '/database/migrations/2018_08_09_185905_add_valor_to_jogadors_table.php',
         'AmistosoTableSeeder' => __DIR__ . '/../..' . '/database/seeds/AmistosoTableSeeder.php',
