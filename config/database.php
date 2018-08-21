@@ -66,6 +66,7 @@ return [
             'engine' => null,
         ],
 
+        // Heroku
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => 'ec2-184-73-201-79.compute-1.amazonaws.com',
@@ -77,6 +78,19 @@ return [
             'prefix' => '',
             'schema' => 'public',
         ],
+
+        // Local
+        // 'pgsql' => [
+        //     'driver' => 'pgsql',
+        //     'host' => 'localhost',
+        //     'port' => '5432',
+        //     'database' => 'fedia',
+        //     'username' => 'arthur',
+        //     'password' => 'aebc250894',
+        //     'charset' => 'utf8',
+        //     'prefix' => '',
+        //     'schema' => 'public',
+        // ],
 
     ],
 

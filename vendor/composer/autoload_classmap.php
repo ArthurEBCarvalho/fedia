@@ -32,6 +32,7 @@ return array(
     'ChangeNullableFromAmistososTable' => $baseDir . '/database/migrations/2018_07_30_180231_change_nullable_from_amistosos_table.php',
     'ChangeNullableFromTimesTable' => $baseDir . '/database/migrations/2018_07_09_190533_change_nullable_from_times_table.php',
     'ChangeRestantesFromCartoesTable' => $baseDir . '/database/migrations/2018_07_05_120635_change_restantes_from_cartoes_table.php',
+    'ChangeTimeFromAmistososTable' => $baseDir . '/database/migrations/2018_08_21_051949_change_time_from_amistosos_table.php',
     'ChangeTimeFromPartidasTable' => $baseDir . '/database/migrations/2018_07_05_135701_change_time_from_partidas_table.php',
     'ChangeTimeIdFromTransferenciasTable' => $baseDir . '/database/migrations/2018_07_24_194811_change_time_id_from_transferencias_table.php',
     'ChangeTimesFromTransferenciasTable' => $baseDir . '/database/migrations/2018_07_04_115314_change_times_from_transferencias_table.php',

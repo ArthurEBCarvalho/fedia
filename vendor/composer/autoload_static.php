@@ -325,6 +325,7 @@ class ComposerStaticInitf1a39921c2c519affe51e8b2fba61365
         'ChangeNullableFromAmistososTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_30_180231_change_nullable_from_amistosos_table.php',
         'ChangeNullableFromTimesTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_09_190533_change_nullable_from_times_table.php',
         'ChangeRestantesFromCartoesTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_120635_change_restantes_from_cartoes_table.php',
+        'ChangeTimeFromAmistososTable' => __DIR__ . '/../..' . '/database/migrations/2018_08_21_051949_change_time_from_amistosos_table.php',
         'ChangeTimeFromPartidasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_135701_change_time_from_partidas_table.php',
         'ChangeTimeIdFromTransferenciasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_24_194811_change_time_id_from_transferencias_table.php',
         'ChangeTimesFromTransferenciasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_04_115314_change_times_from_transferencias_table.php',

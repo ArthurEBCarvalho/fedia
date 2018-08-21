@@ -118,7 +118,7 @@ class AmistosoController extends Controller {
 		}
 		$amistoso->save();
 		// Finalizar lesões
-		Lesao::whereRaw("time_id IN ('$amistoso->time11_id','$amistoso->time21_id','$amistoso->time12_id','$amistoso->time22_id')")->where('restantes','>',0)->where('temporada',$amistoso->temporada)->decrement('restantes');
+		Lesao::whereIn('time_id',[$amistoso->time11_id,$amistoso->time21_id,$amistoso->time12_id,$amistoso->time22_id])->where('restantes','>',0)->where('temporada',$amistoso->temporada)->decrement('restantes');
 		$lesionados = [];
 		foreach ($request->gols_jogador1 as $key => $value) {
 			if($value == '')
