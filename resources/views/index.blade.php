@@ -51,7 +51,7 @@
         <table class="table table-bordered">
           <thead>
             <tr class="bold">
-              <td colspan="2" width="25%">Classificação</td>
+              <td colspan="3" width="25%">Classificação</td>
               <td align="center" title="Pontos">P</td>
               <td align="center" title="Jogos">J</td>
               <td align="center" title="Vitórias">V</td>
@@ -66,6 +66,7 @@
             <?php $count = 1; ?>
             @foreach($classificacao as $key => $value)
             <tr @if($key == count($classificacao)-1) bgcolor="#FFF0F0" @endif @if($key == 0) bgcolor="#F0FFF0" @endif>
+              <td align="center">{{$key+1}}</td>
               <td align="center"><a href="{{ route('partidas.partidas',['time_id' => $value['id']]) }}">{!! Html::image('images/times/'.$value['escudo'], $value['nome'], ['style' => 'max-height:50px;']) !!}</a></td>
               <td><a href="{{ route('partidas.partidas',['time_id' => $value['id']]) }}">{{$value['nome']}}</a></td>
               <td align="center">{{$value['P']}}</td>
