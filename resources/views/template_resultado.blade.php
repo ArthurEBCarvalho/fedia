@@ -253,6 +253,8 @@
         if(campeonato == "Amistoso"){
             $("#modal_store form").attr('action','{{Request::root()}}/amistosos/'+id);
             $("#modal_store form").append('<input name="_method" type="hidden" value="PUT">');
+            $("#modal_store").find('.modal-title').html('Cadastrar Resultado de {{get_tipo($tipo)}}');
+            $("#modal_show").find('.modal-title').html('Visualizar Resultado de {{get_tipo($tipo)}}');
             @if(@$tipo != 1)
             $(".penaltis").show();
             @endif
@@ -282,8 +284,8 @@
             $(".time_2").html($(".time_2").html()+" e "+time22);
         }
         if(tipo == 'show'){
-            $("#modal_show").find('.modal-title').html('Visualizar Resultado da '+campeonato+' FEDIA');
             if(campeonato == 'Copa'){
+                $("#modal_show").find('.modal-title').html('Visualizar Resultado da Copa FEDIA');
                 if([0,1,2,3].includes(ordem))
                     $message = 'Quartas de Final'+' - '+rodada;
                 else if([4,5].includes(ordem))
@@ -292,6 +294,7 @@
                     $message = 'Final';
                 $("#modal_show").find('.body-title').html($message);
             } else if(campeonato == 'Liga') {
+                $("#modal_show").find('.modal-title').html('Visualizar Resultado da Liga FEDIA');
                 $("#modal_show").find('.body-title').html('Rodada '+rodada);
             }
             $("#modal_show").find('tbody#gols').html('');
@@ -381,8 +384,8 @@
             $("#modal_show").find('tbody#lesoes').append($row);
         } else {
             $("#modal_store").find('#rodada').val(rodada);
-            $("#modal_store").find('.modal-title').html('Cadastrar Resultado da '+campeonato+' FEDIA');
             if(campeonato == 'Copa'){
+                $("#modal_store").find('.modal-title').html('Cadastrar Resultado da Copa FEDIA');
                 if([0,1,2,3].includes(ordem))
                     $message = 'Quartas de Final'+' - '+rodada;
                 else if([4,5].includes(ordem))
@@ -391,6 +394,7 @@
                     $message = 'Final';
                 $("#modal_store").find('.body-title').html($message);
             } else if(campeonato == 'Liga') {
+                $("#modal_store").find('.modal-title').html('Cadastrar Resultado da Liga FEDIA');
                 $("#modal_store").find('.body-title').html('Rodada '+rodada);
             }
             $("#modal_store").find('select.chzn-select > option').remove();

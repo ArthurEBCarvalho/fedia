@@ -73,7 +73,7 @@
         <table class="table table-bordered templatemo-user-table">
             <thead>
                 <tr>
-                    <th colspan="7">Amistosos da {{$temporada}}ª Temporada</th>
+                    <th colspan="7">{{get_tipo($tipo)}} - {{$temporada}}ª Temporada</th>
                 </tr>
             </thead>
             <tbody>
