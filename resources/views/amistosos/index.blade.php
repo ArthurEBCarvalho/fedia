@@ -47,6 +47,7 @@
     <h2 class="margin-bottom-10">{{get_tipo($tipo)}}</h2>
     <div class="row">
         <form role="form" method="get">
+        <input type="hidden" name="tipo" value="{{$tipo}}">
             <div class="col-md-8 col-sm-12 form-group">
                 <div class="input-group">
                     <span class="input-group-addon">Temporada: </span>
