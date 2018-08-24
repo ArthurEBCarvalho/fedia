@@ -52,7 +52,7 @@ class TransferenciumController extends Controller {
 		}
 		else
 			$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
-		return view('transferencias.index', ["transferencias" => $transferencias, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
+		return view('transferencias.index', ["transferencias" => $transferencias, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "color" => $request->color]);
 	}
 
 	/**
@@ -81,40 +81,45 @@ class TransferenciumController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		$transferencium = new Transferencium();
-		$transferencium->valor = str_replace(",", ".", str_replace(".", "", $request->input("valor")));
-		$transferencium->time1_id = $request->input("time1_id");
-		$transferencium->time2_id = $request->input("time2_id");
-		$time1 = Time::findOrFail($request->input("time1_id"));
-		if($time1->nome == "Mercado Externo"){
-			$jogador = new Jogador();
-			$jogador->nome = $request->input("jogador");
-			$jogador->overall = $request->input("overall");
-			$jogador->idade = $request->input("idade");
-			$jogador->posicoes = join('|',$request->input("posicoes"));
-			$jogador->status = '0';
-			$jogador->valor = str_replace(",", ".", str_replace(".", "", $request->input("valor")));
-			$jogador->time_id = $request->input("time2_id");
-			$jogador->save();
+		$destino = Time::findOrFail($request->input("time2_id"));
+		if($destino->dinheiro < str_replace(",", ".", str_replace(".", "", $request->input("valor")))){
+			return redirect()->route('transferencias.index', ['color' => 'red'])->with('message', "O $destino->nome não tem dinheiro suficiente para concretizar a contratação!");
 		} else {
-			$jogador = Jogador::findOrFail($request->input("jogador_id"));
-			$jogador->time_id = $request->input("time2_id");
-			$jogador->save();
+			$transferencium = new Transferencium();
+			$transferencium->valor = str_replace(",", ".", str_replace(".", "", $request->input("valor")));
+			$transferencium->time1_id = $request->input("time1_id");
+			$transferencium->time2_id = $request->input("time2_id");
+			$time1 = Time::findOrFail($request->input("time1_id"));
+			if($time1->nome == "Mercado Externo"){
+				$jogador = new Jogador();
+				$jogador->nome = $request->input("jogador");
+				$jogador->overall = $request->input("overall");
+				$jogador->idade = $request->input("idade");
+				$jogador->posicoes = join('|',$request->input("posicoes"));
+				$jogador->status = '0';
+				$jogador->valor = str_replace(",", ".", str_replace(".", "", $request->input("valor")));
+				$jogador->time_id = $request->input("time2_id");
+				$jogador->save();
+			} else {
+				$jogador = Jogador::findOrFail($request->input("jogador_id"));
+				$jogador->time_id = $request->input("time2_id");
+				$jogador->save();
+			}
+			$transferencium->jogador_id = $jogador->id;
+			$transferencium->save();
+			if(!is_null($time1)){
+				$time1->dinheiro += floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor"))));
+				$time1->save();
+				Financeiro::create(['valor' => floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor")))), 'operacao' => 0, 'descricao' => 'Venda de Jogador ('.$jogador->nome.')', 'time_id' => $time1->id]);
+			}
+			$time2 = Time::findOrFail($request->input("time2_id"));
+			if(!is_null($time2)){
+				$time2->dinheiro -= floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor"))));
+				$time2->save();
+				Financeiro::create(['valor' => floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor")))), 'operacao' => 1, 'descricao' => 'Contratação de Jogador ('.$jogador->nome.')', 'time_id' => $time2->id]);
+			}
+			return redirect()->route('transferencias.index', ['color' => 'green'])->with('message', 'Transferência cadastrada com sucesso!');
 		}
-		$transferencium->jogador_id = $jogador->id;
-		$transferencium->save();
-		if(!is_null($time1)){
-			$time1->dinheiro += floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor"))));
-			$time1->save();
-			Financeiro::create(['valor' => floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor")))), 'operacao' => 0, 'descricao' => 'Venda de Jogador ('.$jogador->nome.')', 'time_id' => $time1->id]);
-		}
-		$time2 = Time::findOrFail($request->input("time2_id"));
-		if(!is_null($time2)){
-			$time2->dinheiro -= floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor"))));
-			$time2->save();
-			Financeiro::create(['valor' => floatval(str_replace(",", ".", str_replace(".", "", $request->input("valor")))), 'operacao' => 1, 'descricao' => 'Contratação de Jogador ('.$jogador->nome.')', 'time_id' => $time2->id]);
-		}
-		return redirect()->route('transferencias.index')->with('message', 'Transferência cadastrada com sucesso!');
 	}
 
 	/**

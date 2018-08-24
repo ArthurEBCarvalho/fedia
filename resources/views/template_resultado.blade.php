@@ -253,8 +253,10 @@
         if(campeonato == "Amistoso"){
             $("#modal_store form").attr('action','{{Request::root()}}/amistosos/'+id);
             $("#modal_store form").append('<input name="_method" type="hidden" value="PUT">');
+            @if(Request::is('/amistosos*'))
             $("#modal_store").find('.modal-title').html('Cadastrar Resultado de {{get_tipo($tipo)}}');
             $("#modal_show").find('.modal-title').html('Visualizar Resultado de {{get_tipo($tipo)}}');
+            @endif
             @if(@$tipo != 1)
             $(".penaltis").show();
             @endif
