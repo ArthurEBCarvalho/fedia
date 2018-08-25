@@ -25,8 +25,8 @@ class AmistosoController extends Controller {
 		$temporada = Temporada::all()->max('id');
 		if(isset($request->temporada))
 			$temporada = $request->temporada;
-		$amistosos = Amistoso::where('temporada',$temporada)->where('tipo',$request->tipo)->get();
-		$amistosos_id = Amistoso::where('temporada',$temporada)->where('tipo',$request->tipo)->pluck('id');
+		$amistosos = Amistoso::where('temporada',$temporada)->where('tipo',$request->tipo)->orderBy('id')->get();
+		$amistosos_id = Amistoso::where('temporada',$temporada)->where('tipo',$request->tipo)->orderBy('id')->pluck('id');
 		$jogadores = [];
 		foreach (Jogador::all() as $key => $value) {
 			if(empty($jogadores[$value->time_id]))
