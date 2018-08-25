@@ -10,6 +10,7 @@ use App\Time;
 use App\Lesao;
 use App\Gol;
 use App\Cartao;
+use App\Financeiro;
 use DB;
 use Illuminate\Http\Request;
 
@@ -248,6 +249,11 @@ class AmistosoController extends Controller {
 				}
 			}
 		}
+		// Se tiver valor
+		if($amistoso->valor != 0){
+			Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 0, 'descricao' => 'Vitória no Amistoso', 'time_id' => $v->id]);
+			Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 1, 'descricao' => 'Derrota no Amistoso', 'time_id' => $d->id]);
+		}
 		// Se for 2 contra 2
 		if(!blank($amistoso->time12_id) && !blank($amistoso->time22_id)){
 			if((isset($request->penalti1) && $request->penalti1 != '') && (isset($request->penalti2) && $request->penalti2 != '')){
@@ -282,6 +288,10 @@ class AmistosoController extends Controller {
 					$d->dinheiro -= $amistoso->valor;
 					$d->save();
 				}
+			}
+			if($amistoso->valor != 0){
+				Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 0, 'descricao' => 'Vitória no Amistoso', 'time_id' => $v->id]);
+				Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 1, 'descricao' => 'Derrota no Amistoso', 'time_id' => $d->id]);
 			}
 		}
 		return redirect()->route('amistosos.index',['lesionados' => $lesionados, 'tipo' => $request->tipo])->with('message', 'Amistoso cadastrado com sucesso!');
