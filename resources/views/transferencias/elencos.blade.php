@@ -69,7 +69,8 @@
                                     @if($t->id == Auth::user()->time()->id)
                                     <td width="140">{!! Form::select('status', ['Negociável','Inegociável','À Venda'], $jogador->status, ['class' => 'form-control status', 'style' => 'width:120px;', 'data-id' => $jogador->id]) !!}</td>
                                     @else
-                                    <td width="140">{{$jogador->getStatus()}}</td>
+                                    <?php if($jogador->status == '0'){$color = "#888";}elseif($jogador->status == '1'){$color = 'red';}else{$color = 'green';} ?>
+                                    <td width="140" style="color:{{$color}}">{{$jogador->getStatus()}}</td>
                                     @endif
                                 </tr>
                                 @endforeach    
