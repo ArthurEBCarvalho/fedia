@@ -140,6 +140,7 @@ Route::get("indisponiveis", ['as' => 'partidas.indisponiveis', 'uses' => 'Partid
 Route::get("partidas_time", ['as' => 'partidas.partidas', 'uses' => 'PartidaController@partidas']);
 Route::get("elencos", ['as' => 'transferencias.elencos', 'uses' => 'TransferenciumController@elencos']);
 Route::get("elencos_atualiza_status", 'TransferenciumController@update_status');
+Route::get("jogadores", ['as' => 'transferencias.jogadores', 'uses' => 'TransferenciumController@jogadores']);
 });
 
 Route::get("noticia/{id}","NoticiumController@show");

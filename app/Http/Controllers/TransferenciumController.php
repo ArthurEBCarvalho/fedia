@@ -219,4 +219,35 @@ class TransferenciumController extends Controller {
 		return response()->json(['response' => 'Status Atualizado com Sucesso!']);
 	}
 
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function jogadores(Request $request)
+	{
+		(strpos($request->fullUrl(),'order=')) ? $param = $request->order : $param = null;
+		(strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
+		(strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
+		(isset($request->order)) ? $order = $request->order : $order = "overall DESC";
+		$externo  = Time::where('nome','Mercado Externo')->pluck('id');
+		if(isset($request->filtro)){
+			if($request->filtro == "Limpar"){
+				$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->where('jogadors.time_id','!=',$externo)->orderByRaw($order)->paginate(30);
+			}
+			else{
+				if(in_array($request->filtro, ['jogadors.nome','jogadors.posicoes','times.nome']))
+					$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->where('jogadors.time_id','!=',$externo)->where($request->filtro,'LIKE',"%$request->valor%")->orderByRaw($order)->paginate(30);
+				elseif($request->filtro == 'jogadors.valor')
+					$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->where('jogadors.time_id','!=',$externo)->where($request->filtro,str_replace(",", ".", str_replace(".", "", str_replace("€", "", $request->valor))))->orderByRaw($order)->paginate(30);
+				else
+					$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->where('jogadors.time_id','!=',$externo)->where($request->filtro,$request->valor)->orderByRaw($order)->paginate(30);
+			}
+		}
+		else
+			$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->where('jogadors.time_id','!=',$externo)->orderByRaw($order)->paginate(30);
+		return view('transferencias.jogadores', ["jogadores" => $jogadores, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "STATUS" => ['Negociável','Inegociável','À Venda']]);
+	}
+
 }

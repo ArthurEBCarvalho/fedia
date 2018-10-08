@@ -27,7 +27,7 @@
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
+<![endif]-->
 
 </head>
 <body>  
@@ -51,7 +51,13 @@
 			<nav class="templatemo-left-nav">          
 				<ul>
 					<li><a href="/" class="@if(Request::is('/')) active @endif"><i class="fa fa-home fa-fw"></i>Início</a></li>
-					<li><a href="/elencos" class="@if(Request::is('elencos*')) active @endif"><i class="fa fa-users fa-fw"></i>Elencos</a></li>
+					<li class="submenu elencos">
+						<a href="#"><i class="fa fa-users fa-fw"></i>Jogadores</a>
+						<ul>
+							<li><a href="/elencos" class="@if(Request::is('elencos*')) active @endif">Todos os Elencos</a></li>
+							<li><a href="/jogadores" class="@if(Request::is('jogadores*')) active @endif">Todos os Jogadores</a></li>
+						</ul>
+					</li>
 					<li><a href="/noticias" class="@if(Request::is('noticias*')) active @endif"><i class="fa fa-newspaper-o fa-fw"></i>Notícias</a></li>
 					<li><a href="/financeiros" class="@if(Request::is('financeiros*')) active @endif"><i class="fa fa-money fa-fw"></i>Histórico Financeiro</a></li>
 					<li><a href="/transferencias" class="@if(Request::is('transferencias')) active @endif"><i class="fa fa-exchange fa-fw"></i>Transferências</a></li>
@@ -153,7 +159,8 @@
 	<script src="/js/collapse.js" type="text/javascript"></script>
 	<script src="/js/transition.js" type="text/javascript"></script>
 	@if(Request::is('administracao*')) <script type="text/javascript">$('.submenu.admin > a').trigger( "click" );</script> @endif
-	@if(Request::is('partidas*') || Request::is('amistosos*')) <script type="text/javascript">$('.submenu.partidas > a').trigger( "click" );</script> @endif
+	@if(Request::is('partidas*') || Request::is('amistosos*')) <script type="text/javascript">$('.submenu.partidas > a').trigger( "click" );</script> @endif 
+	@if(Request::is('elencos*') || Request::is('jogadores*')) <script type="text/javascript">$('.submenu.elencos > a').trigger( "click" );</script> @endif
 	<script type="text/javascript">
 		$(".chzn-select").chosen();
 		$('.collapse').collapse();
