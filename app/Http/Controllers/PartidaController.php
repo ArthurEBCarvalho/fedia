@@ -571,7 +571,7 @@ class PartidaController extends Controller {
 		}
 
 		// Dinheiro do patrocínio
-		foreach ($times as $key => $time) {
+		foreach (Time::where('nome','!=','Mercado Externo')->get() as $key => $time) {
 			$time->dinheiro += 40000000;
 			$time->save();
 			Financeiro::create(['valor' => 40000000, 'operacao' => 0, 'descricao' => 'Patrocício da Temporada '.$temporada->numero, 'time_id' => $time->id]);
