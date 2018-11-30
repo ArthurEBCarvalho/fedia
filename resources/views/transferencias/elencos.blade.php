@@ -66,7 +66,7 @@
                                     <td>{{$jogador->idade}}</td>
                                     <td>{{$jogador->overall}}</td>
                                     <td>€ {{number_format($jogador->valor,2,',','.')}}</td>
-                                    @if($t->id == Auth::user()->time()->id)
+                                    @if($t->id == Auth::user()->time(Session::get('era')->id)->id)
                                     <td width="140">{!! Form::select('status', ['Negociável','Inegociável','À Venda'], $jogador->status, ['class' => 'form-control status', 'style' => 'width:120px;', 'data-id' => $jogador->id]) !!}</td>
                                     @else
                                     <?php if($jogador->status == '0'){$color = "#888";}elseif($jogador->status == '1'){$color = 'red';}else{$color = 'green';} ?>

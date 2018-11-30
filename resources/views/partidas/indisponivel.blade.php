@@ -38,8 +38,8 @@
                 <div class="input-group">
                     <span class="input-group-addon">Temporada: </span>
                     <select class="form-control search-filtro" name="temporada">
-                        @foreach($temporadas as $temporada)
-                        <option value="{{$temporada->id}}" @if ($temporada->id == $temporada->id) selected @endif>{{$temporada->numero}}</option>
+                        @foreach($temporadas as $t)
+                        <option value="{{$t->id}}" @if ($t->numero == $temporada->numero) selected @endif>{{$t->numero}}</option>
                         @endforeach
                     </select>
                     <span class="input-group-btn">

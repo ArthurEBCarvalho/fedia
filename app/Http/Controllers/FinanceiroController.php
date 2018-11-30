@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Financeiro;
 use Illuminate\Http\Request;
 use Auth;
+use Session;
 
 class FinanceiroController extends Controller {
 
@@ -23,7 +24,7 @@ class FinanceiroController extends Controller {
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
-				$financeiros = Financeiro::where('time_id',Auth::user()->time()->id)->orderByRaw($order);
+				$financeiros = Financeiro::where('time_id',Auth::user()->time(Session::get('era')->id)->id)->orderByRaw($order);
 			}
 			else{
 				switch ($request->filtro) {
@@ -40,11 +41,11 @@ class FinanceiroController extends Controller {
 						$clausure = "operacao = 1";
 					break;
 				}
-				$financeiros = Financeiro::whereRaw("time_id = ".Auth::user()->time()->id." and $clausure")->orderByRaw($order);
+				$financeiros = Financeiro::whereRaw("time_id = ".Auth::user()->time(Session::get('era')->id)->id." and $clausure")->orderByRaw($order);
 			}
 		}
 		else
-			$financeiros = Financeiro::where('time_id',Auth::user()->time()->id)->orderByRaw($order);
+			$financeiros = Financeiro::where('time_id',Auth::user()->time(Session::get('era')->id)->id)->orderByRaw($order);
 		$total = 0;
 		foreach ($financeiros->get() as $value) {
 			if($value->operacao == 0)

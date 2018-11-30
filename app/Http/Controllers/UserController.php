@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Time;
+use App\UserTime;
+use App\Era;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Hash;
+use Session;
 // use App\UserPermissao;
 
 class UserController extends Controller
@@ -26,17 +29,17 @@ class UserController extends Controller
         if(isset($request->filtro)){
             if($request->filtro == "Limpar"){
                 $request->valor = NULL;
-                $users = \DB::table('users')->join('times','times.user_id','=','users.id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->orderByRaw($order)->paginate(30);
+                $users = \DB::table('users')->join('user_times','user_times.user_id','=','users.id')->join('times','times.id','=','user_times.time_id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where('user_times.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
             }
             else{
                 if(strpos($request->filtro,"nome"))
-                    $users = \DB::table('users')->join('times','times.user_id','=','users.id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where($request->filtro, 'LIKE', "%$request->valor%")->orderByRaw($order)->paginate(30);
+                    $users = \DB::table('users')->join('user_times','user_times.user_id','=','users.id')->join('times','times.id','=','user_times.time_id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where($request->filtro, 'LIKE', "%$request->valor%")->where('user_times.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
                 else
-                    $users = \DB::table('users')->join('times','times.user_id','=','users.id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where($request->filtro, $request->valor)->orderByRaw($order)->paginate(30);
+                    $users = \DB::table('users')->join('user_times','user_times.user_id','=','users.id')->join('times','times.id','=','user_times.time_id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where($request->filtro, $request->valor)->where('user_times.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
             }
         }
         else
-            $users = \DB::table('users')->join('times','times.user_id','=','users.id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->orderByRaw($order)->paginate(30);
+            $users = \DB::table('users')->join('user_times','user_times.user_id','=','users.id')->join('times','times.id','=','user_times.time_id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where('user_times.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
         return view('administracao.users.index', ["users" => $users, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
     }
 
@@ -48,7 +51,8 @@ class UserController extends Controller
     public function create()
     {
         $user = new User();
-        return view('administracao.users.form', ["user" => $user, "url" => "administracao.users.store", "method" => "post", "permit" => true, "config" => false]);
+        $eras = Era::all();
+        return view('administracao.users.form', ["user" => $user, "eras" => $eras, "url" => "administracao.users.store", "method" => "post", "permit" => true, "config" => false]);
     }
 
     /**
@@ -69,13 +73,21 @@ class UserController extends Controller
         else
             $user->admin = 1;
         $user->save();
-        $time = new Time();
-        $time->nome = $request->time;
-        $time->user_id = $user->id;
-        $time->dinheiro = 0;
-        $time->escudo = $request->file('escudo')->getClientOriginalName();
-        $time->save();
-        Storage::put('times/'.$request->file('escudo')->getClientOriginalName(), file_get_contents($request->file('escudo')->getRealPath()));
+        foreach ($request->times as $key => $value) {
+            if(blank($value))
+                continue;
+            $time = new Time();
+            $time->nome = $value;
+            $time->dinheiro = 0;
+            $time->escudo = $request->escudos[$key]->getClientOriginalName();
+            $time->save();
+            Storage::put('times/'.$request->escudos[$key]->getClientOriginalName(), file_get_contents($request->escudos[$key]->getRealPath()));
+            $relation = new UserTime();
+            $relation->era_id = $key;
+            $relation->user_id = $user->id;
+            $relation->time_id = $time->id;
+            $relation->save();
+        }
         return redirect()->route('administracao.users.index')->with('message', 'Usuário cadastrado com sucesso!');
     }
 
@@ -88,8 +100,9 @@ class UserController extends Controller
     public function edit(Request $request, $id)
     {
         $user = User::findOrFail($id);
+        $eras = Era::all();
         (is_null($request->config)) ? $config = false : $config = true;
-        return view('administracao.users.form', ["user" => $user, "url" => "administracao.users.update", "method" => "put", "config" => $config]);
+        return view('administracao.users.form', ["user" => $user, "eras" => $eras, "url" => "administracao.users.update", "method" => "put", "config" => $config]);
     }
 
     /**
@@ -115,14 +128,30 @@ class UserController extends Controller
             }
         }
         $user->save();
-        $time = Time::where('user_id',$id)->first();
-        $time->nome = $request->time;
-        if(!is_null($request->file('escudo'))){
-            Storage::delete('times/'.$time->escudo);
-            $time->escudo = $request->file('escudo')->getClientOriginalName();
-            Storage::put('times/'.$request->file('escudo')->getClientOriginalName(), file_get_contents($request->file('escudo')->getRealPath()));
+        foreach ($request->times as $key => $value) {
+            if(blank($value))
+                continue;
+            $time_id = UserTime::where('user_id',$id)->where('era_id',$key)->pluck('time_id')->first();
+            if(isset($time_id)){
+                $time = Time::findOrFail($time_id);
+                $time->nome = $value;
+                if(!blank($request->escudos[$key]))
+                    $time->escudo = $request->escudos[$key]->getClientOriginalName();
+                $time->save();
+            } else {
+                $time = new Time();
+                $time->nome = $value;
+                $time->dinheiro = 0;
+                $time->escudo = $request->escudos[$key]->getClientOriginalName();
+                $time->save();
+                Storage::put('times/'.$request->escudos[$key]->getClientOriginalName(), file_get_contents($request->escudos[$key]->getRealPath()));
+                $relation = new UserTime();
+                $relation->era_id = $key;
+                $relation->user_id = $id;
+                $relation->time_id = $time->id;
+                $relation->save();
+            }
         }
-        $time->save();
         return redirect()->route('administracao.users.index')->with('message', 'Usuário atualizado com sucesso!');
     }
 
@@ -135,9 +164,12 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $time = Time::where('user_id',$id)->first();
-        Storage::delete('times/'.$time->escudo);
-        $time->delete();
+        $relation = UserTime::where('user_id',$id);
+        $times = Time::whereRaw('id IN ('.join(',',UserTime::where('user_id',$id)->pluck('time_id')->toArray()).')');
+        foreach ($times as $value)
+            Storage::delete('times/'.$value->escudo);
+        $relation->delete();
+        $times->delete();
         $user->delete();
         return redirect()->route('administracao.users.index')->with('message', 'Usuário deletado com sucesso!');
     }
@@ -187,11 +219,11 @@ class UserController extends Controller
             return $this->validate($request, [
                 'nome' => 'required|max:255',
                 // 'email' => 'required|email|max:255',
-                ]);
+            ]);
         else
             return $this->validate($request, [
                 'nome' => 'required|max:255',
                 'email' => 'required|max:255|unique:users',
-                ]);
+            ]);
     }
 }

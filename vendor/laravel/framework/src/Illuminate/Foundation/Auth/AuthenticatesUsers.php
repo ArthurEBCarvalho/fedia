@@ -5,6 +5,8 @@ namespace Illuminate\Foundation\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
+use Session;
+use App\Era;
 
 trait AuthenticatesUsers
 {
@@ -45,6 +47,7 @@ trait AuthenticatesUsers
      */
     public function postLogin(Request $request)
     {
+        Session::put('era',Era::orderByRaw('id DESC')->first());
         return $this->login($request);
     }
 

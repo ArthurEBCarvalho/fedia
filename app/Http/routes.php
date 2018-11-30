@@ -26,16 +26,17 @@ Route::post('auth/login', 'Auth\AuthController@postLogin');
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/', function () {
 		$noticias = App\Noticium::join('times','noticias.time_id','=','times.id')->select('noticias.id','noticias.titulo','noticias.subtitulo','noticias.imagem','noticias.created_at','times.nome')->orderBy('id','DESC')->limit(3)->get();
-		$temporada = App\Partida::all()->max('temporada');
-		$contratacoes = App\Financeiro::selectRaw('valor, SUBSTRING(descricao, 25, CHAR_LENGTH(descricao)-25) as nome')->where('time_id',Auth::user()->time()->id)->where('descricao','LIKE','%Contratação de Jogador%')->orderBy('id','DESC')->limit(5)->get();
-		$cartoes = App\Cartao::selectRaw('jogador_id,cor,campeonato,COUNT(*) as qtd')->where('time_id',Auth::user()->time()->id)->where('cumprido',0)->where('campeonato','!=','Amistoso')->where('temporada',$temporada)->groupBy('jogador_id','cor','campeonato')->get();
-		$lesoes = App\Lesao::selectRaw('jogador_id,restantes')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->where('restantes','!=',0)->get();
-		$gols = App\Gol::selectRaw('jogador_id,SUM(quantidade) as qtd')->where('time_id',Auth::user()->time()->id)->where('temporada',$temporada)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
+		$times_id = App\UserTime::where('era_id',Session::get('era')->id)->pluck('time_id')->toArray();
+		$temporada = App\Temporada::where('era_id',Session::get('era')->id)->max('id');
+		$contratacoes = App\Financeiro::selectRaw('valor, SUBSTRING(descricao, 25, CHAR_LENGTH(descricao)-25) as nome')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('descricao','LIKE','%Contratação de Jogador%')->whereIn('time_id',$times_id)->orderBy('id','DESC')->limit(5)->get();
+		$cartoes = App\Cartao::selectRaw('jogador_id,cor,campeonato,COUNT(*) as qtd')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('cumprido',0)->where('campeonato','!=','Amistoso')->where('temporada_id',$temporada)->groupBy('jogador_id','cor','campeonato')->get();
+		$lesoes = App\Lesao::selectRaw('jogador_id,restantes')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('temporada_id',$temporada)->where('restantes','!=',0)->get();
+		$gols = App\Gol::selectRaw('jogador_id,SUM(quantidade) as qtd')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('temporada_id',$temporada)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
 		$aproveitamento = ['Vitória' => 0, 'Empate' => 0, 'Derrota' => 0];
 		// Liga
 		if(isset($temporada)){
-			$partidas = App\Partida::where('temporada',$temporada)->where('campeonato','Liga')->whereRaw("resultado1 IS NOT NULL and resultado2 IS NOT NULL")->get();
-			$times = App\Time::where('nome','!=','Mercado Externo')->get()->keyBy('id');
+			$partidas = App\Partida::where('temporada_id',$temporada)->where('campeonato','Liga')->whereRaw("resultado1 IS NOT NULL and resultado2 IS NOT NULL")->get();
+			$times = App\Time::whereRaw("nome != 'Mercado Externo' and id IN (".join(',',$times_id).")")->get()->keyBy('id');
 			$classificacao = [];
 			foreach ($times as $key => $value) {
 				$classificacao[$value->id] = ['P' => 0, 'J' => 0, 'V' => 0, 'E' => 0, 'D' => 0, 'GP' => 0, 'GC' => 0, 'SG' => 0, 'id' => $value->id, 'nome' => $times[$value->id]->nome, 'escudo' => $times[$value->id]->escudo];
@@ -55,24 +56,24 @@ Route::group(['middleware' => 'auth'], function() {
 					$classificacao[$value->time1_id]["P"] += 3;
 					$classificacao[$value->time1_id]["V"] += 1;
 					$classificacao[$value->time2_id]["D"] += 1;
-					if($value->time1_id == Auth::user()->time()->id)
+					if($value->time1_id == @Auth::user()->time(Session::get('era')->id)->id)
 						$aproveitamento['Vitória'] += 1;
-					elseif($value->time2_id == Auth::user()->time()->id)
+					elseif($value->time2_id == @Auth::user()->time(Session::get('era')->id)->id)
 						$aproveitamento['Derrota'] += 1;
 				} elseif ($value->resultado1 == $value->resultado2) {
 					$classificacao[$value->time1_id]["P"] += 1;
 					$classificacao[$value->time2_id]["P"] += 1;
 					$classificacao[$value->time1_id]["E"] += 1;
 					$classificacao[$value->time2_id]["E"] += 1;
-					if($value->time1_id == Auth::user()->time()->id || $value->time2_id == Auth::user()->time()->id)
+					if($value->time1_id == @Auth::user()->time(Session::get('era')->id)->id || $value->time2_id == @Auth::user()->time(Session::get('era')->id)->id)
 						$aproveitamento['Empate'] += 1;
 				} else {
 					$classificacao[$value->time2_id]["P"] += 3;
 					$classificacao[$value->time2_id]["V"] += 1;
 					$classificacao[$value->time1_id]["D"] += 1;
-					if($value->time1_id == Auth::user()->time()->id)
+					if($value->time1_id == @Auth::user()->time(Session::get('era')->id)->id)
 						$aproveitamento['Derrota'] += 1;
-					elseif($value->time2_id == Auth::user()->time()->id)
+					elseif($value->time2_id == @Auth::user()->time(Session::get('era')->id)->id)
 						$aproveitamento['Vitória'] += 1;
 				}
 			}
@@ -88,21 +89,21 @@ Route::group(['middleware' => 'auth'], function() {
 
 			$artilheiros = [];
 			// Artilheiros Liga
-			$artilheiros['Liga'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Liga')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
+			$artilheiros['Liga'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',$temporada)->where('campeonato','Liga')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
 
 			// Copa
-			$copa = App\Partida::where('temporada',$temporada)->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
+			$copa = App\Partida::where('temporada_id',$temporada)->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
 			foreach ($copa as $key => $value) {
 				if(is_null($value->resultado1) || is_null($value->resultado2))
 					continue;
-				if($value->time1_id == Auth::user()->time()->id){
+				if($value->time1_id == @Auth::user()->time(Session::get('era')->id)->id){
 					if($value->resultado1 > $value->resultado2)
 						$aproveitamento['Vitória'] += 1;
 					elseif ($value->resultado1 == $value->resultado2)
 						$aproveitamento['Empate'] += 1;
 					else
 						$aproveitamento['Derrota'] += 1;
-				} elseif($value->time2_id == Auth::user()->time()->id){
+				} elseif($value->time2_id == @Auth::user()->time(Session::get('era')->id)->id){
 					if($value->resultado1 > $value->resultado2)
 						$aproveitamento['Derrota'] += 1;
 					elseif ($value->resultado1 == $value->resultado2)
@@ -113,16 +114,17 @@ Route::group(['middleware' => 'auth'], function() {
 			}
 
 			// Artilheiros Copa
-			$artilheiros['Copa'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada',$temporada)->where('campeonato','Copa')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
+			$artilheiros['Copa'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',$temporada)->where('campeonato','Copa')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
 
-			return view("index", ['temporada' => $temporada, 'classificacao' => $classificacao, 'copa' => $copa, 'times' => $times, 'artilheiros' => $artilheiros, 'contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'noticias' => $noticias, 'aproveitamento' => $aproveitamento]);
+			return view("index", ['temporada' => $temporada, 'classificacao' => $classificacao, 'copa' => $copa, 'times' => $times, 'artilheiros' => $artilheiros, 'contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'noticias' => $noticias, 'aproveitamento' => $aproveitamento, 'era' => Session::get('era')]);
 		} else {
-			return view("index", ['contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'noticias' => $noticias, 'lesoes_grafico' => $lesoes_grafico]);
+			return view("index", ['contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'noticias' => $noticias, 'era' => Session::get('era')]);
 		}
 
 	});
 
 Route::resource("administracao/users","UserController");
+Route::resource("administracao/eras","EraController");
 Route::resource("times","TimeController");
 Route::resource("transferencias","TransferenciumController");
 Route::resource("partidas","PartidaController");
@@ -141,6 +143,7 @@ Route::get("partidas_time", ['as' => 'partidas.partidas', 'uses' => 'PartidaCont
 Route::get("elencos", ['as' => 'transferencias.elencos', 'uses' => 'TransferenciumController@elencos']);
 Route::get("elencos_atualiza_status", 'TransferenciumController@update_status');
 Route::get("jogadores", ['as' => 'transferencias.jogadores', 'uses' => 'TransferenciumController@jogadores']);
+Route::post("administracao/eras_change", ['as' => 'administracao.eras.change', 'uses' => 'EraController@change']);
 });
 
 Route::get("noticia/{id}","NoticiumController@show");

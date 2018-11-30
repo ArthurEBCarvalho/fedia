@@ -52,7 +52,7 @@
 				<ul>
 					<li><a href="/" class="@if(Request::is('/')) active @endif"><i class="fa fa-home fa-fw"></i>Início</a></li>
 					<li class="submenu elencos">
-						<a href="#"><i class="fa fa-users fa-fw"></i>Jogadores</a>
+						<a href="#"><i class="fa fa-users fa-fw"></i>Jogadores <i class="caret-down fa fa-arrow-circle-down"></i></a>
 						<ul>
 							<li><a href="/elencos" class="@if(Request::is('elencos*')) active @endif">Todos os Elencos</a></li>
 							<li><a href="/jogadores" class="@if(Request::is('jogadores*')) active @endif">Todos os Jogadores</a></li>
@@ -79,6 +79,7 @@
 						<a href="#"><i class="fa fa-user-secret"></i> Administração <i class="caret-down fa fa-arrow-circle-down"></i></a>
 						<ul>
 							<li><a href="/administracao/users" class="@if(Request::is('administracao/users')) active @endif">Usuários</a></li>
+							<li><a href="/administracao/eras" class="@if(Request::is('administracao/eras')) active @endif">Eras</a></li>
 						</ul>
 					</li>
 					@endif
@@ -92,12 +93,23 @@
 			@if(Auth::check())
 			<div class="templatemo-top-nav-container">
 				<div class="row">
-					<nav class="templatemo-top-nav col-lg-8 col-md-8 col-xs-12 form-group">
+					<nav class="templatemo-top-nav col-lg-4 col-md-4 col-xs-12 form-group">
 						<ul class="text-uppercase">
 							<li><a href="{{ route('administracao.users.edit', ['id' => Auth::user()->id, 'config' => 'true']) }}" @if(!empty($config))class="active" @endif>Configurações</a></li>
 							<li><a href="javascript:;" data-toggle="modal" data-target="#confirmModal">Sair</a></li>
 						</ul>  
 					</nav>
+					<div class="col-md-4 col-xs-12">
+						{!! Form::open(['route' => ['administracao.eras.change', @Session::get('era')->id], 'method' => 'post', 'class' => 'form-horizontal']) !!}
+						<div class="input-group">
+							<div class="input-group-addon">Era: </div>
+							{!! Form::select('id', get_eras(), @Session::get('era')->id, ['class' => 'form-control']) !!}
+							<span class="input-group-btn">
+								<button type="submit" class="btn btn-info search-button"><i class="fa fa-check"></i></button>
+							</span>
+						</div>
+						{!! Form::close() !!}
+					</div>
 					<div class="col-md-4 col-xs-12 user_online"><span>Olá {{ Auth::user()->nome }}!</span></div>
 				</div>
 			</div>
@@ -159,7 +171,7 @@
 	<script src="/js/collapse.js" type="text/javascript"></script>
 	<script src="/js/transition.js" type="text/javascript"></script>
 	@if(Request::is('administracao*')) <script type="text/javascript">$('.submenu.admin > a').trigger( "click" );</script> @endif
-	@if(Request::is('partidas*') || Request::is('amistosos*')) <script type="text/javascript">$('.submenu.partidas > a').trigger( "click" );</script> @endif 
+	@if((Request::is('partidas*') || Request::is('amistosos*')) && !Request::is('partidas_temporadas*')) <script type="text/javascript">$('.submenu.partidas > a').trigger( "click" );</script> @endif 
 	@if(Request::is('elencos*') || Request::is('jogadores*')) <script type="text/javascript">$('.submenu.elencos > a').trigger( "click" );</script> @endif
 	<script type="text/javascript">
 		$(".chzn-select").chosen();

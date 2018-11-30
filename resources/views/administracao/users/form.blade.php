@@ -49,21 +49,27 @@
         </div>
         <div class="panel-body">
             <input type="hidden" name="config" value="true">
+            @foreach($eras as $era)
             <div class="row">
-                <div class="col-md-6 col-sm-12 form-group">
-                    {!! Html::decode(Form::label('time', 'Nome do Time <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
-                    {!! Form::text('time', @$user->time()->nome, ['required' => 'true', 'class' => 'form-control']) !!}
+                <div class="col-md-2 col-sm-12 form-group">
+                    {!! Html::decode(Form::label("era", 'Era', ['class' => 'control-label'])) !!}
+                    {!! Form::text('era', $era->nome, ['class' => 'form-control', 'readonly' => true]) !!}
                 </div>
                 <div class="col-md-6 col-sm-12 form-group">
+                    {!! Html::decode(Form::label('times', 'Nome do Time', ['class' => 'control-label'])) !!}
+                    {!! Form::text("times[$era->id]", @$user->time($era->id)->nome, ['class' => 'form-control']) !!}
+                </div>
+                <div class="col-md-4 col-sm-12 form-group">
                     @if($method == "post")
-                    {!! Html::decode(Form::label('escudo', 'Escudo <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
-                    {!! Form::file('escudo', ['required' => 'true', 'class' => 'filestyle']) !!}
+                    {!! Html::decode(Form::label('escudo', 'Escudo', ['class' => 'control-label'])) !!}
+                    {!! Form::file("escudos[$era->id]", ['class' => 'filestyle']) !!}
                     @else
                     {!! Html::decode(Form::label('escudo', 'Escudo', ['class' => 'control-label'])) !!}
-                    {!! Form::file('escudo', ['class' => 'filestyle', 'data-placeholder' => $user->time()->escudo]) !!}
+                    {!! Form::file("escudos[$era->id]", ['class' => 'filestyle', 'data-placeholder' => @$user->time($era->id)->escudo]) !!}
                     @endif
                 </div>
             </div>
+            @endforeach
         </div>     
     </div>
     @if($config)

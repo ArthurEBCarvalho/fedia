@@ -5,10 +5,12 @@ use App\Http\Controllers\Controller;
 
 use App\Transferencium;
 use App\Time;
+use App\UserTime;
 use App\Financeiro;
 use App\Jogador;
 use Illuminate\Http\Request;
 use DB;
+use Session;
 
 class TransferenciumController extends Controller {
 
@@ -26,7 +28,7 @@ class TransferenciumController extends Controller {
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
-				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
+				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->where('transferencias.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
 			}
 			else{
 				switch ($request->filtro) {
@@ -47,11 +49,11 @@ class TransferenciumController extends Controller {
 					break;
 				}
 				// $transferencias = Transferencium::whereRaw($clausure)->havingRaw($having)->orderByRaw($order)->paginate(30);
-				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->whereRaw($clausure)->orderByRaw($order)->paginate(30);
+				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->whereRaw($clausure)->where('transferencias.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
 			}
 		}
 		else
-			$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->orderByRaw($order)->paginate(30);
+			$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->where('transferencias.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
 		return view('transferencias.index', ["transferencias" => $transferencias, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "color" => $request->color]);
 	}
 
@@ -63,9 +65,12 @@ class TransferenciumController extends Controller {
 	public function create()
 	{
 		$transferencium = new Transferencium();
-		$times = Time::orderBy('nome')->lists('nome','id')->all();
+		$externo = Time::where('nome','Mercado Externo')->pluck('id')->first();
+		$times_id = UserTime::where("era_id",Session::get('era')->id)->pluck('time_id')->toArray();
+		$times_id[] = $externo;
+		$times = Time::whereIn('id',$times_id)->orderBy('nome')->lists('nome','id')->all();
 		$jogadores = [];
-		foreach (Jogador::all() as $key => $value) {
+		foreach (Jogador::whereIn('time_id',$times_id)->get() as $key => $value) {
 			if(empty($jogadores[$value->time_id]))
 				$jogadores[$value->time_id] = [];
 			$jogadores[$value->time_id][] = $value;
@@ -86,6 +91,7 @@ class TransferenciumController extends Controller {
 			return redirect()->route('transferencias.index', ['color' => 'red'])->with('message', "O $destino->nome não tem dinheiro suficiente para concretizar a contratação!");
 		} else {
 			$transferencium = new Transferencium();
+			$transferencium->era_id = Session::get('era')->id;
 			$transferencium->valor = str_replace(",", ".", str_replace(".", "", $request->input("valor")));
 			$transferencium->time1_id = $request->input("time1_id");
 			$transferencium->time2_id = $request->input("time2_id");
@@ -131,7 +137,16 @@ class TransferenciumController extends Controller {
 	public function edit($id)
 	{
 		$transferencium = Transferencium::findOrFail($id);
-		$times = Time::lists('nome','id')->all();
+		$externo = Time::where('nome','Mercado Externo')->pluck('id')->first();
+		$times_id = UserTime::where("era_id",Session::get('era')->id)->pluck('time_id')->toArray();
+		$times_id[] = $externo;
+		$times = Time::whereIn('id',$times_id)->orderBy('nome')->lists('nome','id')->all();
+		$jogadores = [];
+		foreach (Jogador::whereIn('time_id',$times_id)->get() as $key => $value) {
+			if(empty($jogadores[$value->time_id]))
+				$jogadores[$value->time_id] = [];
+			$jogadores[$value->time_id][] = $value;
+		}
 		return view('transferencias.form', ["transferencium" => $transferencium, "url" => "transferencias.update", "method" => "put", "times" => $times]);
 	}
 
@@ -191,12 +206,14 @@ class TransferenciumController extends Controller {
 	{
 		$registros = [];
 		$posicoes = ['PE' => 'Ataque', 'ATA' => 'Ataque', 'PD' => 'Ataque', 'MAE' => 'Meio Campo', 'SA' => 'Ataque', 'MAD' => 'Meio Campo', 'MEI' => 'Meio Campo', 'ME' => 'Meio Campo', 'MC' => 'Meio Campo', 'MD' => 'Meio Campo', 'VOL' => 'Meio Campo', 'ADE' => 'Defesa', 'LE' => 'Defesa', 'ZAG' => 'Defesa', 'LD' => 'Defesa', 'ADD' => 'Defesa', 'GOL' => 'Goleiro'];
+		$externo = Time::where('nome','Mercado Externo')->pluck('id')->first();
+		$times_id = UserTime::whereRaw("era_id = ".Session::get('era')->id." or time_id = $externo")->pluck('time_id')->toArray();
 		if(!blank($request->time) && $request->time != "Todos")
 			$times = Time::where('id',$request->time)->get();
 		else
-			$times = Time::where('nome','!=','Mercado Externo')->get();
+			$times = Time::whereIn('id',$times_id)->get();
 		$options = Time::where('nome','!=','Mercado Externo')->get();
-		$jogadores = Jogador::orderBy('overall','DESC')->get();
+		$jogadores = Jogador::whereIn('time_id',$times_id)->orderBy('overall','DESC')->get();
 		foreach ($times as $key => $value)
 			$registros[$value->id] = ['Goleiro' => [], 'Defesa' => [], 'Meio Campo' => [],'Ataque' => []];
 		foreach ($jogadores as $key => $value) {
@@ -231,22 +248,23 @@ class TransferenciumController extends Controller {
 		(strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
 		(strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
 		(isset($request->order)) ? $order = $request->order : $order = "overall DESC";
-		$externo  = Time::where('nome','Mercado Externo')->pluck('id');
+		$externo = Time::where('nome','Mercado Externo')->pluck('id')->first();
+		$times_id = UserTime::whereRaw("era_id = ".Session::get('era')->id." or time_id = $externo")->pluck('time_id')->toArray();
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
-				$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->where('jogadors.time_id','!=',$externo)->orderByRaw($order)->paginate(30);
+				$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->whereIn('jogadors.time_id',$times_id)->orderByRaw($order)->paginate(30);
 			}
 			else{
 				if(in_array($request->filtro, ['jogadors.nome','jogadors.posicoes','times.nome']))
-					$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->where('jogadors.time_id','!=',$externo)->where($request->filtro,'LIKE',"%$request->valor%")->orderByRaw($order)->paginate(30);
+					$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->whereIn('jogadors.time_id',$times_id)->where($request->filtro,'LIKE',"%$request->valor%")->orderByRaw($order)->paginate(30);
 				elseif($request->filtro == 'jogadors.valor')
-					$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->where('jogadors.time_id','!=',$externo)->where($request->filtro,str_replace(",", ".", str_replace(".", "", str_replace("€", "", $request->valor))))->orderByRaw($order)->paginate(30);
+					$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->whereIn('jogadors.time_id',$times_id)->where($request->filtro,str_replace(",", ".", str_replace(".", "", str_replace("€", "", $request->valor))))->orderByRaw($order)->paginate(30);
 				else
-					$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->where('jogadors.time_id','!=',$externo)->where($request->filtro,$request->valor)->orderByRaw($order)->paginate(30);
+					$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->whereIn('jogadors.time_id',$times_id)->where($request->filtro,$request->valor)->orderByRaw($order)->paginate(30);
 			}
 		}
 		else
-			$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->where('jogadors.time_id','!=',$externo)->orderByRaw($order)->paginate(30);
+			$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->whereIn('jogadors.time_id',$times_id)->orderByRaw($order)->paginate(30);
 		return view('transferencias.jogadores', ["jogadores" => $jogadores, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "STATUS" => ['Negociável','Inegociável','À Venda']]);
 	}
 

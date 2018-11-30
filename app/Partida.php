@@ -28,4 +28,12 @@ class Partida extends Model
     {
         return $this->hasOne('App\Time', 'id', 'time2_id')->first();
     }
+
+    /**
+     * Get the time record associated with the user.
+     */
+    public function mvp()
+    {
+        return $this->belongsTo('App\Jogador','mvp_id')->first();
+    }
 }

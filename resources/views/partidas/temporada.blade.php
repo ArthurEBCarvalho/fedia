@@ -59,6 +59,7 @@
                     <th>Vice Campeão da Liga FEDIA</th>
                     <th>Terceiro Lugar da Liga FEDIA</th>
                     <th>Artilheiro da Liga FEDIA</th>
+                    <th>MVP da Liga FEDIA</th>
                     <th>Campeão da Copa FEDIA</th>
                     <th>Vice Campeão da Copa FEDIA</th>
                     <th>Artilheiro da Copa FEDIA</th>
@@ -74,6 +75,7 @@
                     <td>{{@$temporada->liga2()->nome}}</td>
                     <td>{{@$temporada->liga3()->nome}}</td>
                     <td>{{join(', ',@$temporada->artilheiro_liga())}}</td>
+                    <td>{{@$temporada->mvp()->nome}}</td>
                     <td>{{@$temporada->copa1()->nome}}</td>
                     <td>{{@$temporada->copa2()->nome}}</td>
                     <td>{{join(', ',@$temporada->artilheiro_copa())}}</td>

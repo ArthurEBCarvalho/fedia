@@ -3,13 +3,13 @@
 <div class="templatemo-flex-row flex-content-row">
   <div class="templatemo-content-widget white-bg col-1 text-center">
     <i class="fa fa-times"></i>
-    {!! Html::image('images/times/'.Auth::user()->time()->escudo, Auth::user()->time()->nome, ['style' => 'max-width:300px;']) !!}
+    {!! Html::image('images/times/'.@Auth::user()->time($era->id)->escudo, @Auth::user()->time($era->id)->nome, ['style' => 'max-width:300px;']) !!}
   </div>
   <div class="templatemo-content-widget white-bg col-2">
     <h2 class="templatemo-inline-block">Status Atual</h2><hr>
     <p><strong>Player: </strong>{{Auth::user()->nome}}</p>
-    <p><strong>Time: </strong>{{Auth::user()->time()->nome}}</p>
-    <p><strong>Dinheiro: </strong>‎€ {{number_format(Auth::user()->time()->dinheiro,2,',','.')}}</p>
+    <p><strong>Time: </strong>{{@Auth::user()->time($era->id)->nome}}</p>
+    <p><strong>Dinheiro: </strong>‎€ {{number_format(@Auth::user()->time($era->id)->dinheiro,2,',','.')}}</p>
     <p><strong>Últimas Contratações: </strong></p>
     @if($contratacoes->count())
     <ul>
@@ -466,8 +466,10 @@
     aproveitamento.addColumn('number', 'Slices');
     aproveitamento.addRows([
       <?php 
-      foreach ($aproveitamento as $key => $value)
-        echo "['".$key."', $value],"
+      if(isset($aproveitamento)){
+        foreach ($aproveitamento as $key => $value)
+          echo "['".$key."', $value],";
+      }
       ?>
       ]);
 
@@ -500,6 +502,6 @@
 
 </script>
 <style type="text/css">
-  .col-2 { max-width: 600px; }
+.col-2 { max-width: 600px; }
 </style>
 @endsection

@@ -46,4 +46,12 @@ class Jogador extends Model
     {
     	return $this->belongsTo('App\Jogador')->first();
     }
+
+    /**
+     * Get the time record associated with the jogador.
+     */
+    public function time()
+    {
+        return $this->belongsTo('App\Time')->first();
+    }
 }

@@ -51,7 +51,7 @@
             <div class="col-md-8 col-sm-12 form-group">
                 <div class="input-group">
                     <span class="input-group-addon">Temporada: </span>
-                    <input type="number" class="form-control" name="temporada" value="{{$temporada}}">
+                    <input type="number" class="form-control" name="temporada" value="{{@$temporada->numero}}">
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Selecionar</button>
                     </span>
@@ -74,7 +74,7 @@
         <table class="table table-bordered templatemo-user-table">
             <thead>
                 <tr>
-                    <th colspan="7">{{get_tipo($tipo)}} - {{$temporada}}ª Temporada</th>
+                    <th colspan="7">{{get_tipo($tipo)}} - {{@$temporada->numero}}ª Temporada</th>
                 </tr>
             </thead>
             <tbody>
@@ -115,7 +115,7 @@
         <i class="fa fa-times"></i>                
         <div class="media">
             <div class="media-body">
-                <h2>Nenhuma {{substr_replace("Partidas", "", -1)}} encontrada!</h2>
+                <h2>Nenhum {{substr_replace("Amistosos", "", -1)}} encontrado!</h2>
             </div>        
         </div>                
     </div>

@@ -15,6 +15,9 @@
             @if(Request::is('amistosos*'))
             <input type="hidden" id="tipo" name="tipo" value="{{$tipo}}">
             @endif
+            @if(Request::is('partidas_time*'))
+            <input type="hidden" id="time_id" name="time_id" value="{{$time_id}}">
+            @endif
             <div class="modal-header">
                 <h4 class="modal-title"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
@@ -54,6 +57,18 @@
                             <td width="17%" align="center">{!! Form::number('penalti2', null, ['class' => 'form-control', 'min' => 0]) !!}</td>
                             <td class="time_2" width="25%" align="left"></td>
                             <td width="5%" align="center">{!! Html::image("#", '', ['class' => 'time_img img_2']) !!}</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                    <thead class="mvp">
+                        <tr>
+                            <th colspan="7">MVP da Partida</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="mvp">
+                        <tr>
+                            <td colspan="7">{!! Form::select('mvp', [], null, ['class' => 'chzn-select form-control store', 'id' => 'mvp']) !!}</td>
                             <td></td>
                         </tr>
                     </tbody>
@@ -166,6 +181,13 @@
                             <td width="5%" align="center">{!! Html::image("#", '', ['class' => 'time_img img_2']) !!}</td>
                         </tr>
                     </tbody>
+                    <thead class="mvp">
+                        <tr>
+                            <th colspan="7">MVP da Partida</th>
+                        </tr>
+                    </thead>
+                    <tbody class="mvp" id="mvp">
+                    </tbody>
                     <thead>
                         <tr>
                             <th colspan="3">Gols</th>
@@ -202,18 +224,18 @@
     </div>
 </div>
 <style type="text/css">
-    .add_linha {
-        cursor: pointer;
-    }
+.add_linha {
+    cursor: pointer;
+}
 
-    .chzn-container, .chzn-drop, .chzn-search input { width: 100% !important; }
+.chzn-container, .chzn-drop, .chzn-search input { width: 100% !important; }
 
-    #modal_store, #modal_show { overflow-y:scroll;overflow-x:scroll; }
-    @media screen and (max-width: 992px) {
-        #modal_store .modal-content, #modal_show .modal-content { width: 685px; }
-        #modal_store table, #modal_show table { width: 640px; }
-    }
-    #modal_store input, #modal_show input { min-width: 60px; }
+#modal_store, #modal_show { overflow-y:scroll;overflow-x:scroll; }
+@media screen and (max-width: 992px) {
+    #modal_store .modal-content, #modal_show .modal-content { width: 685px; }
+    #modal_store table, #modal_show table { width: 640px; }
+}
+#modal_store input, #modal_show input { min-width: 60px; }
 </style>
 <script type="text/javascript">
     $img_path = "images/times/image.png";
@@ -221,6 +243,7 @@
 
     $jogadores = [];
     $nomes = [];
+    $mvps = [];
     $gols = [];
     $cartoes = [];
     $lesoes = [];
@@ -235,6 +258,11 @@
         }
     }
 
+    if(isset($mvps)){
+        foreach($mvps as $key => $value){
+            echo '$mvps[\''.$key."'] = '$value';";
+        }
+    }
     foreach($gols as $value){
         echo 'if(!$gols[\''.$value->partida_id.'_'.$value->time_id.'\']){$gols[\''.$value->partida_id.'_'.$value->time_id.'\'] = [];}';
         echo '$gols[\''.$value->partida_id.'_'.$value->time_id.'\'].push({\'jogador\': '.$value->jogador_id.', \'time\': '.$value->time_id.', \'quantidade\': '.$value->quantidade.'});';
@@ -269,6 +297,10 @@
             else
                 $(".penaltis").hide();
         }
+        if(campeonato == "Liga")
+            $(".mvp").show();
+        else
+            $(".mvp").hide();
         $("#partida_id").val(id);
         $("#campeonato").val(campeonato);
         $(".resultado").val(0);
@@ -299,13 +331,14 @@
                 $("#modal_show").find('.modal-title').html('Visualizar Resultado da Liga FEDIA');
                 $("#modal_show").find('.body-title').html('Rodada '+rodada);
             }
-            $("#modal_show").find('tbody#gols').html('');
-            $("#modal_show").find('tbody#cartoes').html('');
-            $("#modal_show").find('tbody#lesoes').html('');
+            $("#modal_show").find('tbody#mvp, tbody#gols, tbody#cartoes, tbody#lesoes').html('');
             $("#modal_show").find('input#resultado1').val(resultado1);
             $("#modal_show").find('input#resultado2').val(resultado2);
             $("#modal_show").find('input#penalti1').val(penalti1);
             $("#modal_show").find('input#penalti2').val(penalti2);
+            // mvp
+            if($mvps[id] !== undefined)
+            $("#modal_show").find('tbody#mvp').append("<tr><td colspan='7' align='center'>"+$mvps[id]+"</td></tr>");
             // gols
             $row = '';
             if(typeof $gols[id+'_'+id1] !== 'undefined'){$tamanho1 = $gols[id+'_'+id1].length;}else{$tamanho1 = 0;}
@@ -400,6 +433,11 @@
                 $("#modal_store").find('.body-title').html('Rodada '+rodada);
             }
             $("#modal_store").find('select.chzn-select > option').remove();
+            for(var index in $jogadores[id1])
+                $("#mvp").append("<option value='"+$jogadores[id1][index]['id']+"'>"+$jogadores[id1][index]['nome']+"</option>");
+            for(var index in $jogadores[id2])
+                $("#mvp").append("<option value='"+$jogadores[id2][index]['id']+"'>"+$jogadores[id2][index]['nome']+"</option>");
+            $("#mvp").trigger("liszt:updated");
             $("#modal_store").find('select.time1').each(function( index ) {
                 $(this).append("<option value=''>Nenhum</option>");
                 for(var index in $jogadores[id1])

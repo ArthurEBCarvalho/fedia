@@ -1,4 +1,5 @@
 <?php
+use App\Era;
 
 if (! function_exists('link_to')) {
     /**
@@ -142,5 +143,18 @@ if (! function_exists('get_tipo')) {
      */
     function get_tipo($tipo) {
         return ['Amistosos','Classificatória da Copa FEDIA','SuperCopa FEDIA'][$tipo];
+    }
+}
+
+if (! function_exists('get_eras')) {
+    /**
+     * Return path, depending of the environment
+     *
+     * @param integer $tipo
+     *
+     * @return string
+     */
+    function get_eras() {
+        return Era::lists('nome','id')->all();
     }
 }

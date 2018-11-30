@@ -51,7 +51,7 @@
             <div class="col-md-6 col-sm-12 form-group">
                 <div class="input-group">
                     <span class="input-group-addon">Temporada: </span>
-                    <input type="number" class="form-control" name="temporada" value="{{$temporada}}">
+                    <input type="number" class="form-control" name="temporada" value="{{@$temporada->numero}}">
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Selecionar</button>
                     </span>
@@ -82,7 +82,7 @@
         <table class="table table-bordered templatemo-user-table">
             <thead>
                 <tr>
-                    <th colspan="7">Partidas da {{$rodada}}ª rodada da Liga FEDIA - Temporada {{$temporada}}</th>
+                    <th colspan="7">Partidas da {{$rodada}}ª rodada da Liga FEDIA - Temporada {{@$temporada->numero}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -107,7 +107,7 @@
         <table class="table table-bordered templatemo-user-table">
             <thead>
                 <tr>
-                    <th colspan="16">Copa FEDIA - Temporada {{$temporada}}</th>
+                    <th colspan="16">Copa FEDIA - Temporada {{@$temporada->numero}}</th>
                 </tr>
             </thead>
             <tbody>

@@ -2,7 +2,7 @@
 
 @section('content')
 @if (Session::has('message'))
-<div class="templatemo-content-widget {{$color}}-bg">
+<div class="templatemo-content-widget {{@$color}}-bg">
     <i class="fa fa-times"></i>                
     <div class="media">
         <div class="media-body">
