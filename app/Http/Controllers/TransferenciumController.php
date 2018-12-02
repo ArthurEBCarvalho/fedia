@@ -206,13 +206,12 @@ class TransferenciumController extends Controller {
 	{
 		$registros = [];
 		$posicoes = ['PE' => 'Ataque', 'ATA' => 'Ataque', 'PD' => 'Ataque', 'MAE' => 'Meio Campo', 'SA' => 'Ataque', 'MAD' => 'Meio Campo', 'MEI' => 'Meio Campo', 'ME' => 'Meio Campo', 'MC' => 'Meio Campo', 'MD' => 'Meio Campo', 'VOL' => 'Meio Campo', 'ADE' => 'Defesa', 'LE' => 'Defesa', 'ZAG' => 'Defesa', 'LD' => 'Defesa', 'ADD' => 'Defesa', 'GOL' => 'Goleiro'];
-		$externo = Time::where('nome','Mercado Externo')->pluck('id')->first();
-		$times_id = UserTime::whereRaw("era_id = ".Session::get('era')->id." or time_id = $externo")->pluck('time_id')->toArray();
+		$times_id = UserTime::where("era_id",Session::get('era')->id)->pluck('time_id')->toArray();
 		if(!blank($request->time) && $request->time != "Todos")
 			$times = Time::where('id',$request->time)->get();
 		else
 			$times = Time::whereIn('id',$times_id)->get();
-		$options = Time::where('nome','!=','Mercado Externo')->get();
+		$options = Time::whereIn('id',$times_id)->get();
 		$jogadores = Jogador::whereIn('time_id',$times_id)->orderBy('overall','DESC')->get();
 		foreach ($times as $key => $value)
 			$registros[$value->id] = ['Goleiro' => [], 'Defesa' => [], 'Meio Campo' => [],'Ataque' => []];
@@ -248,8 +247,7 @@ class TransferenciumController extends Controller {
 		(strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
 		(strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
 		(isset($request->order)) ? $order = $request->order : $order = "overall DESC";
-		$externo = Time::where('nome','Mercado Externo')->pluck('id')->first();
-		$times_id = UserTime::whereRaw("era_id = ".Session::get('era')->id." or time_id = $externo")->pluck('time_id')->toArray();
+		$times_id = UserTime::where("era_id",Session::get('era')->id)->pluck('time_id')->toArray();
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->whereIn('jogadors.time_id',$times_id)->orderByRaw($order)->paginate(30);

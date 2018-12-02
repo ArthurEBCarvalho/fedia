@@ -788,7 +788,7 @@ class PartidaController extends Controller {
 			$indisponiveis['Liga'][$lesionado->time][] = $lesionado->jogador;
 		}
 		$mvps = [];
-		foreach ($partidas as $value){
+		foreach (Partida::where('temporada_id',@$temporada->id)->whereRaw("time1_id = $time->id or time2_id = $time->id")->get() as $value){
 			if(isset($value->mvp_id))
 				$mvps[$value->id] = $value->mvp()->nome;
 		}

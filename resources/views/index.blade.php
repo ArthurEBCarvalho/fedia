@@ -46,7 +46,7 @@
   <div class="col-1">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
       <i class="fa fa-times"></i>
-      <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Classificação da Liga - Temporada {{$temporada}}</h2></div>
+      <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Classificação da Liga - Temporada {{$temporada->numero}}</h2></div>
       <div class="table-responsive">
         <table class="table table-bordered">
           <thead>
@@ -88,7 +88,7 @@
   <div class="col-2">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
       <i class="fa fa-times"></i>
-      <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Artilharia da Liga - Temporada {{$temporada}}</h2></div>
+      <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Artilharia da Liga - Temporada {{$temporada->numero}}</h2></div>
       <div class="table-responsive">
         <table class="table table-bordered">
           <thead>
@@ -119,7 +119,7 @@
   <div class="col-1">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
       <i class="fa fa-times"></i>
-      <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Copa - Temporada {{$temporada}}</h2></div>
+      <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Copa - Temporada {{$temporada->numero}}</h2></div>
       <div class="table-responsive">
         <table class="table table-bordered templatemo-user-table">
           <tbody>
@@ -357,7 +357,7 @@
   <div class="col-2">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
       <i class="fa fa-times"></i>
-      <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Artilharia da Copa - Temporada {{$temporada}}</h2></div>
+      <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Artilharia da Copa - Temporada {{$temporada->numero}}</h2></div>
       <div class="table-responsive">
         <table class="table table-bordered">
           <thead>
