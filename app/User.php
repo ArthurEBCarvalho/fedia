@@ -44,7 +44,6 @@ class User extends Authenticatable
     public function time($era)
     {
         // return $this->hasOne('App\Time')->first();
-        return \DB::table('times')->join('user_times','user_times.time_id','=','times.id')->selectRaw('times.*')->where('user_times.user_id',$this->id)->where('user_times.era_id',$era)->first();
+        return \DB::table('times')->join('user_times','user_times.time_id','=','times.id')->select('times.*')->where('user_times.user_id',$this->id)->where('user_times.era_id',$era)->first();
     }
-
 }

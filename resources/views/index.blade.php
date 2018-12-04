@@ -2,7 +2,6 @@
 @section('content')
 <div class="templatemo-flex-row flex-content-row">
   <div class="templatemo-content-widget white-bg col-1 text-center">
-    <i class="fa fa-times"></i>
     {!! Html::image('images/times/'.@Auth::user()->time($era->id)->escudo, @Auth::user()->time($era->id)->nome, ['style' => 'max-width:300px;']) !!}
   </div>
   <div class="templatemo-content-widget white-bg col-2">
@@ -45,7 +44,6 @@
 <div class="templatemo-flex-row flex-content-row">
   <div class="col-1">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
-      <i class="fa fa-times"></i>
       <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Classificação da Liga - Temporada {{$temporada->numero}}</h2></div>
       <div class="table-responsive">
         <table class="table table-bordered">
@@ -85,9 +83,8 @@
       </div>                          
     </div>
   </div>
-  <div class="col-2">
+  <div class="col-3">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
-      <i class="fa fa-times"></i>
       <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Artilharia da Liga - Temporada {{$temporada->numero}}</h2></div>
       <div class="table-responsive">
         <table class="table table-bordered">
@@ -113,12 +110,38 @@
       </div>                          
     </div>
   </div>
+  <div class="col-3">
+    <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+      <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">MVP da Liga - Temporada {{$temporada->numero}}</h2></div>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr class="bold">
+              <td align="center">Quantidade</td>
+              <td align="center">Jogador</td>
+              <td align="center">Time</td>
+            </tr>
+          </thead>
+          <tbody>
+            <?php $count = 1; ?>
+            @foreach($mvps as $key => $value)
+            <tr>
+              <td align="center">{{$value->qtd}}</td>
+              <td align="center">{{$value->jogador}}</td>
+              <td align="center">{!! Html::image('images/times/'.$value->escudo, $value->nome, ['style' => 'max-height:50px;']) !!}</td>
+            </tr>
+            <?php $count++ ?>
+            @endforeach
+          </tbody>
+        </table>    
+      </div>                          
+    </div>
+  </div>
 </div>
 <!-- Copa -->
 <div class="templatemo-flex-row flex-content-row">
   <div class="col-1">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
-      <i class="fa fa-times"></i>
       <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Copa - Temporada {{$temporada->numero}}</h2></div>
       <div class="table-responsive">
         <table class="table table-bordered templatemo-user-table">
@@ -356,7 +379,6 @@
   </div>
   <div class="col-2">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
-      <i class="fa fa-times"></i>
       <div class="panel-heading templatemo-position-relative"><h2 class="text-uppercase">Artilharia da Copa - Temporada {{$temporada->numero}}</h2></div>
       <div class="table-responsive">
         <table class="table table-bordered">
@@ -420,14 +442,13 @@
 <div class="templatemo-flex-row flex-content-row templatemo-overflow-hidden"> <!-- overflow hidden for iPad mini landscape view-->
   <div class="col-1 templatemo-overflow-hidden">
     <div class="templatemo-content-widget white-bg templatemo-overflow-hidden">
-      <i class="fa fa-times"></i>
       <div class="templatemo-flex-row flex-content-row">
         <div class="col-1 col-lg-4 col-md-12">
-          <h2 class="text-center"><strong>Gols na Temporada {{$temporada}}</strong></h2>
+          <h2 class="text-center"><strong>Gols na Temporada {{$temporada->numero}}</strong></h2>
           <div id="pie_chart_div_gol" class="templatemo-chart"></div> <!-- Pie chart div -->
         </div>
         <div class="col-1 col-lg-4 col-md-12">
-          <h2 class="text-center"><strong>Aproveitamento na Temporada {{$temporada}}</strong></h2>
+          <h2 class="text-center"><strong>Aproveitamento na Temporada {{$temporada->numero}}</strong></h2>
           <div id="pie_chart_div_lesao" class="templatemo-chart"></div> <!-- Pie chart div -->
         </div>
       </div>                
