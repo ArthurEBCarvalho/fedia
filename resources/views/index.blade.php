@@ -126,9 +126,9 @@
             <?php $count = 1; ?>
             @foreach($mvps as $key => $value)
             <tr>
-              <td align="center">{{$value->qtd}}</td>
-              <td align="center">{{$value->jogador}}</td>
-              <td align="center">{!! Html::image('images/times/'.$value->escudo, $value->nome, ['style' => 'max-height:50px;']) !!}</td>
+              <td align="center">{{$value['qtd']}}</td>
+              <td align="center">{{$value['jogador']}}</td>
+              <td align="center">{!! Html::image('images/times/'.$value['escudo'], $value['nome'], ['style' => 'max-height:50px;']) !!}</td>
             </tr>
             <?php $count++ ?>
             @endforeach
