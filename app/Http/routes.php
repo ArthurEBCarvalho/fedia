@@ -88,12 +88,16 @@ Route::group(['middleware' => 'auth'], function() {
 			array_multisort($sort['P'], SORT_DESC, $sort['V'], SORT_DESC, $sort['SG'], SORT_DESC, $sort['GP'], SORT_DESC, $classificacao);
 
 			// MVPS ordenados por quantidade e colocação na Liga
-			$mvps = App\Partida::join('jogadors','partidas.mvp_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id as time_id,times.escudo,times.nome,jogadors.nome as jogador,COUNT(partidas.mvp_id) as qtd')->where('temporada_id',@$temporada->id)->where('campeonato','Liga')->whereNotNull('mvp_id')->groupBy('partidas.mvp_id','times.id','jogadors.id')->orderBy('qtd','desc')->limit(10)->toArray();
-
+			$mvps = App\Partida::join('jogadors','partidas.mvp_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id as time_id,times.escudo,times.nome,jogadors.nome as jogador,COUNT(partidas.mvp_id) as qtd')->where('temporada_id',@$temporada->id)->where('campeonato','Liga')->whereNotNull('mvp_id')->groupBy('partidas.mvp_id','times.id','jogadors.id')->orderBy('qtd','desc')->limit(10)->get()->toArray();
 			$sort = array();
-			foreach ($mvps as $k => $v){
-				$sort['colocacao'][$k] = key($classificacao[$v['time_id']]);
-				$sort['qtd'][$k] = $v['qtd'];
+			foreach ($mvps as $key => $value){
+				foreach ($classificacao as $k => $v){
+					if($v['nome'] == $value['nome']){
+						$sort['colocacao'][$key] = $k;
+						break;
+					}
+				}
+				$sort['qtd'][$key] = $value['qtd'];
 			}
 			array_multisort($sort['qtd'], SORT_DESC, $sort['colocacao'], SORT_ASC, $mvps);
 
