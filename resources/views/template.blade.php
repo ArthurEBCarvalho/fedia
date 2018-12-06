@@ -80,6 +80,7 @@
 						<ul>
 							<li><a href="/administracao/users" class="@if(Request::is('administracao/users')) active @endif">Usuários</a></li>
 							<li><a href="/administracao/eras" class="@if(Request::is('administracao/eras')) active @endif">Eras</a></li>
+							<li><a href="/administracao/multa_create" class="@if(Request::is('administracao/multa_create')) active @endif">Aplicar Multa</a></li>
 						</ul>
 					</li>
 					@endif

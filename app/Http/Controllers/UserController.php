@@ -7,6 +7,7 @@ use App\User;
 use App\Time;
 use App\UserTime;
 use App\Era;
+use App\Financeiro;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Hash;
@@ -205,6 +206,32 @@ class UserController extends Controller
             else
                 return "true";
         }
+    }
+
+    /**
+     * Formulário para aplicar multa
+     *
+     * @return Response
+     */
+    public function multa_create()
+    {
+        $times = Time::join('user_times','user_times.time_id','=','times.id')->join('users','users.id','=','user_times.user_id')->selectRaw("times.id,CONCAT(times.nome,' - ',users.nome) as nome")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
+        return view('administracao.users.multa_create', ["times" => $times]);
+    }
+
+    /**
+     * Aplica Multa ao time selecionado, creditando do dinheiro e criando o registro financeiro
+     *
+     * @return Response
+     */
+    public function multa_store(Request $request)
+    {
+        $request->valor = floatval(str_replace(",", ".", str_replace(".", "", $request->valor)));
+        $time = Time::findOrFail($request->time_id);
+        $time->dinheiro -= $request->valor;
+        $time->save();
+        Financeiro::create(['valor' => $request->valor, 'operacao' => 1, 'descricao' => "Multa: $request->descricao", 'time_id' => $time->id]);
+        return redirect()->route('administracao.users.multa_create')->with('message', 'Multa aplicada com sucesso!');
     }
 
     /**
