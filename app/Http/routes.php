@@ -160,6 +160,11 @@ Route::get("jogadores", ['as' => 'transferencias.jogadores', 'uses' => 'Transfer
 Route::post("administracao/eras_change", ['as' => 'administracao.eras.change', 'uses' => 'EraController@change']);
 Route::get("administracao/multa_create", ['as' => 'administracao.users.multa_create', 'uses' => 'UserController@multa_create']);
 Route::post("administracao/multa_store", ['as' => 'administracao.users.multa_store', 'uses' => 'UserController@multa_store']);
+
+// Legislação
+Route::get('legislacao/premiacoes', function (){ return view("legislacao.premiacoes"); });
+Route::get("legislacao/regras", function() { return Redirect::to("Regras.pdf"); });
+
 });
 
 Route::get("noticia/{id}","NoticiumController@show");

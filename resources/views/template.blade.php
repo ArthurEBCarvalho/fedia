@@ -74,6 +74,13 @@
 					</li>
 					<li><a href="/partidas_temporadas" class="@if(Request::is('partidas_temporadas')) active @endif"><i class="fa fa-list fa-fw"></i>Temporadas</a></li>
 					<li><a href="/indisponiveis" class="@if(Request::is('indisponiveis')) active @endif"><i class="fa fa-ambulance fa-fw"></i>Cartões e Lesões</a></li>
+					<li class="submenu legislacao">
+						<a href="#"><i class="fa fa-check-square"></i> Legislação <i class="caret-down fa fa-arrow-circle-down"></i></a>
+						<ul>
+							<li><a href="/legislacao/premiacoes" class="@if(Request::is('legislacao/premiacoes')) active @endif">Premiações</a></li>
+							<li><a href="/legislacao/regras"  target="_blank">Regras</a></li>
+						</ul>
+					</li>
 					@if(Auth::user()->isAdmin())
 					<li class="submenu admin">
 						<a href="#"><i class="fa fa-user-secret"></i> Administração <i class="caret-down fa fa-arrow-circle-down"></i></a>
@@ -171,6 +178,7 @@
 	<script src="/js/chosen.js" type="text/javascript"></script>
 	<script src="/js/collapse.js" type="text/javascript"></script>
 	<script src="/js/transition.js" type="text/javascript"></script>
+	@if(Request::is('legislacao*')) <script type="text/javascript">$('.submenu.legislacao > a').trigger( "click" );</script> @endif
 	@if(Request::is('administracao*')) <script type="text/javascript">$('.submenu.admin > a').trigger( "click" );</script> @endif
 	@if((Request::is('partidas*') || Request::is('amistosos*')) && !Request::is('partidas_temporadas*')) <script type="text/javascript">$('.submenu.partidas > a').trigger( "click" );</script> @endif 
 	@if(Request::is('elencos*') || Request::is('jogadores*')) <script type="text/javascript">$('.submenu.elencos > a').trigger( "click" );</script> @endif
