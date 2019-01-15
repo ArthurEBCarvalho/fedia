@@ -99,7 +99,8 @@ Route::group(['middleware' => 'auth'], function() {
 				}
 				$sort['qtd'][$key] = $value['qtd'];
 			}
-			array_multisort($sort['qtd'], SORT_DESC, $sort['colocacao'], SORT_ASC, $mvps);
+			if(!empty($sort))
+				array_multisort($sort['qtd'], SORT_DESC, $sort['colocacao'], SORT_ASC, $mvps);
 
 			$artilheiros = [];
 			// Artilheiros Liga
