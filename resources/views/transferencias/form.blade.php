@@ -70,6 +70,14 @@
             @if($method == 'post') {!! Form::text('valor', NULL, ['class' => 'form-control','onKeyDown' => 'Formata(this,20,event,2)', 'required' => 'true']) !!} @else {!! Form::text('valor', number_format($transferencium->valor,2,',','.'), ['class' => 'form-control','onKeyDown' => 'Formata(this,20,event,2)', 'required' => 'true']) !!} @endif
         </div>
     </div>
+    <div class="row form-group">
+        <div class="col-md-12">
+            <div class="templatemo-block">
+                <input type="checkbox" name="multa" id="multa" value="true"> 
+                <label for="multa"><span></span>Pagamento de Multa Rescisória</label> 
+            </div>
+        </div>
+    </div>
     <div class="form-group text-right">
         <button type="submit" class="templatemo-blue-button"><i class="fa fa-plus"></i> Salvar</button>
         <a class="templatemo-white-button" href="{{ route('transferencias.index') }}"><i class="fa fa-arrow-left"></i> Voltar</a>

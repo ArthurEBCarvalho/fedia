@@ -15,16 +15,25 @@ class {{class}} extends Controller {
 	 */
 	public function index(Request $request)
 	{
+		$params = [];
 		(strpos($request->fullUrl(),'order=')) ? $param = $request->order : $param = null;
 		(strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
 		(strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
-		(isset($request->order)) ? $order = $request->order : $order = "id";
+		if(isset($request->order)){
+			$order = $request->order;
+			$params['order'] = $request->order;
+		} else {
+			$order = "created_at DESC";
+		}
+
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
 				${{model_name_var}} = {{model_name_class}}::orderByRaw($order)->paginate(30);
 			}
 			else{
+				$params['filtro'] = $request->filtro;
+				$params['valor'] = $request->valor;
 				switch ($request->filtro) {
 					case 'data':
 					$valor = date_format(date_create_from_format('d/m/Y', $request->valor), 'Y-m-d');
@@ -41,7 +50,7 @@ class {{class}} extends Controller {
 		}
 		else
 			${{model_name_var}} = {{model_name_class}}::orderByRaw($order)->paginate(30);
-		return view('{{model_name_var}}.index', ["{{model_name_var}}" => ${{model_name_var}}, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
+		return view('{{model_name_var}}.index', ["{{model_name_var}}" => ${{model_name_var}}, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "params" => $params]);
 	}
 
 	/**

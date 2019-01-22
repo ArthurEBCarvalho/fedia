@@ -262,7 +262,12 @@ class SyntaxBuilder
             $syntax .= '@if(strpos($param,\'desc\') !== false)'."\n";
             $syntax .= '<th><a href="{{str_replace(str_replace(\' \',\'%20\',$param),\''.strtolower($field['name']).'\',Request::fullUrl())}}" class="white-text templatemo-sort-by @if(strpos($param,\''.strtolower($field['name']).'\') !== false)active @endif">'.ucfirst($field['name']).' <span class="fa fa-caret-{{$caret}}"></span></a></th>'."\n";
             $syntax .= '@else'."\n";
-            $syntax .= '<th><a href="{{str_replace(\'order=\'.$param,\'order='.strtolower($field['name']).'\',Request::fullUrl())}} @if($param == \''.strtolower($field['name']).'\')desc @endif" class="white-text templatemo-sort-by @if(strpos($param,\''.strtolower($field['name']).'\') !== false)active @endif">'.ucfirst($field['name']).' <span class="fa fa-caret-{{$caret}}"></span></a></th>'."\n";
+            $syntax .= '@if($param == \''.strtolower($field['name']).'\')'."\n";
+            $syntax .= '<?php $url = str_replace(\'order='.strtolower($field['name']).'\',\'order='.strtolower($field['name']).' desc\',Request::fullUrl()); ?>'."\n";
+            $syntax .= '@else'."\n";
+            $syntax .= '<?php $url = Request::fullUrl(); ?>'."\n";
+            $syntax .= '@endif'."\n";
+            $syntax .= '<th><a href="{{str_replace(\'order=\'.$param,\'order='.strtolower($field['name']).'\',$url)}}" class="white-text templatemo-sort-by @if(strpos($param,\''.strtolower($field['name']).'\') !== false)active @endif">'.ucfirst($field['name']).' <span class="fa fa-caret-{{$caret}}"></span></a></th>'."\n";
             $syntax .= '@endif'."\n";
             $syntax .= '@endif'."\n";
 

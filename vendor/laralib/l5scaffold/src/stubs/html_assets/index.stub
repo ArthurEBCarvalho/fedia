@@ -17,6 +17,9 @@
     <div class="row">
         <div class="col-md-8 col-sm-12 form-group">
             <form role="form" class="form-search" method="get">
+                @if(isset($params['order']))
+                <input type="hidden" name="order" value="{{$params['order']}}">
+                @endif
                 <div class="input-group">
                     <select class="form-control search-filtro" name="filtro">
                         <option>Limpar</option>
@@ -71,7 +74,7 @@
 </div>
 <div class="pagination-wrap">
     <p class="text_pagination pull-left">Exibindo do <strong>{{${{class}}->firstItem()}}</strong> ao <strong>{{${{class}}->lastItem()}}</strong> de um total de <strong>{{${{class}}->total()}}</strong> registros</p>
-    {!! ${{class}}->render() !!}
+    {!! ${{class}}->appends($params)->render() !!}
 </div>
 @else
 <div class="templatemo-content-widget no-padding">

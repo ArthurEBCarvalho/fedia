@@ -17,16 +17,25 @@ class FinanceiroController extends Controller {
 	 */
 	public function index(Request $request)
 	{
+		$params = [];
 		(strpos($request->fullUrl(),'order=')) ? $param = $request->order : $param = null;
 		(strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
 		(strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
-		(isset($request->order)) ? $order = $request->order : $order = "id DESC";
+		if(isset($request->order)){
+			$order = $request->order;
+			$params['order'] = $request->order;
+		} else {
+			$order = "id DESC";
+		}
+
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
 				$financeiros = Financeiro::where('time_id',Auth::user()->time(Session::get('era')->id)->id)->orderByRaw($order);
 			}
 			else{
+				$params['filtro'] = $request->filtro;
+				$params['valor'] = $request->valor;
 				switch ($request->filtro) {
 					case 'valor':
 					$clausure = "valor = ".str_replace(",", ".", str_replace(".", "", $request->valor));
@@ -54,7 +63,7 @@ class FinanceiroController extends Controller {
 				$total -= $value->valor;
 		}
 		$financeiros = $financeiros->paginate(30);
-		return view('financeiros.index', ["financeiros" => $financeiros, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "total" => $total]);
+		return view('financeiros.index', ["financeiros" => $financeiros, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "total" => $total, "params" => $params]);
 	}
 
 }

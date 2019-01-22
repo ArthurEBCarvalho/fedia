@@ -16,16 +16,25 @@ class EraController extends Controller {
 	 */
 	public function index(Request $request)
 	{
+		$params = [];
 		(strpos($request->fullUrl(),'order=')) ? $param = $request->order : $param = null;
 		(strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
 		(strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
-		(isset($request->order)) ? $order = $request->order : $order = "id";
+		if(isset($request->order)){
+			$order = $request->order;
+			$params['order'] = $request->order;
+		} else {
+			$order = "id";
+		}
+
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
 				$eras = Era::orderByRaw($order)->paginate(30);
 			}
 			else{
+				$params['filtro'] = $request->filtro;
+				$params['valor'] = $request->valor;
 				switch ($request->filtro) {
 					case 'data':
 					$valor = date_format(date_create_from_format('d/m/Y', $request->valor), 'Y-m-d');
@@ -42,7 +51,7 @@ class EraController extends Controller {
 		}
 		else
 			$eras = Era::orderByRaw($order)->paginate(30);
-		return view('administracao.eras.index', ["eras" => $eras, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
+		return view('administracao.eras.index', ["eras" => $eras, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "params" => $params]);
 	}
 
 	/**

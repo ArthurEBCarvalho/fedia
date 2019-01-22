@@ -17,6 +17,9 @@
     <div class="row">
         <div class="col-md-8 col-sm-12 form-group">
             <form role="form" class="form-search" method="get">
+                @if(isset($params['order']))
+                <input type="hidden" name="order" value="{{$params['order']}}">
+                @endif
                 <div class="input-group">
                     <select class="form-control search-filtro" name="filtro">
                         <option>Limpar</option>
@@ -56,7 +59,12 @@
                     @if(strpos($param,'desc') !== false)
                     <th><a href="{{str_replace(str_replace(' ','%20',$param),'data',Request::fullUrl())}}" class="white-text templatemo-sort-by @if(strpos($param,'data') !== false)active @endif">Data <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @else
-                    <th><a href="{{str_replace('order='.$param,'order=data',Request::fullUrl())}} @if($param == 'data')desc @endif" class="white-text templatemo-sort-by @if(strpos($param,'data') !== false)active @endif">Data <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    @if($param == 'data')
+                    <?php $url = str_replace('order=data','order=data desc',Request::fullUrl()); ?>
+                    @else
+                    <?php $url = Request::fullUrl(); ?>
+                    @endif
+                    <th><a href="{{str_replace('order='.$param,'order=data',$url)}}" class="white-text templatemo-sort-by @if(strpos($param,'data') !== false)active @endif">Data <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @endif
                     @endif
 
@@ -66,7 +74,12 @@
                     @if(strpos($param,'desc') !== false)
                     <th><a href="{{str_replace(str_replace(' ','%20',$param),'jogador',Request::fullUrl())}}" class="white-text templatemo-sort-by @if(strpos($param,'jogador') !== false)active @endif">Jogador <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @else
-                    <th><a href="{{str_replace('order='.$param,'order=jogador',Request::fullUrl())}} @if($param == 'jogador')desc @endif" class="white-text templatemo-sort-by @if(strpos($param,'jogador') !== false)active @endif">Jogador <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    @if($param == 'jogador')
+                    <?php $url = str_replace('order=jogador','order=jogador desc',Request::fullUrl()); ?>
+                    @else
+                    <?php $url = Request::fullUrl(); ?>
+                    @endif
+                    <th><a href="{{str_replace('order='.$param,'order=jogador',$url)}}" class="white-text templatemo-sort-by @if(strpos($param,'jogador') !== false)active @endif">Jogador <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @endif
                     @endif
 
@@ -76,7 +89,12 @@
                     @if(strpos($param,'desc') !== false)
                     <th><a href="{{str_replace(str_replace(' ','%20',$param),'valor',Request::fullUrl())}}" class="white-text templatemo-sort-by @if(strpos($param,'valor') !== false)active @endif">Valor <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @else
-                    <th><a href="{{str_replace('order='.$param,'order=valor',Request::fullUrl())}} @if($param == 'valor')desc @endif" class="white-text templatemo-sort-by @if(strpos($param,'valor') !== false)active @endif">Valor <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    @if($param == 'valor')
+                    <?php $url = str_replace('order=valor','order=valor desc',Request::fullUrl()); ?>
+                    @else
+                    <?php $url = Request::fullUrl(); ?>
+                    @endif
+                    <th><a href="{{str_replace('order='.$param,'order=valor',$url)}}" class="white-text templatemo-sort-by @if(strpos($param,'valor') !== false)active @endif">Valor <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @endif
                     @endif
 
@@ -86,7 +104,12 @@
                     @if(strpos($param,'desc') !== false)
                     <th><a href="{{str_replace(str_replace(' ','%20',$param),'time1',Request::fullUrl())}}" class="white-text templatemo-sort-by @if(strpos($param,'time1') !== false)active @endif">Origem <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @else
-                    <th><a href="{{str_replace('order='.$param,'order=time1',Request::fullUrl())}} @if($param == 'time1')desc @endif" class="white-text templatemo-sort-by @if(strpos($param,'time1') !== false)active @endif">Origem <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    @if($param == 'time1')
+                    <?php $url = str_replace('order=time1','order=time1 desc',Request::fullUrl()); ?>
+                    @else
+                    <?php $url = Request::fullUrl(); ?>
+                    @endif
+                    <th><a href="{{str_replace('order='.$param,'order=time1',$url)}}" class="white-text templatemo-sort-by @if(strpos($param,'time1') !== false)active @endif">Origem <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @endif
                     @endif
 
@@ -96,7 +119,12 @@
                     @if(strpos($param,'desc') !== false)
                     <th><a href="{{str_replace(str_replace(' ','%20',$param),'time2',Request::fullUrl())}}" class="white-text templatemo-sort-by @if(strpos($param,'time2') !== false)active @endif">Destino <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @else
-                    <th><a href="{{str_replace('order='.$param,'order=time2',Request::fullUrl())}} @if($param == 'time2')desc @endif" class="white-text templatemo-sort-by @if(strpos($param,'time2') !== false)active @endif">Destino <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    @if($param == 'time2')
+                    <?php $url = str_replace('order=time2','order=time2 desc',Request::fullUrl()); ?>
+                    @else
+                    <?php $url = Request::fullUrl(); ?>
+                    @endif
+                    <th><a href="{{str_replace('order='.$param,'order=time2',$url)}}" class="white-text templatemo-sort-by @if(strpos($param,'time2') !== false)active @endif">Destino <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @endif
                     @endif
 
@@ -127,7 +155,7 @@
 </div>
 <div class="pagination-wrap">
     <p class="text_pagination pull-left">Exibindo do <strong>{{$transferencias->firstItem()}}</strong> ao <strong>{{$transferencias->lastItem()}}</strong> de um total de <strong>{{$transferencias->total()}}</strong> registros</p>
-    {!! $transferencias->render() !!}
+    {!! $transferencias->appends($params)->render() !!}
 </div>
 @else
 <div class="templatemo-content-widget no-padding">

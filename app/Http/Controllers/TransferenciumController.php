@@ -21,16 +21,25 @@ class TransferenciumController extends Controller {
 	 */
 	public function index(Request $request)
 	{
+		$params = [];
 		(strpos($request->fullUrl(),'order=')) ? $param = $request->order : $param = null;
 		(strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
 		(strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
-		(isset($request->order)) ? $order = $request->order : $order = "transferencias.created_at DESC";
+		if(isset($request->order)){
+			$order = $request->order;
+			$params['order'] = $request->order;
+		} else {
+			$order = "transferencias.created_at DESC";
+		}
+
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
 				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->where('transferencias.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
 			}
 			else{
+				$params['filtro'] = $request->filtro;
+				$params['valor'] = $request->valor;
 				switch ($request->filtro) {
 					case 'data':
 					$clausure = "transferencias.created_at between '".date_format(date_create_from_format('d/m/Y', $request->valor), 'Y-m-d')." 00:00:00' and '".date_format(date_create_from_format('d/m/Y', $request->valor), 'Y-m-d')." 23:59:59'";
@@ -48,13 +57,12 @@ class TransferenciumController extends Controller {
 					$clausure = "time2.nome LIKE '%$request->valor%'";
 					break;
 				}
-				// $transferencias = Transferencium::whereRaw($clausure)->havingRaw($having)->orderByRaw($order)->paginate(30);
 				$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->whereRaw($clausure)->where('transferencias.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
 			}
 		}
 		else
 			$transferencias = \DB::table('transferencias')->join(DB::raw('times time1'),'time1.id','=','transferencias.time1_id')->join(DB::raw('times time2'),'time2.id','=','transferencias.time2_id')->join('jogadors','jogadors.id','=','transferencias.jogador_id')->select('transferencias.id','transferencias.created_at', 'jogadors.nome as jogador','transferencias.valor','time1.nome as time1','time2.nome as time2')->where('transferencias.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
-		return view('transferencias.index', ["transferencias" => $transferencias, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "color" => $request->color]);
+		return view('transferencias.index', ["transferencias" => $transferencias, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "color" => $request->color, "params" => $params]);
 	}
 
 	/**
@@ -109,6 +117,8 @@ class TransferenciumController extends Controller {
 			} else {
 				$jogador = Jogador::findOrFail($request->input("jogador_id"));
 				$jogador->time_id = $request->input("time2_id");
+				if(isset($request->multa))
+					$jogador->valor = $transferencium->valor;
 				$jogador->save();
 			}
 			$transferencium->jogador_id = $jogador->id;
@@ -243,16 +253,25 @@ class TransferenciumController extends Controller {
 	 */
 	public function jogadores(Request $request)
 	{
+		$params = [];
 		(strpos($request->fullUrl(),'order=')) ? $param = $request->order : $param = null;
 		(strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
 		(strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
-		(isset($request->order)) ? $order = $request->order : $order = "overall DESC";
+		if(isset($request->order)){
+			$order = $request->order;
+			$params['order'] = $request->order;
+		} else {
+			$order = "overall DESC";
+		}
+
 		$times_id = UserTime::where("era_id",Session::get('era')->id)->pluck('time_id')->toArray();
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->whereIn('jogadors.time_id',$times_id)->orderByRaw($order)->paginate(30);
 			}
 			else{
+				$params['filtro'] = $request->filtro;
+				$params['valor'] = $request->valor;
 				if(in_array($request->filtro, ['jogadors.nome','jogadors.posicoes','times.nome']))
 					$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->whereIn('jogadors.time_id',$times_id)->where($request->filtro,'LIKE',"%$request->valor%")->orderByRaw($order)->paginate(30);
 				elseif($request->filtro == 'jogadors.valor')
@@ -263,7 +282,7 @@ class TransferenciumController extends Controller {
 		}
 		else
 			$jogadores = \DB::table('jogadors')->join(DB::raw('times'),'times.id','=','jogadors.time_id')->select('jogadors.nome','jogadors.posicoes', 'jogadors.idade','jogadors.overall','jogadors.status','jogadors.valor','times.nome as time')->whereIn('jogadors.time_id',$times_id)->orderByRaw($order)->paginate(30);
-		return view('transferencias.jogadores', ["jogadores" => $jogadores, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "STATUS" => ['Negociável','Inegociável','À Venda']]);
+		return view('transferencias.jogadores', ["jogadores" => $jogadores, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "STATUS" => ['Negociável','Inegociável','À Venda'], 'params' => $params]);
 	}
 
 }

@@ -23,16 +23,25 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $params = [];
         (strpos($request->fullUrl(),'order=')) ? $param = $request->order : $param = null;
         (strpos($request->fullUrl(),'?')) ? $signal = '&' : $signal = '?';
         (strpos($param,'desc')) ? $caret = 'up' : $caret = 'down';
-        (isset($request->order)) ? $order = $request->order : $order = "id";
+        if(isset($request->order)){
+            $order = $request->order;
+            $params['order'] = $request->order;
+        } else {
+            $order = "users.id";
+        }
+
         if(isset($request->filtro)){
             if($request->filtro == "Limpar"){
                 $request->valor = NULL;
                 $users = \DB::table('users')->join('user_times','user_times.user_id','=','users.id')->join('times','times.id','=','user_times.time_id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where('user_times.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
             }
             else{
+                $params['filtro'] = $request->filtro;
+                $params['valor'] = $request->valor;
                 if(strpos($request->filtro,"nome"))
                     $users = \DB::table('users')->join('user_times','user_times.user_id','=','users.id')->join('times','times.id','=','user_times.time_id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where($request->filtro, 'LIKE', "%$request->valor%")->where('user_times.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
                 else
@@ -41,7 +50,7 @@ class UserController extends Controller
         }
         else
             $users = \DB::table('users')->join('user_times','user_times.user_id','=','users.id')->join('times','times.id','=','user_times.time_id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where('user_times.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
-        return view('administracao.users.index', ["users" => $users, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret]);
+        return view('administracao.users.index', ["users" => $users, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "params" => $params]);
     }
 
     /**

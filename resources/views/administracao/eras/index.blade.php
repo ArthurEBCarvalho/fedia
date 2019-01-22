@@ -17,6 +17,9 @@
     <div class="row">
         <div class="col-md-8 col-sm-12 form-group">
             <form role="form" class="form-search" method="get">
+                @if(isset($params['order']))
+                <input type="hidden" name="order" value="{{$params['order']}}">
+                @endif
                 <div class="input-group">
                     <select class="form-control search-filtro" name="filtro">
                         <option>Limpar</option>
@@ -50,7 +53,12 @@
                     @if(strpos($param,'desc') !== false)
                     <th><a href="{{str_replace(str_replace(' ','%20',$param),'nome',Request::fullUrl())}}" class="white-text templatemo-sort-by @if(strpos($param,'nome') !== false)active @endif">Nome <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @else
-                    <th><a href="{{str_replace('order='.$param,'order=nome',Request::fullUrl())}} @if($param == 'nome')desc @endif" class="white-text templatemo-sort-by @if(strpos($param,'nome') !== false)active @endif">Nome <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    @if($param == 'nome')
+                    <?php $url = str_replace('order=nome','order=nome desc',Request::fullUrl()); ?>
+                    @else
+                    <?php $url = Request::fullUrl(); ?>
+                    @endif
+                    <th><a href="{{str_replace('order='.$param,'order=nome',$url)}}" class="white-text templatemo-sort-by @if(strpos($param,'nome') !== false)active @endif">Nome <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @endif
                     @endif
 
@@ -80,7 +88,7 @@
 </div>
 <div class="pagination-wrap">
     <p class="text_pagination pull-left">Exibindo do <strong>{{$eras->firstItem()}}</strong> ao <strong>{{$eras->lastItem()}}</strong> de um total de <strong>{{$eras->total()}}</strong> registros</p>
-    {!! $eras->render() !!}
+    {!! $eras->appends($params)->render() !!}
 </div>
 @else
 <div class="templatemo-content-widget no-padding">
