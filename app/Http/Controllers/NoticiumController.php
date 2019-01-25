@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use File;
 use Storage;
 use Auth;
+use Session;
 
 class NoticiumController extends Controller {
 
@@ -68,7 +69,7 @@ class NoticiumController extends Controller {
 		$noticium->titulo = $request->input("titulo");
 		$noticium->subtitulo = $request->input("subtitulo");
 		$noticium->conteudo = $request->input("conteudo");
-		$noticium->time_id = Auth::user()->time()->id;
+		$noticium->time_id = Auth::user()->time(Session::get('era')->id)->id;
 		// Imagem de Anexo
 		$path = public_path()."/images/noticias/$noticium->id";
 		if(!File::exists($path))
