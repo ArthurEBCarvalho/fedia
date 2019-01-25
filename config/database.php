@@ -67,30 +67,30 @@ return [
         ],
 
         // Heroku
-        // 'pgsql' => [
-        //     'driver' => 'pgsql',
-        //     'host' => 'ec2-184-73-201-79.compute-1.amazonaws.com',
-        //     'port' => '5432',
-        //     'database' => 'dd4p36m74n3s8q',
-        //     'username' => 'enztrywjndmpch',
-        //     'password' => 'a4d1a493c9483b94257810fc135e2c0f50db3ea854abc31e0d423e2ee3d31fdf',
-        //     'charset' => 'utf8',
-        //     'prefix' => '',
-        //     'schema' => 'public',
-        // ],
-
-        // Local
         'pgsql' => [
             'driver' => 'pgsql',
-            'host' => 'localhost',
+            'host' => 'ec2-184-73-201-79.compute-1.amazonaws.com',
             'port' => '5432',
-            'database' => 'fedia',
-            'username' => 'postgres',
-            'password' => 'mypassword',
+            'database' => 'dd4p36m74n3s8q',
+            'username' => 'enztrywjndmpch',
+            'password' => 'a4d1a493c9483b94257810fc135e2c0f50db3ea854abc31e0d423e2ee3d31fdf',
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',
         ],
+
+        // Local
+        // 'pgsql' => [
+        //     'driver' => 'pgsql',
+        //     'host' => 'localhost',
+        //     'port' => '5432',
+        //     'database' => 'fedia',
+        //     'username' => 'postgres',
+        //     'password' => 'mypassword',
+        //     'charset' => 'utf8',
+        //     'prefix' => '',
+        //     'schema' => 'public',
+        // ],
 
     ],
 
