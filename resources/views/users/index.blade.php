@@ -34,9 +34,11 @@
                 </div>
             </form>
         </div>
+        @if(Auth::user()->isAdmin())
         <div class="col-md-4 col-sm-12 form-group">
-            <div class="pull-right search-new"><a href="{{ route('administracao.users.create') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Novo {{substr_replace("Usuários", "", -1)}}</a></div>
+            <div class="pull-right search-new"><a href="{{ route('users.create') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Novo {{substr_replace("Usuários", "", -1)}}</a></div>
         </div>
+        @endif
     </div>
 </div>
 
@@ -130,7 +132,10 @@
                     <th><a href="{{ str_replace('order='.$param,'order=admin',$url) }}" class="white-text templatemo-sort-by @if(strpos($param,'admin') !== false)active @endif">Admin <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @endif
                     @endif
+
+                    @if(Auth::user()->isAdmin())
                     <th colspan="2"></th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -142,16 +147,18 @@
                     <td>{{$user->time}}</td>
                     <td align="right">€ {{number_format($user->dinheiro,2,',','.')}}</td>
                     <td>@if($user->admin == 1) Sim @else Não @endif</td>
+                    @if(Auth::user()->isAdmin())
                     <td class="small" align="center" alt="Editar Usuário">
-                        <a href="{{ route('administracao.users.edit', $user->id) }}">
+                        <a href="{{ route('users.edit', $user->id) }}">
                             {!! Html::image("/images/icons/edit.png", "Editar Usuário") !!}
                         </a>
                     </td>
                     <td class="small" align="center" alt="Deletar Usuário">
-                        <a onclick="confirm_delete('{{ route('administracao.users.destroy', $user->id) }}')" href="javascript:;" data-toggle="modal" data-target="#confirm_delete">
+                        <a onclick="confirm_delete('{{ route('users.destroy', $user->id) }}')" href="javascript:;" data-toggle="modal" data-target="#confirm_delete">
                             {!! Html::image('/images/icons/delete.png', 'Deletar Usuário') !!}
                         </a>
                     </td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>

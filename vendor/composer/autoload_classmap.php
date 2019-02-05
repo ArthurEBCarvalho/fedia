@@ -42,6 +42,7 @@ return array(
     'ChangeTimesStringFromTransferenciasTable' => $baseDir . '/database/migrations/2018_07_04_115920_change_times_string_from_transferencias_table.php',
     'CreateAmistososTable' => $baseDir . '/database/migrations/2018_07_30_135830_create_amistosos_table.php',
     'CreateArtilheirosTable' => $baseDir . '/database/migrations/2018_07_10_121300_create_artilheiros_table.php',
+    'CreateAusenciasTable' => $baseDir . '/database/migrations/2019_02_05_182301_create_ausencias_table.php',
     'CreateCartaosTable' => $baseDir . '/database/migrations/2018_07_04_130426_create_cartaos_table.php',
     'CreateErasTable' => $baseDir . '/database/migrations/2018_11_27_191352_create_eras_table.php',
     'CreateFinanceirosTable' => $baseDir . '/database/migrations/2018_07_09_123359_create_financeiros_table.php',

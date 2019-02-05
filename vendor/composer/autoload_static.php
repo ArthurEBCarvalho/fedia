@@ -335,6 +335,7 @@ class ComposerStaticInitf1a39921c2c519affe51e8b2fba61365
         'ChangeTimesStringFromTransferenciasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_04_115920_change_times_string_from_transferencias_table.php',
         'CreateAmistososTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_30_135830_create_amistosos_table.php',
         'CreateArtilheirosTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_10_121300_create_artilheiros_table.php',
+        'CreateAusenciasTable' => __DIR__ . '/../..' . '/database/migrations/2019_02_05_182301_create_ausencias_table.php',
         'CreateCartaosTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_04_130426_create_cartaos_table.php',
         'CreateErasTable' => __DIR__ . '/../..' . '/database/migrations/2018_11_27_191352_create_eras_table.php',
         'CreateFinanceirosTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_09_123359_create_financeiros_table.php',

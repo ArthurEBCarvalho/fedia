@@ -81,13 +81,14 @@
 							<li><a href="/legislacao/regras"  target="_blank">Regras</a></li>
 						</ul>
 					</li>
+					<li><a href="/users" class="@if(Request::is('users')) active @endif"><i class="fa fa-users fa-fw"></i>Usuários</a></li>
 					@if(Auth::user()->isAdmin())
 					<li class="submenu admin">
 						<a href="#"><i class="fa fa-user-secret"></i> Administração <i class="caret-down fa fa-arrow-circle-down"></i></a>
 						<ul>
-							<li><a href="/administracao/users" class="@if(Request::is('administracao/users')) active @endif">Usuários</a></li>
 							<li><a href="/administracao/eras" class="@if(Request::is('administracao/eras')) active @endif">Eras</a></li>
 							<li><a href="/administracao/multa_create" class="@if(Request::is('administracao/multa_create')) active @endif">Aplicar Multa</a></li>
+							<li><a href="/administracao/ausencia_create" class="@if(Request::is('administracao/ausencia_create')) active @endif">Ausências</a></li>
 						</ul>
 					</li>
 					@endif
@@ -103,7 +104,7 @@
 				<div class="row">
 					<nav class="templatemo-top-nav col-lg-4 col-md-4 col-xs-12 form-group">
 						<ul class="text-uppercase">
-							<li><a href="{{ route('administracao.users.edit', ['id' => Auth::user()->id, 'config' => 'true']) }}" @if(!empty($config))class="active" @endif>Configurações</a></li>
+							<li><a href="{{ route('users.edit', ['id' => Auth::user()->id, 'config' => 'true']) }}" @if(!empty($config))class="active" @endif>Configurações</a></li>
 							<li><a href="javascript:;" data-toggle="modal" data-target="#confirmModal">Sair</a></li>
 						</ul>  
 					</nav>

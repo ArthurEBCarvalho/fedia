@@ -36,7 +36,7 @@
     </div>
     <div class="form-group text-right">
         <button type="submit" class="templatemo-blue-button"><i class="fa fa-plus"></i> Salvar</button>
-        <a class="templatemo-white-button" href="{{ route('transferencias.index') }}"><i class="fa fa-arrow-left"></i> Voltar</a>
+        <a class="templatemo-white-button" href="{{ route('users.index') }}"><i class="fa fa-arrow-left"></i> Voltar</a>
     </div>
     {!! Form::close() !!}
 

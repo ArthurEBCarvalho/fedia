@@ -18,7 +18,7 @@
 
 <div class="templatemo-content-widget white-bg">
     <h2 class="margin-bottom-10">
-        @if(Request::is('administracao/users/create'))
+        @if(Request::is('users/create'))
         Novo {{substr_replace("Usuários", "", -1)}}
         @else
         Editar {{substr_replace("Usuários", "", -1)}} #{{ $user->id }}
@@ -120,7 +120,7 @@
     <div class="form-group text-right">
         <button type="submit" class="templatemo-blue-button"><i class="fa fa-plus"></i> Salvar</button>
         @if(empty($config))
-        <a href="{{ route('administracao.users.index') }}" class="templatemo-white-button"><i class="fa fa-arrow-left"></i> Cancelar</a>
+        <a href="{{ route('users.index') }}" class="templatemo-white-button"><i class="fa fa-arrow-left"></i> Cancelar</a>
         @endif
     </div>
 </div>

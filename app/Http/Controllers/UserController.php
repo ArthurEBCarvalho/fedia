@@ -8,10 +8,13 @@ use App\Time;
 use App\UserTime;
 use App\Era;
 use App\Financeiro;
+use App\Ausencia;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Hash;
+use Log;
 use Session;
+use DateTime;
 // use App\UserPermissao;
 
 class UserController extends Controller
@@ -50,7 +53,7 @@ class UserController extends Controller
         }
         else
             $users = \DB::table('users')->join('user_times','user_times.user_id','=','users.id')->join('times','times.id','=','user_times.time_id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where('user_times.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
-        return view('administracao.users.index', ["users" => $users, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "params" => $params]);
+        return view('users.index', ["users" => $users, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "params" => $params]);
     }
 
     /**
@@ -62,7 +65,7 @@ class UserController extends Controller
     {
         $user = new User();
         $eras = Era::all();
-        return view('administracao.users.form', ["user" => $user, "eras" => $eras, "url" => "administracao.users.store", "method" => "post", "permit" => true, "config" => false]);
+        return view('users.form', ["user" => $user, "eras" => $eras, "url" => "users.store", "method" => "post", "permit" => true, "config" => false]);
     }
 
     /**
@@ -98,7 +101,7 @@ class UserController extends Controller
             $relation->time_id = $time->id;
             $relation->save();
         }
-        return redirect()->route('administracao.users.index')->with('message', 'Usuário cadastrado com sucesso!');
+        return redirect()->route('users.index')->with('message', 'Usuário cadastrado com sucesso!');
     }
 
     /**
@@ -112,7 +115,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $eras = Era::all();
         (is_null($request->config)) ? $config = false : $config = true;
-        return view('administracao.users.form', ["user" => $user, "eras" => $eras, "url" => "administracao.users.update", "method" => "put", "config" => $config]);
+        return view('users.form', ["user" => $user, "eras" => $eras, "url" => "users.update", "method" => "put", "config" => $config]);
     }
 
     /**
@@ -162,7 +165,7 @@ class UserController extends Controller
                 $relation->save();
             }
         }
-        return redirect()->route('administracao.users.index')->with('message', 'Usuário atualizado com sucesso!');
+        return redirect()->route('users.index')->with('message', 'Usuário atualizado com sucesso!');
     }
 
     /**
@@ -181,7 +184,7 @@ class UserController extends Controller
         $relation->delete();
         $times->delete();
         $user->delete();
-        return redirect()->route('administracao.users.index')->with('message', 'Usuário deletado com sucesso!');
+        return redirect()->route('users.index')->with('message', 'Usuário deletado com sucesso!');
     }
 
     /**
@@ -225,7 +228,7 @@ class UserController extends Controller
     public function multa_create()
     {
         $times = Time::join('user_times','user_times.time_id','=','times.id')->join('users','users.id','=','user_times.user_id')->selectRaw("times.id,CONCAT(times.nome,' - ',users.nome) as nome")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
-        return view('administracao.users.multa_create', ["times" => $times]);
+        return view('users.multa_create', ["times" => $times]);
     }
 
     /**
@@ -241,6 +244,42 @@ class UserController extends Controller
         $time->save();
         Financeiro::create(['valor' => $request->valor, 'operacao' => 1, 'descricao' => "Multa: $request->descricao", 'time_id' => $time->id]);
         return redirect()->route('administracao.users.multa_create')->with('message', 'Multa aplicada com sucesso!');
+    }
+
+    /**
+     * Formulário para aplicar multa
+     *
+     * @return Response
+     */
+    public function ausencia_create(Request $request)
+    {
+        if(isset($request->user_id) && $request->user_id != "Todos")
+            $users = User::join('user_times','users.id','=','user_times.user_id')->selectRaw("users.*")->where("user_times.era_id",Session::get('era')->id)->where('users.id',$request->user_id)->lists('nome','id')->all();
+        else
+            $users = User::join('user_times','users.id','=','user_times.user_id')->selectRaw("users.*")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
+        $meses = [1 => "Janeiro", 2 => "Fevereiro", 3 => "Março", 4 => "Abril", 5 => "Maio", 6 => "Junho", 7 => "Julho", 8 => "Agosto", 9 => "Setembro", 10 => "Outubro", 11 => "Novembro", 12 => "Dezembro"];
+        $anos = [date("Y")-1 => date("Y")-1,date("Y") => date("Y"),date("Y")+1 => date("Y")+1];
+        $ausencias = [];
+        foreach ($users as $id => $nome) {
+            $ausencias[$id] = [];
+            foreach (array_keys($meses) as $mes)
+                $ausencias[$id][$mes] = 0;
+        }
+        foreach (Ausencia::whereRaw("data between '".date("Y")."-01-01' and '".date("Y")."-12-31'")->get() as $value)
+            $ausencias[$value->user_id][intval(date("m", strtotime($value->data)))]++;
+        return view('users.ausencia_create', ["users" => $users, "meses" => $meses, "anos" => $anos, "ausencias" => $ausencias, "user_id" => $request->user_id]);
+    }
+
+    /**
+     * Aplica ausência aos usuários selecionado, creditando do dinheiro e criando o registro financeiro
+     *
+     * @return Response
+     */
+    public function ausencia_store(Request $request)
+    {
+        foreach ($request->users as $id)
+            Ausencia::create(['user_id' => $id, 'data' => new DateTime("$request->ano-$request->mes-01")]);
+        return redirect()->route('administracao.users.ausencia_create')->with('message', 'Ausências cadastradas com sucesso!');
     }
 
     /**

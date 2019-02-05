@@ -138,7 +138,7 @@ Route::group(['middleware' => 'auth'], function() {
 
 	});
 
-Route::resource("administracao/users","UserController");
+Route::resource("users","UserController");
 Route::resource("administracao/eras","EraController");
 Route::resource("times","TimeController");
 Route::resource("transferencias","TransferenciumController");
@@ -161,6 +161,8 @@ Route::get("jogadores", ['as' => 'transferencias.jogadores', 'uses' => 'Transfer
 Route::post("administracao/eras_change", ['as' => 'administracao.eras.change', 'uses' => 'EraController@change']);
 Route::get("administracao/multa_create", ['as' => 'administracao.users.multa_create', 'uses' => 'UserController@multa_create']);
 Route::post("administracao/multa_store", ['as' => 'administracao.users.multa_store', 'uses' => 'UserController@multa_store']);
+Route::get("administracao/ausencia_create", ['as' => 'administracao.users.ausencia_create', 'uses' => 'UserController@ausencia_create']);
+Route::post("administracao/ausencia_store", ['as' => 'administracao.users.ausencia_store', 'uses' => 'UserController@ausencia_store']);
 
 // Legislação
 Route::get('legislacao/premiacoes', function (){ return view("legislacao.premiacoes"); });
