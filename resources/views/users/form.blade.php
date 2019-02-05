@@ -108,6 +108,7 @@
             </div>
         </div>     
     </div>
+    @else
     <div class="row form-group">
         <div class="col-md-12">
             <div class="checkbox squaredTwo">
