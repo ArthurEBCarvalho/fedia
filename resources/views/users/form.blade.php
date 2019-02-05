@@ -108,7 +108,6 @@
             </div>
         </div>     
     </div>
-    @endif
     <div class="row form-group">
         <div class="col-md-12">
             <div class="checkbox squaredTwo">
@@ -117,6 +116,7 @@
             </div>
         </div>                  
     </div>
+    @endif
     <div class="form-group text-right">
         <button type="submit" class="templatemo-blue-button"><i class="fa fa-plus"></i> Salvar</button>
         @if(empty($config))
