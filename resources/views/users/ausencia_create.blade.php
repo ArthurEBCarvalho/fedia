@@ -22,7 +22,7 @@
                         <span class="input-group-addon">Time: </span>
                         <select class="form-control search-filtro" name="user_id" style="width: 100%;">
                             <option>Todos</option>
-                            @foreach($users as $id => $nome)
+                            @foreach($all_users as $id => $nome)
                             <option value="{{$id}}" @if ($user_id == $id) selected @endif>{{$nome}}</option>
                             @endforeach
                         </select>

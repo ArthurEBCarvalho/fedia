@@ -257,6 +257,7 @@ class UserController extends Controller
             $users = User::join('user_times','users.id','=','user_times.user_id')->selectRaw("users.*")->where("user_times.era_id",Session::get('era')->id)->where('users.id',$request->user_id)->lists('nome','id')->all();
         else
             $users = User::join('user_times','users.id','=','user_times.user_id')->selectRaw("users.*")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
+        $all_users = User::join('user_times','users.id','=','user_times.user_id')->selectRaw("users.*")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
         $meses = [1 => "Janeiro", 2 => "Fevereiro", 3 => "Março", 4 => "Abril", 5 => "Maio", 6 => "Junho", 7 => "Julho", 8 => "Agosto", 9 => "Setembro", 10 => "Outubro", 11 => "Novembro", 12 => "Dezembro"];
         $anos = [date("Y")-1 => date("Y")-1,date("Y") => date("Y"),date("Y")+1 => date("Y")+1];
         $ausencias = [];
@@ -265,9 +266,9 @@ class UserController extends Controller
             foreach (array_keys($meses) as $mes)
                 $ausencias[$id][$mes] = 0;
         }
-        foreach (Ausencia::whereRaw("data between '".date("Y")."-01-01' and '".date("Y")."-12-31'")->get() as $value)
+        foreach (Ausencia::whereRaw("data between '".date("Y")."-01-01' and '".date("Y")."-12-31' and user_id IN (".join(',',array_keys($users)).")")->get() as $value)
             $ausencias[$value->user_id][intval(date("m", strtotime($value->data)))]++;
-        return view('users.ausencia_create', ["users" => $users, "meses" => $meses, "anos" => $anos, "ausencias" => $ausencias, "user_id" => $request->user_id]);
+        return view('users.ausencia_create', ["users" => $users, "all_users" => $all_users, "meses" => $meses, "anos" => $anos, "ausencias" => $ausencias, "user_id" => $request->user_id]);
     }
 
     /**
