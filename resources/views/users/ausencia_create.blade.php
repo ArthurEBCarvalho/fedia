@@ -15,27 +15,25 @@
 <div class="templatemo-content-widget white-bg">
     <h2 class="margin-bottom-10">Ausências</h2>
     <div class="row">
-        <div class="col-md-8 col-sm-12 form-group">
-            <form role="form" class="form-search" method="get">
-                <div class="col-md-12 col-sm-12 form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon">Time: </span>
-                        <select class="form-control search-filtro" name="user_id" style="width: 100%;">
-                            <option>Todos</option>
-                            @foreach($all_users as $id => $nome)
-                            <option value="{{$id}}" @if ($user_id == $id) selected @endif>{{$nome}}</option>
-                            @endforeach
-                        </select>
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Selecionar</button>
-                        </span>
-                    </div>
+        <form role="form" method="get">
+            <div class="col-md-8 col-sm-12 form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Usuário: </span>
+                    <select class="form-control search-filtro" name="user_id">
+                        <option>Todos</option>
+                        @foreach($all_users as $id => $nome)
+                        <option value="{{$id}}" @if ($user_id == $id) selected @endif>{{$nome}}</option>
+                        @endforeach
+                    </select>
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Selecionar</button>
+                    </span>
                 </div>
-            </form>
-        </div>
-        <div class="col-md-4 col-sm-12 form-group">
-            <div class="pull-right"><a href="javascript:;" data-toggle="modal" data-target="#modal_times" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Cadastrar Ausências</a></div>
-        </div>
+            </div>
+            <div class="col-md-4 col-sm-12 form-group">
+                <div class="pull-right"><a href="javascript:;" data-toggle="modal" data-target="#modal_times" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Cadastrar Ausências</a></div>
+            </div>
+        </form>
     </div>
 </div>
 

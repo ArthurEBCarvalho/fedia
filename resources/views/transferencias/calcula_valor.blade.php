@@ -4,8 +4,8 @@
 
 <div class="templatemo-flex-row flex-content-row">
   <div class="col-md-6 col-sm-12 col-xs-12">
-    <div class="templatemo-content-widget white-bg col-1" widt>
-      <h2 class="templatemo-inline-block">Calcular Valor do Jogador</h2><hr>
+    <div class="templatemo-content-widget white-bg col-1">
+      <h2 class="margin-bottom-10">Calcular Valor do Jogador</h2><hr>
       <form  onSubmit="return calcula();">
         <div class="row form-group">
           <div class="col-md-12">
