@@ -96,6 +96,7 @@ function validar_numero(evt) {
 	}
 }
 
+// Coloca formato de dinheiro
 function number_format( numero, decimal, decimal_separador, milhar_separador ){ 
 	numero = (numero + '').replace(/[^0-9+\-Ee.]/g, '');
 	var n = !isFinite(+numero) ? 0 : +numero,

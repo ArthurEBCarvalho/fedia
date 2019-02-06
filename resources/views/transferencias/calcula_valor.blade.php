@@ -10,19 +10,19 @@
         <div class="row form-group">
           <div class="col-md-12">
             {!! Html::decode(Form::label('overall', 'Overall <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
-            {!! Form::text('overall', null, ['class' => 'form-control', 'required' => true]) !!}
+            {!! Form::number('overall', null, ['class' => 'form-control', 'required' => true]) !!}
           </div>
         </div>
         <div class="row form-group">
           <div class="col-md-12">
             {!! Html::decode(Form::label('potencial', 'Potencial <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
-            {!! Form::text('potencial', null, ['class' => 'form-control', 'required' => true]) !!}
+            {!! Form::number('potencial', null, ['class' => 'form-control', 'required' => true]) !!}
           </div>
         </div>
         <div class="row form-group">
           <div class="col-md-12">
             {!! Html::decode(Form::label('idade', 'Idade <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
-            {!! Form::text('idade', null, ['class' => 'form-control', 'required' => true]) !!}
+            {!! Form::number('idade', null, ['class' => 'form-control', 'required' => true]) !!}
           </div>
         </div>
         <div class="row form-group">
