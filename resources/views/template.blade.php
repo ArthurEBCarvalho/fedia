@@ -56,6 +56,7 @@
 						<ul>
 							<li><a href="/elencos" class="@if(Request::is('elencos*')) active @endif">Todos os Elencos</a></li>
 							<li><a href="/jogadores" class="@if(Request::is('jogadores*')) active @endif">Todos os Jogadores</a></li>
+							<li><a href="/calcula_valor" class="@if(Request::is('calcula_valor*')) active @endif">Calcular Valor</a></li>
 						</ul>
 					</li>
 					<li><a href="/noticias" class="@if(Request::is('noticias*')) active @endif"><i class="fa fa-newspaper-o fa-fw"></i>Notícias</a></li>
@@ -182,7 +183,7 @@
 	@if(Request::is('legislacao*')) <script type="text/javascript">$('.submenu.legislacao > a').trigger( "click" );</script> @endif
 	@if(Request::is('administracao*')) <script type="text/javascript">$('.submenu.admin > a').trigger( "click" );</script> @endif
 	@if((Request::is('partidas*') || Request::is('amistosos*')) && !Request::is('partidas_temporadas*')) <script type="text/javascript">$('.submenu.partidas > a').trigger( "click" );</script> @endif 
-	@if(Request::is('elencos*') || Request::is('jogadores*')) <script type="text/javascript">$('.submenu.elencos > a').trigger( "click" );</script> @endif
+	@if(Request::is('elencos*') || Request::is('jogadores*') || Request::is('calcula_valor*')) <script type="text/javascript">$('.submenu.elencos > a').trigger( "click" );</script> @endif
 	<script type="text/javascript">
 		$(".chzn-select").chosen();
 		$('.collapse').collapse();

@@ -158,6 +158,7 @@ Route::get("partidas_time", ['as' => 'partidas.partidas', 'uses' => 'PartidaCont
 Route::get("elencos", ['as' => 'transferencias.elencos', 'uses' => 'TransferenciumController@elencos']);
 Route::get("elencos_atualiza_status", 'TransferenciumController@update_status');
 Route::get("jogadores", ['as' => 'transferencias.jogadores', 'uses' => 'TransferenciumController@jogadores']);
+Route::get("calcula_valor", ['as' => 'transferencias.calcula_valor', 'uses' => 'TransferenciumController@calcula_valor']);
 Route::post("administracao/eras_change", ['as' => 'administracao.eras.change', 'uses' => 'EraController@change']);
 Route::get("administracao/multa_create", ['as' => 'administracao.users.multa_create', 'uses' => 'UserController@multa_create']);
 Route::post("administracao/multa_store", ['as' => 'administracao.users.multa_store', 'uses' => 'UserController@multa_store']);

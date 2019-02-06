@@ -285,4 +285,14 @@ class TransferenciumController extends Controller {
 		return view('transferencias.jogadores', ["jogadores" => $jogadores, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "STATUS" => ['Negociável','Inegociável','À Venda'], 'params' => $params]);
 	}
 
+	/**
+	 * Calcula o valor de jogadores via javascript.
+	 *
+	 * @return Response
+	 */
+	public function calcula_valor()
+	{
+		return view('transferencias.calcula_valor', ["posicoes" => ['GOL' => 'GOL','ADD' => 'ADD','LD' => 'LD','ZAG' => 'ZAG','LE' => 'LE','ADE' => 'ADE','VOL' => 'VOL','MD' => 'MD','MC' => 'MC','ME' => 'ME','MEI' => 'MEI','MAD' => 'MAD','SA' => 'SA','MAE' => 'MAE','PD' => 'PD','ATA' => 'ATA','PE' => 'PE']]);
+	}
+
 }
