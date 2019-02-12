@@ -15,11 +15,34 @@
 <div class="templatemo-content-widget white-bg">
     <h2 class="margin-bottom-10">Histórico Financeiro do {{Auth::user()->time(Session::get('era')->id)->nome}}</h2>
     <div class="row">
-        <div class="col-md-8 col-sm-12 form-group">
+        @if(Auth::user()->isAdmin())
+        <div class="col-md-6 col-sm-12 form-group">
             <form role="form" class="form-search" method="get">
                 @if(isset($params['order']))
                 <input type="hidden" name="order" value="{{$params['order']}}">
                 @endif
+                @if(isset($filtro))
+                <input type="hidden" name="filtro" value="{{$filtro}}">
+                @endif
+                @if(isset($valor))
+                <input type="hidden" name="valor" value="{{$valor}}">
+                @endif
+                <div class="input-group">
+                    <span class="input-group-addon">Time: </span>
+                    {!! Form::select('time_id', $times, $time->id, ['class' => 'form-control']) !!}
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Selecionar</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+        @endif
+        <div class="col-md-6 col-sm-12 form-group">
+            <form role="form" class="form-search" method="get">
+                @if(isset($params['order']))
+                <input type="hidden" name="order" value="{{$params['order']}}">
+                @endif
+                <input type="hidden" name="time_id" value="{{$time->id}}">
                 <div class="input-group">
                     <select class="form-control search-filtro" name="filtro">
                         <option>Limpar</option>
@@ -94,10 +117,10 @@
             </thead>
 
             <tbody>
-            <tr class="linha_total">
-                <td colspan="2">Total: </td>
-                <td align="right">{{number_format($total,2,',','.')}}</td>
-            </tr>
+                <tr class="linha_total">
+                    <td colspan="2">Total: </td>
+                    <td align="right">{{number_format($total,2,',','.')}}</td>
+                </tr>
                 @foreach($financeiros as $financeiro)
                 <tr style="color: @if($financeiro->operacao == 0) green @else red @endif;">
                     <td align="center">{{$financeiro->descricao}}</td>

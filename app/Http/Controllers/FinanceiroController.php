@@ -4,6 +4,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Financeiro;
+use App\Time;
+use App\UserTime;
 use Illuminate\Http\Request;
 use Auth;
 use Session;
@@ -27,11 +29,15 @@ class FinanceiroController extends Controller {
 		} else {
 			$order = "id DESC";
 		}
+		if(isset($request->time_id))
+			$time = Time::findOrFail($request->time_id);
+		else
+			$time = Auth::user()->time(Session::get('era')->id);
 
 		if(isset($request->filtro)){
 			if($request->filtro == "Limpar"){
 				$request->valor = NULL;
-				$financeiros = Financeiro::where('time_id',Auth::user()->time(Session::get('era')->id)->id)->orderByRaw($order);
+				$financeiros = Financeiro::where('time_id',$time->id)->orderByRaw($order);
 			}
 			else{
 				$params['filtro'] = $request->filtro;
@@ -50,11 +56,11 @@ class FinanceiroController extends Controller {
 						$clausure = "operacao = 1";
 					break;
 				}
-				$financeiros = Financeiro::whereRaw("time_id = ".Auth::user()->time(Session::get('era')->id)->id." and $clausure")->orderByRaw($order);
+				$financeiros = Financeiro::whereRaw("time_id = $time->id and $clausure")->orderByRaw($order);
 			}
 		}
 		else
-			$financeiros = Financeiro::where('time_id',Auth::user()->time(Session::get('era')->id)->id)->orderByRaw($order);
+			$financeiros = Financeiro::where('time_id',$time->id)->orderByRaw($order);
 		$total = 0;
 		foreach ($financeiros->get() as $value) {
 			if($value->operacao == 0)
@@ -63,7 +69,8 @@ class FinanceiroController extends Controller {
 				$total -= $value->valor;
 		}
 		$financeiros = $financeiros->paginate(30);
-		return view('financeiros.index', ["financeiros" => $financeiros, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "total" => $total, "params" => $params]);
+		$times = Time::whereIn('id',UserTime::where('era_id',Session::get('era')->id)->pluck('time_id')->toArray())->lists('nome','id')->all();
+		return view('financeiros.index', ["financeiros" => $financeiros, "filtro" => $request->filtro, "valor" => $request->valor, "time" => $time, "times" => $times, "signal" => $signal, "param" => $param, "caret" => $caret, "total" => $total, "params" => $params]);
 	}
 
 }

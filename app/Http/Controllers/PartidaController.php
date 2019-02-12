@@ -739,11 +739,11 @@ class PartidaController extends Controller {
 	 */
 	public function partidas(Request $request)
 	{
-		if(isset($request->temporada))
+		if(!blank($request->temporada))
 			$temporada = Temporada::where('era_id',Session::get('era')->id)->where('numero',@$request->temporada)->first();
 		else
 			$temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('numero DESC')->first();
-		if(isset($request->time_id))
+		if(!blank($request->time_id))
 			$time = Time::findOrFail($request->time_id);
 		else
 			$time = Auth::user()->time(Session::get('era')->id);
@@ -795,7 +795,7 @@ class PartidaController extends Controller {
 		$gols = Gol::whereIn('partida_id',$partidas_id)->get();
 		$cartoes = Cartao::whereIn('partida_id',$partidas_id)->get();
 		$lesoes = Lesao::whereIn('partida_id',$partidas_id)->get();
-		return view('partidas.partidas', ["partidas" => $partidas, "temporada" => $temporada, "time" => $time, "times" => $times, "jogadores" => $jogadores, "mvps" => $mvps, "gols" => $gols, "cartoes" => $cartoes, "lesoes" => $lesoes, "indisponiveis" => $indisponiveis, "lesionados" => $request->lesionados, "time_id" => $request->time_id]);
+		return view('partidas.partidas', ["partidas" => $partidas, "temporada" => $temporada, "time" => $time, "times" => $times, "jogadores" => $jogadores, "mvps" => $mvps, "gols" => $gols, "cartoes" => $cartoes, "lesoes" => $lesoes, "indisponiveis" => $indisponiveis, "lesionados" => $request->lesionados]);
 	}
 
 }

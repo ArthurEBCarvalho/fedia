@@ -16,7 +16,7 @@
             <input type="hidden" id="tipo" name="tipo" value="{{$tipo}}">
             @endif
             @if(Request::is('partidas_time*'))
-            <input type="hidden" id="time_id" name="time_id" value="{{$time_id}}">
+            <input type="hidden" id="time_id" name="time_id" value="{{$time->id}}">
             @endif
             <div class="modal-header">
                 <h4 class="modal-title"></h4>
