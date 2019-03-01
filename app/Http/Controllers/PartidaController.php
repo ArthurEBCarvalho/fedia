@@ -462,7 +462,7 @@ class PartidaController extends Controller {
 
 		// Criar próxima fase das partidas de Copa
 		if($partida->campeonato == "Copa" && $partida->rodada == 2){
-			$anterior = Partida::where('temporada_id',$temporada->id)->where('ordem',$partida->ordem)->first();
+			$anterior = Partida::where('temporada_id',$temporada->id)->where('ordem',$partida->ordem)->where('rodada',1)->first();
 			if((isset($request->penalti1) && $request->penalti1 != '') && (isset($request->penalti2) && $request->penalti2 != '')){
 				if($request->penalti1 > $request->penalti2)
 					$vencedor = $partida->time1_id;

@@ -13,7 +13,7 @@
 @endif
 
 <div class="templatemo-content-widget white-bg">
-    <h2 class="margin-bottom-10">Histórico Financeiro do {{Auth::user()->time(Session::get('era')->id)->nome}}</h2>
+    <h2 class="margin-bottom-10">Histórico Financeiro do {{$time->nome}}</h2>
     <div class="row">
         @if(Auth::user()->isAdmin())
         <div class="col-md-6 col-sm-12 form-group">
