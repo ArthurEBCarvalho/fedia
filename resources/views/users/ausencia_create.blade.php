@@ -15,8 +15,22 @@
 <div class="templatemo-content-widget white-bg">
     <h2 class="margin-bottom-10">Ausências</h2>
     <div class="row">
-        <form role="form" method="get">
-            <div class="col-md-8 col-sm-12 form-group">
+        <div class="col-md-5 col-sm-12 form-group">
+            <form role="form" method="get">
+                <div class="input-group">
+                    <span class="input-group-addon">Tipo: </span>
+                    <select class="form-control search-filtro" name="tipo">
+                        <option value="mes" @if ($tipo == 'mes') selected @endif>Por Mês</option>
+                        <option value="temporada" @if ($tipo == 'temporada') selected @endif>Por Temporada</option>
+                    </select>
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Selecionar</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-5 col-sm-12 form-group">
+            <form role="form" method="get">
                 <div class="input-group">
                     <span class="input-group-addon">Usuário: </span>
                     <select class="form-control search-filtro" name="user_id">
@@ -29,11 +43,11 @@
                         <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Selecionar</button>
                     </span>
                 </div>
-            </div>
-            <div class="col-md-4 col-sm-12 form-group">
-                <div class="pull-right"><a href="javascript:;" data-toggle="modal" data-target="#modal_times" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Cadastrar Ausências</a></div>
-            </div>
-        </form>
+            </form>
+        </div>
+        <div class="col-md-2 col-sm-12 form-group">
+            <div class="pull-right"><a href="javascript:;" data-toggle="modal" data-target="#modal_times" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Cadastrar Ausências</a></div>
+        </div>
     </div>
 </div>
 
@@ -43,9 +57,16 @@
         <table class="table table-striped table-bordered templatemo-user-table">
             <thead>
                 <tr>
-                    <th>{{date("Y")}}</th>
-                    @foreach($meses as $nome)
-                    <th>{{$nome}}</th>
+                    <th>
+                        @if($tipo == 'mes')
+                        {{date("Y")}}
+                        @else
+                        {{Session::get('era')->nome}}
+                        @endif
+                    </th>
+                    <?php $tipo == 'mes' ? $colunas = $meses : $colunas = $temporadas_option ?>
+                    @foreach($colunas as $nome)
+                    <th>{{$nome}}@if($tipo == 'temporada')ª Temporada @endif</th>
                     @endforeach
                 </tr>
             </thead>
@@ -68,6 +89,7 @@
 <div class="modal fade" id="modal_times" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         {!! Form::open(['route' => 'administracao.users.ausencia_store', 'method' => 'post']) !!}
+        <input type="hidden" name="tipo" value="{{$tipo}}">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
@@ -82,6 +104,12 @@
                     <div class="col-md-6 col-sm-12 col-xs-12">
                         {!! Html::decode(Form::label('ano', 'Ano <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
                         {!! Form::select('ano', $anos, date("Y"), ['class' => 'form-control']) !!}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        {!! Html::decode(Form::label('temporada_id', 'Temporada <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
+                        {!! Form::select('temporada_id', $temporadas_option, $temporada->id, ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="row">

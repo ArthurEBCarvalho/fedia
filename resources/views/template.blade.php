@@ -90,6 +90,8 @@
 							<li><a href="/administracao/eras" class="@if(Request::is('administracao/eras')) active @endif">Eras</a></li>
 							<li><a href="/administracao/multa_create" class="@if(Request::is('administracao/multa_create')) active @endif">Aplicar Multa</a></li>
 							<li><a href="/administracao/ausencia_create" class="@if(Request::is('administracao/ausencia_create')) active @endif">Ausências</a></li>
+							<li><a href="/administracao/wo_create" class="@if(Request::is('administracao/wo_create')) active @endif">Aplicar WO</a></li>
+							<li><a href="/administracao/copa_create" class="@if(Request::is('administracao/copa_create')) active @endif">Gerenciar Copa FEDIA</a></li>
 						</ul>
 					</li>
 					@endif

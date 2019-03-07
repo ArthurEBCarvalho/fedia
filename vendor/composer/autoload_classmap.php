@@ -17,6 +17,7 @@ return array(
     'AddRestantesToCartoesTable' => $baseDir . '/database/migrations/2018_07_05_112852_add_restantes_to_cartoes_table.php',
     'AddRestantesToLesoesTable' => $baseDir . '/database/migrations/2018_07_05_112903_add_restantes_to_lesoes_table.php',
     'AddStatusToJogadorsTable' => $baseDir . '/database/migrations/2018_08_08_192420_add_status_to_jogadors_table.php',
+    'AddTemporadaIdToAusenciaTable' => $baseDir . '/database/migrations/2019_03_06_173401_add_temporada_id_to_ausencia_table.php',
     'AddTemporadaToCartaosTable' => $baseDir . '/database/migrations/2018_07_05_124119_add_temporada_to_cartaos_table.php',
     'AddTemporadaToGolsTable' => $baseDir . '/database/migrations/2018_07_05_124109_add_temporada_to_gols_table.php',
     'AddTemporadaToLesaosTable' => $baseDir . '/database/migrations/2018_07_05_124125_add_temporada_to_lesaos_table.php',

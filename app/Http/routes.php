@@ -164,6 +164,10 @@ Route::get("administracao/multa_create", ['as' => 'administracao.users.multa_cre
 Route::post("administracao/multa_store", ['as' => 'administracao.users.multa_store', 'uses' => 'UserController@multa_store']);
 Route::get("administracao/ausencia_create", ['as' => 'administracao.users.ausencia_create', 'uses' => 'UserController@ausencia_create']);
 Route::post("administracao/ausencia_store", ['as' => 'administracao.users.ausencia_store', 'uses' => 'UserController@ausencia_store']);
+Route::get("administracao/wo_create", ['as' => 'administracao.users.wo_create', 'uses' => 'UserController@wo_create']);
+Route::post("administracao/wo_store", ['as' => 'administracao.users.wo_store', 'uses' => 'UserController@wo_store']);
+Route::get("administracao/copa_create", ['as' => 'administracao.users.copa_create', 'uses' => 'UserController@copa_create']);
+Route::post("administracao/copa_store", ['as' => 'administracao.users.copa_store', 'uses' => 'UserController@copa_store']);
 
 // Legislação
 Route::get('legislacao/premiacoes', function (){ return view("legislacao.premiacoes"); });

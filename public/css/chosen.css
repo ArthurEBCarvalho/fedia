@@ -391,4 +391,10 @@
 .with-select ul li{
   background:none;
 }
+
 /* @end */
+
+/*Arthur*/
+.chzn-container, .chzn-drop { width: 100% !important }
+
+.chzn-search input { width: 100% !important }

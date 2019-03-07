@@ -310,6 +310,7 @@ class ComposerStaticInitf1a39921c2c519affe51e8b2fba61365
         'AddRestantesToCartoesTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_112852_add_restantes_to_cartoes_table.php',
         'AddRestantesToLesoesTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_112903_add_restantes_to_lesoes_table.php',
         'AddStatusToJogadorsTable' => __DIR__ . '/../..' . '/database/migrations/2018_08_08_192420_add_status_to_jogadors_table.php',
+        'AddTemporadaIdToAusenciaTable' => __DIR__ . '/../..' . '/database/migrations/2019_03_06_173401_add_temporada_id_to_ausencia_table.php',
         'AddTemporadaToCartaosTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_124119_add_temporada_to_cartaos_table.php',
         'AddTemporadaToGolsTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_124109_add_temporada_to_gols_table.php',
         'AddTemporadaToLesaosTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_05_124125_add_temporada_to_lesaos_table.php',

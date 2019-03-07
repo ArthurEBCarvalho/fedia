@@ -9,6 +9,11 @@ use App\UserTime;
 use App\Era;
 use App\Financeiro;
 use App\Ausencia;
+use App\Temporada;
+use App\Partida;
+use App\Gol;
+use App\Cartao;
+use App\Lesao;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Hash;
@@ -253,6 +258,10 @@ class UserController extends Controller
      */
     public function ausencia_create(Request $request)
     {
+        if(isset($request->tipo))
+            $tipo = $request->tipo;
+        else
+            $tipo = 'mes';
         if(isset($request->user_id) && $request->user_id != "Todos")
             $users = User::join('user_times','users.id','=','user_times.user_id')->selectRaw("users.*")->where("user_times.era_id",Session::get('era')->id)->where('users.id',$request->user_id)->lists('nome','id')->all();
         else
@@ -260,15 +269,28 @@ class UserController extends Controller
         $all_users = User::join('user_times','users.id','=','user_times.user_id')->selectRaw("users.*")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
         $meses = [1 => "Janeiro", 2 => "Fevereiro", 3 => "Março", 4 => "Abril", 5 => "Maio", 6 => "Junho", 7 => "Julho", 8 => "Agosto", 9 => "Setembro", 10 => "Outubro", 11 => "Novembro", 12 => "Dezembro"];
         $anos = [date("Y")-1 => date("Y")-1,date("Y") => date("Y"),date("Y")+1 => date("Y")+1];
+        $temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('id DESC')->first();
+        $temporadas_option = Temporada::where('era_id',Session::get('era')->id)->orderBy('numero')->lists('numero','id')->all();
+        $temporadas = Temporada::where('era_id',Session::get('era')->id)->orderBy('numero')->get();
         $ausencias = [];
         foreach ($users as $id => $nome) {
             $ausencias[$id] = [];
-            foreach (array_keys($meses) as $mes)
-                $ausencias[$id][$mes] = 0;
+            if($tipo == 'mes'){
+                foreach (array_keys($meses) as $mes)
+                    $ausencias[$id][$mes] = 0;
+            } else {
+                foreach (array_keys($temporadas_option) as $numero)
+                    $ausencias[$id][$numero] = 0;
+            }
         }
-        foreach (Ausencia::whereRaw("data between '".date("Y")."-01-01' and '".date("Y")."-12-31' and user_id IN (".join(',',array_keys($users)).")")->get() as $value)
-            $ausencias[$value->user_id][intval(date("m", strtotime($value->data)))]++;
-        return view('users.ausencia_create', ["users" => $users, "all_users" => $all_users, "meses" => $meses, "anos" => $anos, "ausencias" => $ausencias, "user_id" => $request->user_id]);
+        if($tipo == 'mes'){
+            foreach (Ausencia::whereRaw("data between '".date("Y")."-01-01' and '".date("Y")."-12-31' and user_id IN (".join(',',array_keys($users)).")")->get() as $value)
+                $ausencias[$value->user_id][intval(date("m", strtotime($value->data)))]++;
+        } else {
+            foreach (Ausencia::whereIn("temporada_id",array_keys($temporadas_option))->get() as $value)
+                $ausencias[$value->user_id][$value->temporada_id]++;
+        }
+        return view('users.ausencia_create', ["users" => $users, "all_users" => $all_users, "tipo" => $tipo, "meses" => $meses, "anos" => $anos, "temporadas" => $temporadas, "temporada" => $temporada, "temporadas_option" => $temporadas_option, "ausencias" => $ausencias, "user_id" => $request->user_id]);
     }
 
     /**
@@ -278,9 +300,112 @@ class UserController extends Controller
      */
     public function ausencia_store(Request $request)
     {
+
         foreach ($request->users as $id)
-            Ausencia::create(['user_id' => $id, 'data' => new DateTime("$request->ano-$request->mes-01")]);
-        return redirect()->route('administracao.users.ausencia_create')->with('message', 'Ausências cadastradas com sucesso!');
+            Ausencia::create(['user_id' => $id, 'data' => new DateTime("$request->ano-$request->mes-01"), 'temporada_id' => $request->temporada_id]);
+        return redirect()->route('administracao.users.ausencia_create', ['tipo' => $request->tipo])->with('message', 'Ausências cadastradas com sucesso!');
+    }
+
+    /**
+     * Formulário para aplicar WO
+     *
+     * @return Response
+     */
+    public function wo_create()
+    {
+        $times = Time::join('user_times','user_times.time_id','=','times.id')->join('users','users.id','=','user_times.user_id')->selectRaw("times.id,CONCAT(times.nome,' - ',users.nome) as nome")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
+        $temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('id DESC')->first();
+        $temporadas = Temporada::where('era_id',Session::get('era')->id)->orderBy('numero')->lists('numero','id')->all();
+        return view('users.wo_create', ["times" => $times, "temporadas" => $temporadas, "temporada" => $temporada]);
+    }
+
+    /**
+     * Aplica WO ao time selecionado
+     *
+     * @return Response
+     */
+    public function wo_store(Request $request)
+    {
+        $time = Time::findOrFail($request->time_id);
+        $copas = 0;
+        foreach (Partida::whereRaw("temporada_id = $request->temporada_id and (time1_id = $time->id or time2_id = $time->id)")->orderBy('id','DESC')->get() as $partida) {
+            if($partida->campeonato == 'Liga'){
+                if($partida->time1_id == $time->id){
+                    $partida->resultado1 = 0;
+                    $partida->resultado2 = 3;
+                } else {
+                    $partida->resultado1 = 3;
+                    $partida->resultado2 = 0;
+                }
+                $partida->mvp_id = NULL;
+            } elseif($partida->campeonato == 'Copa') {
+                $copas++;
+                if($request->copa){
+                    if($partida->time1_id == $time->id){
+                        $partida->resultado1 = NULL;
+                        $partida->resultado2 = NULL;
+                        $partida->time1_id = NULL;
+                    } else {
+                        $partida->resultado1 = NULL;
+                        $partida->resultado2 = NULL;
+                        $partida->time2_id = NULL;
+                    }
+                }
+            }
+            Gol::where("partida_id",$partida->id)->delete();
+            Cartao::where("partida_id",$partida->id)->delete();
+            Lesao::where("partida_id",$partida->id)->delete();
+            $partida->save();
+        }
+        if($copas > 2){
+            if($copas == 4){
+                $time->dinheiro -= 6000000;
+                Financeiro::where("time_id",$time->id)->where("descricao","Passou das Quartas de Finais da Copa FEDIA")->orderBy('id','DESC')->first()->delete();
+            } elseif ($copas == 5) {
+                $time->dinheiro -= 10000000;
+                Financeiro::where("time_id",$time->id)->where("descricao","Passou das Semi Finais da Copa FEDIA")->orderBy('id','DESC')->first()->delete();
+            }
+                $time->save();
+        }
+        return redirect()->route('administracao.users.wo_create')->with('message', "WO aplicado com sucesso no $time->nome!");
+    }
+
+    /**
+     * Adicionar time na Copa em confrontos errados
+     *
+     * @return Response
+     */
+    public function copa_create()
+    {
+        if(isset($request->temporada))
+            $temporada = Temporada::where('era_id',Session::get('era')->id)->where('numero',$request->temporada)->first();
+        else
+            $temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('numero DESC')->first();
+        $partidas = Partida::where('temporada_id',@$temporada->id)->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
+        $times = Time::join('user_times','user_times.time_id','=','times.id')->join('users','users.id','=','user_times.user_id')->selectRaw("times.id,CONCAT(times.nome,' - ',users.nome) as nome")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
+        return view('users.copa_create', ["partidas" => $partidas, "temporada" => $temporada, "times" => $times]);
+    }
+
+    /**
+     * Aplica o time no confronto da Copa selecionado
+     *
+     * @return Response
+     */
+    public function copa_store(Request $request)
+    {
+        $partida = Partida::findOrFail($request->partida_id);
+        if($request->mandante == 'casa'){
+            $volta = Partida::where("temporada_id",$partida->temporada_id)->where("campeonato","Copa")->where("ordem",$partida->ordem)->where("rodada",2)->first();
+            $partida->time1_id = $request->time_id;
+            $volta->time2_id = $request->time_id;
+        } else {
+            $volta = Partida::where("temporada_id",$partida->temporada_id)->where("campeonato","Copa")->where("ordem",$partida->ordem)->where("rodada",1)->first();
+            $partida->time2_id = $request->time_id;
+            $volta->time1_id = $request->time_id;
+        }
+        $partida->save();
+        $volta->save();
+        return redirect()->route('administracao.users.copa_create')->with('message', 'Time inserido com sucesso na Copa!');
     }
 
     /**
