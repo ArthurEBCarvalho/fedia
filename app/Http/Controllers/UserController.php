@@ -338,6 +338,9 @@ class UserController extends Controller
                     $partida->resultado2 = 0;
                 }
                 $partida->mvp_id = NULL;
+                Gol::where("partida_id",$partida->id)->delete();
+                Cartao::where("partida_id",$partida->id)->delete();
+                Lesao::where("partida_id",$partida->id)->delete();
             } elseif($partida->campeonato == 'Copa') {
                 $copas++;
                 if($request->copa){
@@ -350,11 +353,11 @@ class UserController extends Controller
                         $partida->resultado2 = NULL;
                         $partida->time2_id = NULL;
                     }
+                    Gol::where("partida_id",$partida->id)->delete();
+                    Cartao::where("partida_id",$partida->id)->delete();
+                    Lesao::where("partida_id",$partida->id)->delete();
                 }
             }
-            Gol::where("partida_id",$partida->id)->delete();
-            Cartao::where("partida_id",$partida->id)->delete();
-            Lesao::where("partida_id",$partida->id)->delete();
             $partida->save();
         }
         if($copas > 2){
@@ -365,7 +368,7 @@ class UserController extends Controller
                 $time->dinheiro -= 10000000;
                 Financeiro::where("time_id",$time->id)->where("descricao","Passou das Semi Finais da Copa FEDIA")->orderBy('id','DESC')->first()->delete();
             }
-                $time->save();
+            $time->save();
         }
         return redirect()->route('administracao.users.wo_create')->with('message', "WO aplicado com sucesso no $time->nome!");
     }
