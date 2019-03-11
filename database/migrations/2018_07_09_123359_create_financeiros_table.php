@@ -14,7 +14,7 @@ class CreateFinanceirosTable extends Migration {
 	{
 		Schema::create('financeiros', function(Blueprint $table) {
             $table->increments('id');
-            $table->decimal('valor',10,2);
+            $table->decimal('valor',18,2);
             $table->tinyInteger('operacao');
             $table->string('descricao');
             $table->integer('time_id');
