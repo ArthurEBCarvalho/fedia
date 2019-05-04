@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth'], function() {
 		$noticias = App\Noticium::join('times','noticias.time_id','=','times.id')->select('noticias.id','noticias.titulo','noticias.subtitulo','noticias.imagem','noticias.created_at','times.nome')->orderBy('id','DESC')->limit(3)->get();
 		$times_id = App\UserTime::where('era_id',Session::get('era')->id)->pluck('time_id')->toArray();
 		$temporada = App\Temporada::where('era_id',Session::get('era')->id)->orderByRaw('id DESC')->first();
+		$temporada = App\Temporada::findOrFail(39);
 		$contratacoes = App\Financeiro::selectRaw('valor, SUBSTRING(descricao, 25, CHAR_LENGTH(descricao)-25) as nome')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('descricao','LIKE','%Contratação de Jogador%')->whereIn('time_id',$times_id)->orderBy('id','DESC')->limit(5)->get();
 		$cartoes = App\Cartao::selectRaw('jogador_id,cor,campeonato,COUNT(*) as qtd')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('cumprido',0)->where('campeonato','!=','Amistoso')->where('temporada_id',@$temporada->id)->groupBy('jogador_id','cor','campeonato')->get();
 		$lesoes = App\Lesao::selectRaw('jogador_id,restantes')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('temporada_id',@$temporada->id)->where('restantes','!=',0)->get();
