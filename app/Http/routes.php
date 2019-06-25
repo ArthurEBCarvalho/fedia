@@ -29,13 +29,13 @@ Route::group(['middleware' => 'auth'], function() {
 		$times_id = App\UserTime::where('era_id',Session::get('era')->id)->pluck('time_id')->toArray();
 		$temporada = App\Temporada::where('era_id',Session::get('era')->id)->orderByRaw('id DESC')->first();
 		$contratacoes = App\Financeiro::selectRaw('valor, SUBSTRING(descricao, 25, CHAR_LENGTH(descricao)-25) as nome')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('descricao','LIKE','%Contratação de Jogador%')->whereIn('time_id',$times_id)->orderBy('id','DESC')->limit(5)->get();
-		$cartoes = App\Cartao::selectRaw('jogador_id,cor,campeonato,COUNT(*) as qtd')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('cumprido',0)->where('campeonato','!=','Amistoso')->where('temporada_id',@$temporada->id)->groupBy('jogador_id','cor','campeonato')->get();
-		$lesoes = App\Lesao::selectRaw('jogador_id,restantes')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('temporada_id',@$temporada->id)->where('restantes','!=',0)->get();
-		$gols = App\Gol::selectRaw('jogador_id,SUM(quantidade) as qtd')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('temporada_id',@$temporada->id)->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
+		$cartoes = App\Cartao::selectRaw('jogador_id,cor,campeonato,COUNT(*) as qtd')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->where('cumprido',0)->where('campeonato','!=','Amistoso')->whereIn('temporada_id',[37,38,39,40])->groupBy('jogador_id','cor','campeonato')->get();
+		$lesoes = App\Lesao::selectRaw('jogador_id,restantes')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->whereIn('temporada_id',[37,38,39,40])->where('restantes','!=',0)->get();
+		$gols = App\Gol::selectRaw('jogador_id,SUM(quantidade) as qtd')->where('time_id',@Auth::user()->time(Session::get('era')->id)->id)->whereIn('temporada_id',[37,38,39,40])->groupBy('jogador_id')->orderBy('qtd','desc')->limit(5)->get();
 		$aproveitamento = ['Vitória' => 0, 'Empate' => 0, 'Derrota' => 0];
 		// Liga
 		if(isset($temporada)){
-			$partidas = App\Partida::where('temporada_id',@$temporada->id)->where('campeonato','Liga')->whereRaw("resultado1 IS NOT NULL and resultado2 IS NOT NULL")->get();
+			$partidas = App\Partida::whereIn('temporada_id',[37,38,39,40])->where('campeonato','Liga')->whereRaw("resultado1 IS NOT NULL and resultado2 IS NOT NULL")->get();
 			$times = App\Time::whereRaw("nome != 'Mercado Externo' and id IN (".join(',',$times_id).")")->get()->keyBy('id');
 			$classificacao = [];
 			foreach ($times as $key => $value) {
@@ -88,7 +88,7 @@ Route::group(['middleware' => 'auth'], function() {
 			array_multisort($sort['P'], SORT_DESC, $sort['V'], SORT_DESC, $sort['SG'], SORT_DESC, $sort['GP'], SORT_DESC, $classificacao);
 
 			// MVPS ordenados por quantidade e colocação na Liga
-			$mvps = App\Partida::join('jogadors','partidas.mvp_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id as time_id,times.escudo,times.nome,jogadors.nome as jogador,COUNT(partidas.mvp_id) as qtd')->where('temporada_id',@$temporada->id)->where('campeonato','Liga')->whereNotNull('mvp_id')->groupBy('partidas.mvp_id','times.id','jogadors.id')->orderBy('qtd','desc')->limit(10)->get()->toArray();
+			$mvps = App\Partida::join('jogadors','partidas.mvp_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id as time_id,times.escudo,times.nome,jogadors.nome as jogador,COUNT(partidas.mvp_id) as qtd')->whereIn('temporada_id',[37,38,39,40])->where('campeonato','Liga')->whereNotNull('mvp_id')->groupBy('partidas.mvp_id','times.id','jogadors.id')->orderBy('qtd','desc')->limit(10)->get()->toArray();
 			$sort = array();
 			foreach ($mvps as $key => $value){
 				foreach ($classificacao as $k => $v){
@@ -104,10 +104,10 @@ Route::group(['middleware' => 'auth'], function() {
 
 			$artilheiros = [];
 			// Artilheiros Liga
-			$artilheiros['Liga'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',@$temporada->id)->where('campeonato','Liga')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(10)->get();
+			$artilheiros['Liga'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->whereIn('temporada_id',[37,38,39,40])->where('campeonato','Liga')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(10)->get();
 
 			// Copa
-			$copa = App\Partida::where('temporada_id',@$temporada->id)->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
+			$copa = App\Partida::whereIn('temporada_id',[37,38,39,40])->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
 			foreach ($copa as $key => $value) {
 				if(is_null($value->resultado1) || is_null($value->resultado2))
 					continue;
@@ -129,7 +129,7 @@ Route::group(['middleware' => 'auth'], function() {
 			}
 
 			// Artilheiros Copa
-			$artilheiros['Copa'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',@$temporada->id)->where('campeonato','Copa')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
+			$artilheiros['Copa'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->whereIn('temporada_id',[37,38,39,40])->where('campeonato','Copa')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
 
 			return view("index", ['temporada' => $temporada, 'classificacao' => $classificacao, 'copa' => $copa, 'times' => $times, 'artilheiros' => $artilheiros, 'mvps' => $mvps, 'contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'noticias' => $noticias, 'aproveitamento' => $aproveitamento, 'era' => Session::get('era')]);
 		} else {
