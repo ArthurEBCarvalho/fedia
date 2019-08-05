@@ -11,5 +11,5 @@ class Ausencia extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'data', 'temporada_id'];
+    protected $fillable = ['user_id', 'turno', 'temporada_id'];
 }

@@ -34,55 +34,59 @@
                 <tbody>
                     <tr>
                         <td>Campeão</td>
-                        <td>€ 60.000.000,00</td>
+                        <td>€ 3.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Vice-Campeão</td>
-                        <td>€ 50.000.000,00</td>
+                        <td>Campeão do turno</td>
+                        <td>€ 15.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Terceiro colocado</td>
-                        <td>€ 47.500.000,00</td>
+                        <td>Vice-Campeão do turno</td>
+                        <td>€ 13.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Quarto colocado</td>
-                        <td>€ 45.000.000,00</td>
+                        <td>Terceiro colocado do turno</td>
+                        <td>€ 12.250.000,00</td>
                     </tr>
                     <tr>
-                        <td>Quinto colocado</td>
-                        <td>€ 42.500.000,00</td>
+                        <td>Quarto colocado do turno</td>
+                        <td>€ 11.500.000,00</td>
                     </tr>
                     <tr>
-                        <td>Sexto colocado</td>
-                        <td>€ 40.000.000,00</td>
+                        <td>Quinto colocado do turno</td>
+                        <td>€ 10.750.000,00</td>
                     </tr>
                     <tr>
-                        <td>Sétimo colocado</td>
-                        <td>€ 37.500.000,00</td>
+                        <td>Sexto colocado do turno</td>
+                        <td>€ 10.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Oitavo colocado</td>
-                        <td>€ 35.000.000,00</td>
+                        <td>Sétimo colocado do turno</td>
+                        <td>€ 9.250.000,00</td>
                     </tr>
                     <tr>
-                        <td>Nono colocado</td>
-                        <td>€ 32.500.000,00</td>
+                        <td>Oitavo colocado do turno</td>
+                        <td>€ 8.500.000,00</td>
                     </tr>
                     <tr>
-                        <td>Décimo colocado</td>
-                        <td>€ 30.000.000,00</td>
+                        <td>Nono colocado do turno</td>
+                        <td>€ 7.750.000,00</td>
+                    </tr>
+                    <tr>
+                        <td>Décimo colocado do turno</td>
+                        <td>€ 7.000.000,00</td>
                     </tr>
                     <tr>
                         <td>Artilharia</td>
-                        <td>€ 5.000.000,00</td>
+                        <td>€ 2.000.000,00</td>
                     </tr>
                     <tr>
                         <td>Melhor Jogador</td>
-                        <td>€ 5.000.000,00</td>
+                        <td>€ 2.000.000,00</td>
                     </tr>
                     <tr class="linha_total">
                         <td>Premiação Total da Liga: </td>
-                        <td>€ 430.000.000,00</td>
+                        <td>€ 111.000.000,00</td>
                     </tr>
                 </tbody>
             </table>
@@ -104,27 +108,23 @@
                 <tbody>
                     <tr>
                         <td>Passar das Quartas de Final</td>
-                        <td>€ 6.000.000,00</td>
+                        <td>€ 4.000.000,00</td>
                     </tr>
                     <tr>
                         <td>Passar das Semifinais</td>
-                        <td>€ 10.000.000,00</td>
+                        <td>€ 8.000.000,00</td>
                     </tr>
                     <tr>
                         <td>Campeão</td>
-                        <td>€ 20.000.000,00</td>
-                    </tr>
-                    <tr>
-                        <td>Vice-Campeão</td>
-                        <td>€ 10.000.000,00</td>
+                        <td>€ 3.000.000,00</td>
                     </tr>
                     <tr>
                         <td>Artilharia</td>
-                        <td>€ 5.000.000,00</td>
+                        <td>€ 2.000.000,00</td>
                     </tr>
                     <tr class="linha_total">
                         <td>Premiação Total da Liga: </td>
-                        <td>€ 51.000.000,00</td>
+                        <td>€ 17.500.000,00</td>
                     </tr>
                 </tbody>
             </table>
@@ -161,7 +161,7 @@
 
                 <tbody>
                     <tr>
-                        <td>€ 30.000.000,00 na primeira temporada, adicionando € 5.000.000,00 em cada temporada subsequente.</td>
+                        <td>€ 15.000.000,00 na primeira temporada, adicionando € 2.500.000,00 em cada temporada subsequente.</td>
                     </tr>
                 </tbody>
             </table>

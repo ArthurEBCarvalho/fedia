@@ -119,9 +119,9 @@
                     <tbody>
                         <tr>
                             <td colspan="2">{!! Form::select('lesoes_jogador1[]', [], null, ['class' => 'chzn-select time1 lesao form-control store']) !!}</td>
-                            <td>{!! Form::select('lesoes_tipo1[]', ['Band-Aid','Ambulância'], null, ['class' => 'form-control', 'style' => 'padding:0;']) !!}</td>
+                            <td>{!! Form::select('lesoes_tipo1[]', ['Band-Aid','Band-Aid curado','Ambulância'], null, ['class' => 'form-control', 'style' => 'padding:0;']) !!}</td>
                             <td></td>
-                            <td>{!! Form::select('lesoes_tipo2[]', ['Band-Aid','Ambulância'], null, ['class' => 'form-control', 'style' => 'padding:0;']) !!}</td>
+                            <td>{!! Form::select('lesoes_tipo2[]', ['Band-Aid','Band-Aid curado','Ambulância'], null, ['class' => 'form-control', 'style' => 'padding:0;']) !!}</td>
                             <td colspan="2">{!! Form::select('lesoes_jogador2[]', [], null, ['class' => 'chzn-select time2 lesao form-control store']) !!}</td>
                             <td>{!! Html::image('images/icons/plus.png', 'add_linha', ['class' => 'add_linha', 'onClick' => 'add_linha(this)']) !!}</td>
                         </tr>
@@ -250,30 +250,38 @@
     $cor = ['Amarelo','Vermelho'];
 
     <?php 
-    foreach($jogadores as $time_id => $list){
-        echo 'if(!$jogadores[\''.$time_id.'\']){$jogadores[\''.$time_id.'\'] = [];}';
-        foreach ($list as $key => $value){
-            echo '$jogadores[\''.$time_id.'\'].push({\'id\': '.$value->id.', \'nome\': \''.$value->nome.'\'});';
-            echo '$nomes['.$value->id.'] = \''.$value->nome.'\';';
+    if(isset($jogadores)){
+        foreach($jogadores as $time_id => $list){
+            echo 'if(!$jogadores[\''.$time_id.'\']){$jogadores[\''.$time_id.'\'] = [];}';
+            foreach ($list as $key => $value){
+                echo '$jogadores[\''.$time_id.'\'].push({\'id\': '.$value->id.', \'nome\': \''.$value->nome.'\'});';
+                echo '$nomes['.$value->id.'] = \''.$value->nome.'\';';
+            }
         }
     }
 
-    if(isset($mvps)){
+    if(isset($mvps) && !Request::is('tabelas*')){
         foreach($mvps as $key => $value){
             echo '$mvps[\''.$key."'] = '$value';";
         }
     }
-    foreach($gols as $value){
-        echo 'if(!$gols[\''.$value->partida_id.'_'.$value->time_id.'\']){$gols[\''.$value->partida_id.'_'.$value->time_id.'\'] = [];}';
-        echo '$gols[\''.$value->partida_id.'_'.$value->time_id.'\'].push({\'jogador\': '.$value->jogador_id.', \'time\': '.$value->time_id.', \'quantidade\': '.$value->quantidade.'});';
+    if(isset($gols)){
+        foreach($gols as $value){
+            echo 'if(!$gols[\''.$value->partida_id.'_'.$value->time_id.'\']){$gols[\''.$value->partida_id.'_'.$value->time_id.'\'] = [];}';
+            echo '$gols[\''.$value->partida_id.'_'.$value->time_id.'\'].push({\'jogador\': '.$value->jogador_id.', \'time\': '.$value->time_id.', \'quantidade\': '.$value->quantidade.'});';
+        }
     }
-    foreach($cartoes as $value){
-        echo 'if(!$cartoes[\''.$value->partida_id.'_'.$value->time_id.'\']){$cartoes[\''.$value->partida_id.'_'.$value->time_id.'\'] = [];}';
-        echo '$cartoes[\''.$value->partida_id.'_'.$value->time_id.'\'].push({\'jogador\': '.$value->jogador_id.', \'time\': '.$value->time_id.', \'cor\': '.$value->cor.'});';
+    if(isset($cartoes)){
+        foreach($cartoes as $value){
+            echo 'if(!$cartoes[\''.$value->partida_id.'_'.$value->time_id.'\']){$cartoes[\''.$value->partida_id.'_'.$value->time_id.'\'] = [];}';
+            echo '$cartoes[\''.$value->partida_id.'_'.$value->time_id.'\'].push({\'jogador\': '.$value->jogador_id.', \'time\': '.$value->time_id.', \'cor\': '.$value->cor.'});';
+        }
     }
-    foreach($lesoes as $value){
-        echo 'if(!$lesoes[\''.$value->partida_id.'_'.$value->time_id.'\']){$lesoes[\''.$value->partida_id.'_'.$value->time_id.'\'] = [];}';
-        echo '$lesoes[\''.$value->partida_id.'_'.$value->time_id.'\'].push({\'jogador\': '.$value->jogador_id.', \'time\': '.$value->time_id.', \'rodadas\': '.$value->rodadas.'});';
+    if(isset($lesoes)){
+        foreach($lesoes as $value){
+            echo 'if(!$lesoes[\''.$value->partida_id.'_'.$value->time_id.'\']){$lesoes[\''.$value->partida_id.'_'.$value->time_id.'\'] = [];}';
+            echo '$lesoes[\''.$value->partida_id.'_'.$value->time_id.'\'].push({\'jogador\': '.$value->jogador_id.', \'time\': '.$value->time_id.', \'rodadas\': '.$value->rodadas.'});';
+        }
     }
     ?>
 
