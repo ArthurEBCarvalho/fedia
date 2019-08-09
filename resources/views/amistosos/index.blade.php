@@ -115,7 +115,7 @@
         <i class="fa fa-times"></i>                
         <div class="media">
             <div class="media-body">
-                <h2>Nenhum {{substr_replace("Amistosos", "", -1)}} encontrado!</h2>
+                <h2>Nenhuma partida encontrada!</h2>
             </div>        
         </div>                
     </div>
