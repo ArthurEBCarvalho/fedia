@@ -239,9 +239,9 @@ class PartidaController extends Controller {
 				$v6->save();
 				Financeiro::create(['valor' => 10000000, 'operacao' => 0, 'descricao' => 'Sexto Lugar de turno da Liga FEDIA', 'time_id' => $v6->id]);
 				$v7 = Time::findOrFail($classificacao[6]['id']);
-				$v7->dinheiro += 92500000;
+				$v7->dinheiro += 9250000;
 				$v7->save();
-				Financeiro::create(['valor' => 92500000, 'operacao' => 0, 'descricao' => 'Sétimo Lugar de turno da Liga FEDIA', 'time_id' => $v7->id]);
+				Financeiro::create(['valor' => 9250000, 'operacao' => 0, 'descricao' => 'Sétimo Lugar de turno da Liga FEDIA', 'time_id' => $v7->id]);
 				$v8 = Time::findOrFail($classificacao[7]['id']);
 				$v8->dinheiro += 8500000;
 				$v8->save();
