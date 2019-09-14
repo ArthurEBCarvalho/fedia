@@ -680,7 +680,7 @@ class PartidaController extends Controller {
 		}
 		$mvps = [];
 		foreach (Partida::where('temporada_id',@$temporada->id)->whereRaw("time1_id = $time->id or time2_id = $time->id")->get() as $value){
-			if(isset($value->mvp()->id)) $mvps[$value->id] = @$value->mvp()->nome;
+			$mvps[$value->id] = @$value->mvp()->nome;
 		}
 		$gols = Gol::whereIn('partida_id',$partidas_id)->get();
 		$cartoes = Cartao::whereIn('partida_id',$partidas_id)->get();
