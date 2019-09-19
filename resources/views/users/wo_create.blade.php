@@ -30,6 +30,12 @@
     </div>
     <div class="row form-group">
         <div class="col-md-12">
+            {!! Html::decode(Form::label('turno', 'Turno <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
+            {!! Form::select('turno', ['Temporada Completa','1º Turno','2º Turno'], NULL, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-12">
             <div class="checkbox squaredTwo">
                 <input type="checkbox" id="copa" name="copa"/>
                 <label for="copa" class="control-label"><span></span>Copa</label>

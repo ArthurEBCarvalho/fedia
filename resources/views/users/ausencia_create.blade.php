@@ -17,11 +17,12 @@
     <div class="row">
         <div class="col-md-5 col-sm-12 form-group">
             <form role="form" method="get">
+                @if(isset($user_id)) <input type="hidden" name="user_id" value="{{$user_id}}"> @endif
                 <div class="input-group">
                     <span class="input-group-addon">Tipo: </span>
                     <select class="form-control search-filtro" name="tipo">
-                        <option value="mes" @if ($tipo == 'mes') selected @endif>Por Mês</option>
                         <option value="temporada" @if ($tipo == 'temporada') selected @endif>Por Temporada</option>
+                        <option value="turno" @if ($tipo == 'turno') selected @endif>Por Turno</option>
                     </select>
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Selecionar</button>
@@ -31,6 +32,7 @@
         </div>
         <div class="col-md-5 col-sm-12 form-group">
             <form role="form" method="get">
+                @if(isset($tipo)) <input type="hidden" name="tipo" value="{{$tipo}}"> @endif
                 <div class="input-group">
                     <span class="input-group-addon">Usuário: </span>
                     <select class="form-control search-filtro" name="user_id">
@@ -57,16 +59,14 @@
         <table class="table table-striped table-bordered templatemo-user-table">
             <thead>
                 <tr>
-                    <th>
-                        @if($tipo == 'mes')
-                        {{date("Y")}}
-                        @else
-                        {{Session::get('era')->nome}}
-                        @endif
-                    </th>
-                    <?php $tipo == 'mes' ? $colunas = $meses : $colunas = $temporadas_option ?>
-                    @foreach($colunas as $nome)
-                    <th>{{$nome}}@if($tipo == 'temporada')ª Temporada @endif</th>
+                    <th>{{Session::get('era')->nome}}</th>
+                    @foreach($temporadas_option as $numero)
+                    @if($tipo == 'turno')
+                    <th>{{$numero}}ª Temporada (1º Turno)</th>
+                    <th>{{$numero}}ª Temporada (2º Turno)</th>
+                    @else
+                    <th>{{$numero}}ª Temporada</th>
+                    @endif
                     @endforeach
                 </tr>
             </thead>
@@ -74,8 +74,10 @@
                 @foreach($users as $id => $nome)
                 <tr>
                     <td>{{$nome}}</td>
-                    @foreach($ausencias[$id] as $qtd)
+                    @foreach($ausencias[$id] as $turnos)
+                    @foreach($turnos as $qtd)
                     <td>{{$qtd}}</td>
+                    @endforeach
                     @endforeach
                 </tr>
                 @endforeach
@@ -98,18 +100,12 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6 col-sm-12 col-xs-12">
-                        {!! Html::decode(Form::label('mes', 'Mês <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
-                        {!! Form::select('mes', $meses, date("m"), ['class' => 'form-control']) !!}
-                    </div>
-                    <div class="col-md-6 col-sm-12 col-xs-12">
-                        {!! Html::decode(Form::label('ano', 'Ano <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
-                        {!! Form::select('ano', $anos, date("Y"), ['class' => 'form-control']) !!}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
                         {!! Html::decode(Form::label('temporada_id', 'Temporada <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
                         {!! Form::select('temporada_id', $temporadas_option, $temporada->id, ['class' => 'form-control']) !!}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        {!! Html::decode(Form::label('turno', 'Turno <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
+                        {!! Form::select('turno', ['1' => '1º Turno','2' => '2º Turno'], NULL, ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="row">

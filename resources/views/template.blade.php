@@ -51,6 +51,7 @@
 			<nav class="templatemo-left-nav">          
 				<ul>
 					<li><a href="/" class="@if(Request::is('/')) active @endif"><i class="fa fa-home fa-fw"></i>Início</a></li>
+					<li><a href="/tabelas" class="@if(Request::is('tabelas*')) active @endif"><i class="fa fa-list-alt fa-fw"></i>Tabelas</a></li>
 					<li class="submenu elencos">
 						<a href="#"><i class="fa fa-users fa-fw"></i>Jogadores <i class="caret-down fa fa-arrow-circle-down"></i></a>
 						<ul>
@@ -69,6 +70,7 @@
 							<li><a href="/amistosos?tipo=0" class="@if(Request::is('amistosos*') && $tipo == 0) active @endif">Amistosos</a></li>
 							<li><a href="/amistosos?tipo=1" class="@if(Request::is('amistosos*') && $tipo == 1) active @endif">Classificatória da Copa FEDIA</a></li>
 							<li><a href="/amistosos?tipo=2" class="@if(Request::is('amistosos*') && $tipo == 2) active @endif">SuperCopa FEDIA</a></li>
+							<li><a href="/amistosos?tipo=3" class="@if(Request::is('amistosos*') && $tipo == 3) active @endif">Final da Liga FEDIA</a></li>
 							<li><a href="/partidas?tipo=liga" class="@if(Request::is('partidas*') && @$tipo == 'liga') active @endif">Liga FEDIA</a></li>
 							<li><a href="/partidas?tipo=copa" class="@if(Request::is('partidas*') && @$tipo == 'copa') active @endif">Copa FEDIA</a></li>
 						</ul>

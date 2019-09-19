@@ -12,30 +12,32 @@ use App\Lesao;
 use App\Gol;
 use App\Cartao;
 use App\Financeiro;
+use App\Partida;
+use App\Artilheiro;
 use DB;
 use Log;
 use Session;
 use Illuminate\Http\Request;
 
 class AmistosoController extends Controller {
-
+	
 	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
+	* Display a listing of the resource.
+	*
+	* @return Response
+	*/
 	public function index(Request $request)
 	{
 		if(isset($request->temporada))
-			$temporada = Temporada::where('era_id',Session::get('era')->id)->where('numero',$request->temporada)->first();
+		$temporada = Temporada::where('era_id',Session::get('era')->id)->where('numero',$request->temporada)->first();
 		else
-			$temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('numero DESC')->first();
+		$temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('numero DESC')->first();
 		$amistosos = Amistoso::where('temporada_id',@$temporada->id)->where('tipo',$request->tipo)->orderBy('id')->get();
 		$amistosos_id = Amistoso::where('temporada_id',@$temporada->id)->where('tipo',$request->tipo)->orderBy('id')->pluck('id');
 		$jogadores = [];
 		foreach (Jogador::all() as $key => $value) {
 			if(empty($jogadores[$value->time_id]))
-				$jogadores[$value->time_id] = [];
+			$jogadores[$value->time_id] = [];
 			$jogadores[$value->time_id][] = $value;
 		}
 		$gols = Gol::whereIn('partida_id',$amistosos_id)->where('campeonato','Amistoso')->get();
@@ -44,27 +46,27 @@ class AmistosoController extends Controller {
 		$indisponiveis = [];
 		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time,COUNT(*) as qtd')->where('temporada_id',@$temporada->id)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',0)->where('jogadors.time_id','!=',11)->groupBy('jogadors.id','cartaos.time_id','times.nome')->having(DB::raw('COUNT(*)'),'=',2)->get() as $suspenso){
 			if(!isset($indisponiveis[$suspenso->time]))
-				$indisponiveis[$suspenso->time] = [];
+			$indisponiveis[$suspenso->time] = [];
 			$indisponiveis[$suspenso->time][$suspenso->id] = $suspenso->jogador;
 		}
 		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time')->where('temporada_id',@$temporada->id)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',1)->where('jogadors.time_id','!=',11)->get() as $suspenso){
 			if(!isset($indisponiveis[$suspenso->time]))
-				$indisponiveis[$suspenso->time] = [];
+			$indisponiveis[$suspenso->time] = [];
 			$indisponiveis[$suspenso->time][$suspenso->id] = $suspenso->jogador;
 		}
 		foreach(DB::table('lesaos')->join('jogadors','lesaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time')->where('temporada_id',@$temporada->id)->where('restantes','>','0')->where('jogadors.time_id','!=',11)->get() as $lesionado){
 			if(!isset($indisponiveis[$lesionado->time]))
-				$indisponiveis[$lesionado->time] = [];
+			$indisponiveis[$lesionado->time] = [];
 			$indisponiveis[$lesionado->time][$lesionado->id] = $lesionado->jogador;
 		}
 		return view('amistosos.index', ["amistosos" => $amistosos, "temporada" => $temporada, 'jogadores' => $jogadores, 'gols' => $gols, 'cartoes' => $cartoes, 'lesoes' => $lesoes, "indisponiveis" => $indisponiveis, 'lesionados' => $request->lesionados, 'tipo' => $request->tipo]);
 	}
-
+	
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
+	* Show the form for creating a new resource.
+	*
+	* @return Response
+	*/
 	public function create(Request $request)
 	{
 		$amistoso = new Amistoso();
@@ -72,13 +74,13 @@ class AmistosoController extends Controller {
 		$times = Time::whereIn('id',$times_id)->orderBy('nome')->lists('nome','id')->all();
 		return view('amistosos.form', ["amistoso" => $amistoso, 'times' => $times, 'tipo' => $request->tipo]);
 	}
-
+	
 	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param Request $request
-	 * @return Response
-	 */
+	* Store a newly created resource in storage.
+	*
+	* @param Request $request
+	* @return Response
+	*/
 	public function store(Request $request)
 	{
 		$amistoso = new Amistoso();
@@ -91,9 +93,9 @@ class AmistosoController extends Controller {
 			$amistoso->time22_id = $request->input("time22_id");
 		}
 		if($request->tipo == 0)
-			$amistoso->valor = $request->input("valor");
+		$amistoso->valor = $request->input("valor");
 		else
-			$amistoso->valor = 0;
+		$amistoso->valor = 0;
 		$amistoso->save();
 		if($request->tipo == 1){
 			$amistoso = new Amistoso();
@@ -106,13 +108,13 @@ class AmistosoController extends Controller {
 		}
 		return redirect()->route('amistosos.index', ['tipo' => $request->tipo])->with('message', 'Amistoso cadastrado com sucesso!');
 	}
-
+	
 	/**
-	 * Update a old created resource in storage.
-	 *
-	 * @param Request $request
-	 * @return Response
-	 */
+	* Update a old created resource in storage.
+	*
+	* @param Request $request
+	* @return Response
+	*/
 	public function update(Request $request)
 	{
 		$amistoso = Amistoso::findOrFail($request->partida_id);
@@ -128,7 +130,7 @@ class AmistosoController extends Controller {
 		$lesionados = [];
 		foreach ($request->gols_jogador1 as $key => $value) {
 			if($value == '')
-				continue;
+			continue;
 			$gol = new Gol();
 			$gol->jogador_id = $value;
 			$gol->quantidade = $request->gols_qtd1[$key];
@@ -140,7 +142,7 @@ class AmistosoController extends Controller {
 		}
 		foreach ($request->gols_jogador2 as $key => $value) {
 			if($value == '')
-				continue;
+			continue;
 			$gol = new Gol();
 			$gol->jogador_id = $value;
 			$gol->quantidade = $request->gols_qtd2[$key];
@@ -152,7 +154,7 @@ class AmistosoController extends Controller {
 		}
 		foreach ($request->cartoes_jogador1 as $key => $value) {
 			if($value == '')
-				continue;
+			continue;
 			$cartao = new Cartao();
 			$cartao->jogador_id = $value;
 			$cartao->cor = $request->cartoes_cor1[$key];
@@ -165,7 +167,7 @@ class AmistosoController extends Controller {
 		}
 		foreach ($request->cartoes_jogador2 as $key => $value) {
 			if($value == '')
-				continue;
+			continue;
 			$cartao = new Cartao();
 			$cartao->jogador_id = $value;
 			$cartao->cor = $request->cartoes_cor2[$key];
@@ -178,13 +180,13 @@ class AmistosoController extends Controller {
 		}
 		foreach ($request->lesoes_jogador1 as $key => $value) {
 			if($value == '')
-				continue;
+			continue;
 			$lesao = new Lesao();
 			$lesao->jogador_id = $value;
 			if($request->lesoes_tipo1[$key] == 0)
-				$rodadas = rand(1,2);
+			$rodadas = rand(1,2);
 			else
-				$rodadas = rand(3,7);
+			$rodadas = rand(3,7);
 			$jogador = Jogador::findOrFail($value);
 			$lesionados[$jogador->nome] = $rodadas;
 			$lesao->rodadas = $rodadas;
@@ -196,13 +198,13 @@ class AmistosoController extends Controller {
 		}
 		foreach ($request->lesoes_jogador2 as $key => $value) {
 			if($value == '')
-				continue;
+			continue;
 			$lesao = new Lesao();
 			$lesao->jogador_id = $value;
 			if($request->lesoes_tipo2[$key] == 0)
-				$rodadas = rand(1,2);
+			$rodadas = rand(1,2);
 			else
-				$rodadas = rand(3,7);
+			$rodadas = rand(3,7);
 			$jogador = Jogador::findOrFail($value);
 			$lesionados[$jogador->nome] = $rodadas;
 			$lesao->rodadas = $rodadas;
@@ -212,6 +214,7 @@ class AmistosoController extends Controller {
 			$lesao->time_id = $amistoso->time21_id;
 			$lesao->save();
 		}
+
 		// Premiação
 		if((isset($request->penalti1) && $request->penalti1 != '') && (isset($request->penalti2) && $request->penalti2 != '')){
 			if($amistoso->penalti1 > $amistoso->penalti2){
@@ -219,7 +222,7 @@ class AmistosoController extends Controller {
 				$v->dinheiro += $amistoso->valor;
 				$v->save();
 				$d = Time::findOrFail($amistoso->time21_id);
-				if($request->tipo == 0){
+				if($amistoso->tipo == "0"){
 					$d->dinheiro -= $amistoso->valor;
 					$d->save();
 				}
@@ -228,7 +231,7 @@ class AmistosoController extends Controller {
 				$v->dinheiro += $amistoso->valor;
 				$v->save();
 				$d = Time::findOrFail($amistoso->time11_id);
-				if($request->tipo == 0){
+				if($amistoso->tipo == "0"){
 					$d->dinheiro -= $amistoso->valor;
 					$d->save();
 				}
@@ -239,7 +242,7 @@ class AmistosoController extends Controller {
 				$v->dinheiro += $amistoso->valor;
 				$v->save();
 				$d = Time::findOrFail($amistoso->time21_id);
-				if($request->tipo == 0){
+				if($amistoso->tipo == "0"){
 					$d->dinheiro -= $amistoso->valor;
 					$d->save();
 				}
@@ -248,20 +251,148 @@ class AmistosoController extends Controller {
 				$v->dinheiro += $amistoso->valor;
 				$v->save();
 				$d = Time::findOrFail($amistoso->time11_id);
-				if($request->tipo == 0){
+				if($amistoso->tipo == "0"){
 					$d->dinheiro -= $amistoso->valor;
 					$d->save();
 				}
 			}
 		}
+
 		// Se tiver valor
 		if($amistoso->valor != 0){
-			if($amistoso->tipo == "2")
+			$temporada = Temporada::findOrFail($amistoso->temporada_id);
+			if($amistoso->tipo == "2"){
 				Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 0, 'descricao' => 'Campeão da Supercopa', 'time_id' => $v->id]);
+				$temporada->supercopa_id = $v->id;
+			}
+			if($amistoso->tipo == "3"){
+				$partidas = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Liga' and resultado1 IS NOT NULL and resultado2 IS NOT NULL")->get();
+				$classificacao = $this->classificacao($partidas);
+				
+				// MVPs
+				$mvps = Partida::selectRaw("COUNT(*) as qtd, mvp_id")->where('temporada_id',$temporada->id)->where('campeonato','Liga')->whereRaw('mvp_id IS NOT NULL')->groupBy("mvp_id")->get();
+				$max = 0;
+				foreach ($mvps as $value) {
+					if($value->qtd > $max)
+					$max = $value->qtd;
+				}
+				$mvps = Partida::select("mvp_id")->where('temporada_id',$temporada->id)->where('campeonato','Liga')->whereRaw('mvp_id IS NOT NULL')->groupBy("mvp_id")->having(DB::raw('COUNT(*)'),'=',$max)->get();
+				$mvp_id = null;
+				$time = null;
+				if($mvps->count() > 1){
+					// Se o MVP for do time campeão
+					for ($i=0; $i < 10; $i++) { 
+						foreach ($mvps as $mvp) {
+							$time = $mvp->mvp()->time();
+							if($v->id == $time->id){
+								$time->dinheiro += 2000000;
+								$time->save();
+								$mvp_id = $mvp->mvp_id;
+								break;
+							}
+						}
+						if(!is_null($mvp_id))
+						break;
+					}
+					
+					// Se o MVP for do time vice-campeão
+					if(is_null($time)){
+						for ($i=0; $i < 10; $i++) { 
+							foreach ($mvps as $mvp) {
+								$time = $mvp->mvp()->time();
+								if($d->id == $time->id){
+									$time->dinheiro += 2000000;
+									$time->save();
+									$mvp_id = $mvp->mvp_id;
+									break;
+								}
+							}
+							if(!is_null($mvp_id))
+							break;
+						}
+					}
+					
+					// Se o MVP for do time melhor colocado
+					if(is_null($time)){
+						for ($i=0; $i < 10; $i++) { 
+							foreach ($mvps as $mvp) {
+								$time = $mvp->mvp()->time();
+								if($classificacao[$i]['id'] == $time->id){
+									$time->dinheiro += 2000000;
+									$time->save();
+									$mvp_id = $mvp->mvp_id;
+									break;
+								}
+							}
+							if(!is_null($mvp_id))
+							break;
+						}
+					}
+				} else {
+					$time = $mvps->first()->mvp()->time();
+					$time->dinheiro += 2000000;
+					$time->save();
+					$mvp_id = $mvps->first()->mvp_id;
+				}
+				Financeiro::create(['valor' => 2000000, 'operacao' => 0, 'descricao' => 'MVP da Liga FEDIA', 'time_id' => $time->id]);
+				$temporada->mvp_id = $mvp_id;
+				$temporada->save();
+				
+				// Artilheiros
+				$artilheiro = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,SUM(quantidade) as qtd')->where('temporada_id',$temporada->id)->where('campeonato','Liga')->groupBy('jogador_id','times.id')->orderBy('qtd','DESC')->get();
+				$t = [];
+				$gols = null;
+				foreach ($artilheiro as $key => $value) {
+					if(is_null($gols))
+					$gols = $value->qtd;
+					if($gols != $value->qtd)
+					break;
+					$a = new Artilheiro();
+					$a->jogador_id = $value->jogador_id;
+					$a->campeonato = 'Liga';
+					$a->temporada_id = $temporada->id;
+					$a->save();
+					$t[] = $value->id;
+				}
+				foreach ($t as $key => $value) {
+					$time = Time::findOrFail($value);
+					$time->dinheiro += (2000000/count($t));
+					$time->save();
+					Financeiro::create(['valor' => (2000000/count($t)), 'operacao' => 0, 'descricao' => 'Artilheiro da Liga FEDIA', 'time_id' => $value]);
+				}
+				
+				// Criar SuperCopa
+				if(Amistoso::where('temporada_id',$temporada->id)->where('tipo',2)->count()){
+					$supercopa = Amistoso::where('temporada_id',$temporada->id)->where('tipo',2)->get()->first();
+					if($supercopa->time21_id == $v->id) {
+						$partidas = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Liga' and resultado1 IS NOT NULL and resultado2 IS NOT NULL")->get();
+						$classificacao = $this->classificacao($partidas);
+						if($classificacao[0]['id'] == $supercopa->time21_id) $supercopa->time11_id = $classificacao[1]['id'];
+						else $supercopa->time11_id = $classificacao[0]['id'];
+					} else {
+						$supercopa->time11_id = $v->id;
+					}
+					$supercopa->save();
+				} else {
+					$supercopa = new Amistoso();
+					$supercopa->temporada_id = $temporada->id;
+					$supercopa->time11_id = $v->id;
+					$supercopa->valor = 2000000;
+					$supercopa->tipo = 2;
+					$supercopa->save();
+				}
+				
+				Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 0, 'descricao' => 'Campeão da Liga FEDIA', 'time_id' => $v->id]);
+				$temporada->liga1_id = $v->id;
+				$temporada->liga2_id = $d->id;
+			}
 			if($amistoso->tipo == "0"){
 				Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 0, 'descricao' => 'Vitória do Amistoso', 'time_id' => $v->id]);
 				Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 1, 'descricao' => 'Derrota no Amistoso', 'time_id' => $d->id]);
 			}
+			
+			$request->tipo = 3;
+			$temporada->save();
 		}
 		// Se for 2 contra 2
 		if(!blank($amistoso->time12_id) && !blank($amistoso->time22_id)){
@@ -305,5 +436,57 @@ class AmistosoController extends Controller {
 		}
 		return redirect()->route('amistosos.index',['lesionados' => $lesionados, 'tipo' => $request->tipo])->with('message', 'Amistoso cadastrado com sucesso!');
 	}
-
+	
+	/**
+	* Obtém a classificação da Liga
+	*
+	* @param $partidas
+	* @return Response
+	*/
+	public function classificacao($partidas)
+	{
+		$times_id = UserTime::where("era_id",Session::get('era')->id)->pluck('time_id')->toArray();
+		$t = Time::whereIn('id',$times_id)->get()->keyBy('id');
+		$classificacao = [];
+		foreach ($t as $key => $value) {
+			$classificacao[$value->id] = ['P' => 0, 'J' => 0, 'V' => 0, 'E' => 0, 'D' => 0, 'GP' => 0, 'GC' => 0, 'SG' => 0, 'id' => $value->id, 'nome' => $t[$value->id]->nome];
+		}
+		foreach ($partidas as $key => $value) {
+			$classificacao[$value->time1_id]["J"] += 1;
+			$classificacao[$value->time2_id]["J"] += 1;
+			$classificacao[$value->time1_id]["GP"] += $value->resultado1;
+			$classificacao[$value->time2_id]["GP"] += $value->resultado2;
+			$classificacao[$value->time1_id]["GC"] += $value->resultado2;
+			$classificacao[$value->time2_id]["GC"] += $value->resultado1;
+			$classificacao[$value->time1_id]["SG"] += $value->resultado1;
+			$classificacao[$value->time1_id]["SG"] -= $value->resultado2;
+			$classificacao[$value->time2_id]["SG"] += $value->resultado2;
+			$classificacao[$value->time2_id]["SG"] -= $value->resultado1;
+			if($value->resultado1 > $value->resultado2){
+				$classificacao[$value->time1_id]["P"] += 3;
+				$classificacao[$value->time1_id]["V"] += 1;
+				$classificacao[$value->time2_id]["D"] += 1;
+			} elseif ($value->resultado1 == $value->resultado2) {
+				$classificacao[$value->time1_id]["P"] += 1;
+				$classificacao[$value->time2_id]["P"] += 1;
+				$classificacao[$value->time1_id]["E"] += 1;
+				$classificacao[$value->time2_id]["E"] += 1;
+			} else {
+				$classificacao[$value->time2_id]["P"] += 3;
+				$classificacao[$value->time2_id]["V"] += 1;
+				$classificacao[$value->time1_id]["D"] += 1;
+			}
+		}
+		
+		$sort = array();
+		foreach ($classificacao as $k => $c){
+			$sort['P'][$k] = $c['P'];
+			$sort['V'][$k] = $c['V'];
+			$sort['SG'][$k] = $c['SG'];
+			$sort['GP'][$k] = $c['GP'];
+		}
+		array_multisort($sort['P'], SORT_DESC, $sort['V'], SORT_DESC, $sort['SG'], SORT_DESC, $sort['GP'], SORT_DESC, $classificacao);
+		return $classificacao;
+	}
+	
 }

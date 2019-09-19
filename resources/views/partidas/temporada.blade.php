@@ -57,7 +57,6 @@
                     @endif
                     <th>Campeão da Liga FEDIA</th>
                     <th>Vice Campeão da Liga FEDIA</th>
-                    <th>Terceiro Lugar da Liga FEDIA</th>
                     <th>Artilheiro da Liga FEDIA</th>
                     <th>MVP da Liga FEDIA</th>
                     <th>Campeão da Copa FEDIA</th>
@@ -73,7 +72,6 @@
                     <td width="125">{{$temporada->numero}}ª Temporada</td>
                     <td>{{@$temporada->liga1()->nome}}</td>
                     <td>{{@$temporada->liga2()->nome}}</td>
-                    <td>{{@$temporada->liga3()->nome}}</td>
                     <td>{{join(', ',@$temporada->artilheiro_liga())}}</td>
                     <td>{{@$temporada->mvp()->nome}}</td>
                     <td>{{@$temporada->copa1()->nome}}</td>
@@ -115,7 +113,7 @@
             <div class="iso-box-wrapper col4-iso-box">
                 @foreach($temporadas as $temporada)
                 @foreach(explode('|',$temporada->fotos) as $foto)
-                <?php if(blank($foto)){continue;} ?>
+                @if(blank($foto)) <?php continue; ?> @endif
                 <div class="iso-box temporada{{$temporada->id}} col-md-3 col-sm-6 col-xs-6">
                     <a href="images/temporadas/{{$temporada->id}}/{{$foto}}" data-lightbox-gallery="portfolio-all">{!! Html::image("images/temporadas/$temporada->id/$foto", $foto) !!}</a>
                 </div>
