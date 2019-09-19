@@ -55,10 +55,10 @@
                 <table class="table table-striped table-bordered templatemo-user-table">
                     <thead>
                         <th>Nome</th>
-                        <th>Time</th>
                         <th>Posição</th>
                         <th>Idade</th>
                         <th>Overall</th>
+                        <th>Time</th>
                         <th>Gols</th>
                     </thead>
 
@@ -66,10 +66,10 @@
                     @foreach($jogadores as $jogador)
                         <tr>
                             <td>{{$jogador->nome}}</td>
-                            <td>{{$jogador->nome_time}}</td>
                             <td>{{str_replace('|',' ',$jogador->posicoes)}}</td>
                             <td>{{$jogador->idade}}</td>
                             <td>{{$jogador->overall}}</td>
+                            <td>{{$jogador->nome_time}}</td>
                             <td>{{$jogador->gols}}</td>
                         </tr>
                     @endforeach
