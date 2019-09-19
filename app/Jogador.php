@@ -11,6 +11,7 @@ class Jogador extends Model
      *
      * @var array
      */
+    protected $table = 'jogadors';
     protected $fillable = ['status'];
 
     // Arrays para retornar strings

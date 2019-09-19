@@ -158,3 +158,33 @@ if (! function_exists('get_eras')) {
         return Era::lists('nome','id')->all();
     }
 }
+
+if (! function_exists('arrayToSelect')) {
+    /**
+     * Return path, depending of the environment
+     *
+     * @param integer $tipo
+     *
+     * @return string
+     */
+    function arrayToSelect(array $values, $key, $value, $noZeroIndex=null) {
+        if(count($values) > 0)
+        {
+            $data = array();
+            if($noZeroIndex==null)
+            {
+                $data[0] = 'Selecione';
+            }
+            foreach ($values as $row) {
+                $data[$row[$key]] = $row[$value];
+            }
+            return $data;
+        }else{
+            if($noZeroIndex==null)
+            {
+                return ['Selecione'];
+            }
+            return [];
+        }
+    }
+}

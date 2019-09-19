@@ -173,6 +173,10 @@ Route::post("administracao/copa_store", ['as' => 'administracao.users.copa_store
 Route::get('legislacao/premiacoes', function (){ return view("legislacao.premiacoes"); });
 Route::get("legislacao/regras", function() { return Redirect::to("Regras.pdf"); });
 
+//Artilharia
+Route::get('artilharia', 'ArtilhariaController@index');
+
+
 });
 
 Route::get("noticia/{id}","NoticiumController@show");

@@ -73,6 +73,7 @@
 							<li><a href="/partidas?tipo=copa" class="@if(Request::is('partidas*') && @$tipo == 'copa') active @endif">Copa FEDIA</a></li>
 						</ul>
 					</li>
+					<li><a href="{{ url('artilharia') }}" class="@if(Request::is('artilharia')) active @endif"><i class="fa fa-soccer-ball-o"></i>Artilharia</a></li>
 					<li><a href="/partidas_temporadas" class="@if(Request::is('partidas_temporadas')) active @endif"><i class="fa fa-list fa-fw"></i>Temporadas</a></li>
 					<li><a href="/indisponiveis" class="@if(Request::is('indisponiveis')) active @endif"><i class="fa fa-ambulance fa-fw"></i>Cartões e Lesões</a></li>
 					<li class="submenu legislacao">
