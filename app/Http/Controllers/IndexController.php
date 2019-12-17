@@ -33,7 +33,8 @@ class IndexController extends Controller {
         else $index = false;
         
         if(isset($request->temporada)) $temporada = Temporada::where('era_id',Session::get('era')->id)->where('numero',$request->temporada)->first();
-        
+        else $temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('id DESC')->first();
+
         if(!$temporada) $temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('id DESC')->first();
         
         $times_id = UserTime::where('era_id',Session::get('era')->id)->pluck('time_id')->toArray();
