@@ -320,6 +320,7 @@ class ComposerStaticInitf1a39921c2c519affe51e8b2fba61365
         'AddValorToJogadorsTable' => __DIR__ . '/../..' . '/database/migrations/2018_08_09_185905_add_valor_to_jogadors_table.php',
         'AmistosoTableSeeder' => __DIR__ . '/../..' . '/database/seeds/AmistosoTableSeeder.php',
         'ChangeArtilheiroFromTemporadasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_10_120842_change_artilheiro_from_temporadas_table.php',
+        'ChangeArtilheiros' => __DIR__ . '/../..' . '/database/migrations/2020_01_06_113512_change_artilheiros.php',
         'ChangeColumnsFromTemporadasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_04_134731_change_columns_from_temporadas_table.php',
         'ChangeColunasFromPartidasTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_04_144500_change_colunas_from_partidas_table.php',
         'ChangeDinheiroFromUsersTable' => __DIR__ . '/../..' . '/database/migrations/2018_07_04_182239_change_dinheiro_from_users_table.php',

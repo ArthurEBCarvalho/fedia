@@ -3,17 +3,17 @@
 @section('content')
 @if (Session::has('message'))
 <div class="templatemo-content-widget green-bg">
-    <i class="fa fa-times"></i>                
+    <i class="fa fa-times"></i>
     <div class="media">
         <div class="media-body">
             <h2>{{Session::get('message')}}</h2>
-        </div>        
-    </div>                
+        </div>
+    </div>
 </div>
 @endif
 
 <div class="templatemo-content-widget white-bg">
-    <h2 class="margin-bottom-10">Eras</h2>
+    <h2 class="margin-bottom-10">Resets</h2>
     <div class="row">
         <div class="col-md-8 col-sm-12 form-group">
             <form role="form" class="form-search" method="get">
@@ -23,18 +23,21 @@
                 <div class="input-group">
                     <select class="form-control search-filtro" name="filtro">
                         <option>Limpar</option>
-                        <option value="nome" @if ($filtro == "nome") selected @endif>Nome</option>
+                        <option value="nome" @if ($filtro=="nome" ) selected @endif>Nome</option>
                     </select>
                     <input type="text" class="form-control search-valor" name="valor" value="{{$valor}}">
                     <span class="input-group-btn">
-                        <button type="submit" class="btn btn-info search-button"><i class="fa fa-search"></i> Pesquisar</button>
+                        <button type="submit" class="btn btn-info search-button"><i class="fa fa-search"></i>
+                            Pesquisar</button>
                     </span>
                 </div>
             </form>
         </div>
         <div class="col-md-4">
             <div class="pull-right">
-                <div class="pull-right"><a href="{{ route('administracao.eras.create') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Novo {{substr_replace("Eras", "", -1)}}</a></div>
+                <div class="pull-right"><a href="{{ route('administracao.eras.create') }}" type="button"
+                        class="btn btn-success"><i class="fa fa-plus"></i> Novo {{substr_replace("Resets", "", -1)}}</a>
+                </div>
             </div>
         </div>
     </div>
@@ -48,17 +51,22 @@
             <thead>
                 <tr>
                     @if(is_null($param))
-                    <th><a href="{{Request::fullUrl()}}{{$signal}}order=nome" class="white-text templatemo-sort-by">Nome <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    <th><a href="{{Request::fullUrl()}}{{$signal}}order=nome" class="white-text templatemo-sort-by">Nome
+                            <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @else
                     @if(strpos($param,'desc') !== false)
-                    <th><a href="{{str_replace(str_replace(' ','%20',$param),'nome',Request::fullUrl())}}" class="white-text templatemo-sort-by @if(strpos($param,'nome') !== false)active @endif">Nome <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    <th><a href="{{str_replace(str_replace(' ','%20',$param),'nome',Request::fullUrl())}}"
+                            class="white-text templatemo-sort-by @if(strpos($param,'nome') !== false)active @endif">Nome
+                            <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @else
                     @if($param == 'nome')
                     <?php $url = str_replace('order=nome','order=nome desc',Request::fullUrl()); ?>
                     @else
                     <?php $url = Request::fullUrl(); ?>
                     @endif
-                    <th><a href="{{str_replace('order='.$param,'order=nome',$url)}}" class="white-text templatemo-sort-by @if(strpos($param,'nome') !== false)active @endif">Nome <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    <th><a href="{{str_replace('order='.$param,'order=nome',$url)}}"
+                            class="white-text templatemo-sort-by @if(strpos($param,'nome') !== false)active @endif">Nome
+                            <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @endif
                     @endif
 
@@ -76,7 +84,8 @@
                         </a>
                     </td>
                     <td class="small" align="center" alt="Deletar Era">
-                        <a onclick="confirm_delete('{{ route('administracao.eras.destroy', $era->id) }}')" href="javascript:;" data-toggle="modal" data-target="#confirm_delete">
+                        <a onclick="confirm_delete('{{ route('administracao.eras.destroy', $era->id) }}')"
+                            href="javascript:;" data-toggle="modal" data-target="#confirm_delete">
                             {!! Html::image("images/icons/delete.png", "Deletar Era") !!}
                         </a>
                     </td>
@@ -87,18 +96,19 @@
     </div>
 </div>
 <div class="pagination-wrap">
-    <p class="text_pagination pull-left">Exibindo do <strong>{{$eras->firstItem()}}</strong> ao <strong>{{$eras->lastItem()}}</strong> de um total de <strong>{{$eras->total()}}</strong> registros</p>
+    <p class="text_pagination pull-left">Exibindo do <strong>{{$eras->firstItem()}}</strong> ao
+        <strong>{{$eras->lastItem()}}</strong> de um total de <strong>{{$eras->total()}}</strong> registros</p>
     {!! $eras->appends($params)->render() !!}
 </div>
 @else
 <div class="templatemo-content-widget no-padding">
     <div class="templatemo-content-widget yellow-bg">
-        <i class="fa fa-times"></i>                
+        <i class="fa fa-times"></i>
         <div class="media">
             <div class="media-body">
                 <h2>Nenhuma {{substr_replace("Eras", "", -1)}} encontrada!</h2>
-            </div>        
-        </div>                
+            </div>
+        </div>
     </div>
 </div>
 @endif

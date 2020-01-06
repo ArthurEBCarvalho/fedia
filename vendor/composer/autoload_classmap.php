@@ -27,6 +27,7 @@ return array(
     'AddValorToJogadorsTable' => $baseDir . '/database/migrations/2018_08_09_185905_add_valor_to_jogadors_table.php',
     'AmistosoTableSeeder' => $baseDir . '/database/seeds/AmistosoTableSeeder.php',
     'ChangeArtilheiroFromTemporadasTable' => $baseDir . '/database/migrations/2018_07_10_120842_change_artilheiro_from_temporadas_table.php',
+    'ChangeArtilheiros' => $baseDir . '/database/migrations/2020_01_06_113512_change_artilheiros.php',
     'ChangeColumnsFromTemporadasTable' => $baseDir . '/database/migrations/2018_07_04_134731_change_columns_from_temporadas_table.php',
     'ChangeColunasFromPartidasTable' => $baseDir . '/database/migrations/2018_07_04_144500_change_colunas_from_partidas_table.php',
     'ChangeDinheiroFromUsersTable' => $baseDir . '/database/migrations/2018_07_04_182239_change_dinheiro_from_users_table.php',

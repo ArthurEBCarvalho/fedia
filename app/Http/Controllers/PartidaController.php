@@ -23,7 +23,7 @@ use Session;
 use Illuminate\Http\Request;
 
 class PartidaController extends Controller {
-	
+
 	/**
 	* Display a listing of the resource.
 	*
@@ -79,7 +79,7 @@ class PartidaController extends Controller {
 		$lesoes = Lesao::whereIn('partida_id',$partidas_id)->get();
 		return view('partidas.index', ["partidas" => $partidas, "temporada" => $temporada, "rodada" => $rodada, "indisponiveis" => $indisponiveis, "lesionados" => $request->lesionados, "tipo" => $request->tipo, 'jogadores' => $jogadores, 'mvps' => $mvps, 'gols' => $gols, 'cartoes' => $cartoes, 'lesoes' => $lesoes]);
 	}
-	
+
 	/**
 	* Store a newly created resource in storage.
 	*
@@ -101,7 +101,7 @@ class PartidaController extends Controller {
 		$time1 = Time::findOrFail($partida->time1_id);
 		$time2 = Time::findOrFail($partida->time2_id);
 		$temporada = Temporada::findOrFail($partida->temporada_id);
-		
+
 		// Finalizar suspensões e lesões
 		Cartao::whereRaw("time_id IN ($partida->time1_id,$partida->time2_id) and cumprido = 0 and cor = '1' and campeonato = '$partida->campeonato' and temporada_id = $temporada->id")->update(['cumprido' => 1]);
 		$acumulados = Cartao::selectRaw("array_to_string(array_agg(id), ',') as ids, COUNT(*) as qtd")->whereRaw("time_id IN ($partida->time1_id,$partida->time2_id) and cumprido = 0 and cor = '0' and campeonato = '$partida->campeonato' and temporada_id = $temporada->id")->groupBy('jogador_id')->having(DB::raw('COUNT(*)'), '=', 2)->get();
@@ -199,7 +199,7 @@ class PartidaController extends Controller {
 			$lesao->partida_id = $partida->id;
 			$lesao->save();
 		}
-		
+
 		if($partida->campeonato == "Liga"){
 			// Premiação Final da Liga
 			if($partida->rodada > 9) {
@@ -209,11 +209,11 @@ class PartidaController extends Controller {
 				$turno = 1;
 				$where_rodada = "rodada < 10";
 			}
-			
+
 			if(!Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Liga' and resultado1 IS NULL and resultado2 IS NULL and $where_rodada")->count()){
 				$p = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Liga' and $where_rodada")->get();
 				$classificacao = $this->classificacao($p);
-				
+
 				$v1 = Time::findOrFail($classificacao[0]['id']);
 				$v1->dinheiro += 15000000;
 				$v1->save();
@@ -254,7 +254,7 @@ class PartidaController extends Controller {
 				$v10->dinheiro += 7000000;
 				$v10->save();
 				Financeiro::create(['valor' => 7000000, 'operacao' => 0, 'descricao' => 'Décimo Lugar de turno da Liga FEDIA', 'time_id' => $v10->id]);
-				
+
 				// Criar Final
 				if(Amistoso::where('temporada_id',$temporada->id)->where('tipo',3)->count()){
 					$final = Amistoso::where('temporada_id',$temporada->id)->where('tipo',3)->get()->first();
@@ -270,10 +270,10 @@ class PartidaController extends Controller {
 					$final->tipo = 3;
 					$final->save();
 				}
-				
+
 			}
 		}
-		
+
 		// Premiação Final da Copa
 		if($partida->campeonato == "Copa" && $partida->ordem == 6){
 			if((isset($request->penalti1) && $request->penalti1 != '') && (isset($request->penalti2) && $request->penalti2 != '')){
@@ -305,9 +305,9 @@ class PartidaController extends Controller {
 			$v->dinheiro += 3000000;
 			$v->save();
 			Financeiro::create(['valor' => 3000000, 'operacao' => 0, 'descricao' => 'Campeão da Copa FEDIA', 'time_id' => $v->id]);
-			
+
 			// Artilheiros
-			$artilheiro = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,SUM(quantidade) as qtd')->where('temporada_id',$temporada->id)->where('campeonato','Copa')->groupBy('jogador_id','times.id')->orderBy('qtd','DESC')->get();
+			$artilheiro = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',$temporada->id)->where('campeonato','Copa')->groupBy('jogador_id','jogadors.nome','times.id')->orderBy('qtd','DESC')->get();
 			$t = [];
 			$gols = null;
 			foreach ($artilheiro as $key => $value) {
@@ -316,7 +316,7 @@ class PartidaController extends Controller {
 				if($gols != $value->qtd)
 				break;
 				$a = new Artilheiro();
-				$a->jogador_id = $value->jogador_id;
+				$a->jogador = $value->jogador;
 				$a->campeonato = 'Copa';
 				$a->temporada_id = $temporada->id;
 				$a->save();
@@ -329,7 +329,7 @@ class PartidaController extends Controller {
 				Financeiro::create(['valor' => (2000000/count($t)), 'operacao' => 0, 'descricao' => 'Artilheiro da Copa FEDIA', 'time_id' => $value]);
 			}
 			$temporada->save();
-			
+
 			// Criar SuperCopa
 			if(Amistoso::where('temporada_id',$temporada->id)->where('tipo',2)->count()){
 				$supercopa = Amistoso::where('temporada_id',$temporada->id)->where('tipo',2)->get()->first();
@@ -350,7 +350,7 @@ class PartidaController extends Controller {
 				$supercopa->save();
 			}
 		}
-		
+
 		// Criar próxima fase das partidas de Copa
 		if($partida->campeonato == "Copa" && $partida->rodada == 2){
 			$anterior = Partida::where('temporada_id',$temporada->id)->where('ordem',$partida->ordem)->where('rodada',1)->first();
@@ -425,14 +425,14 @@ class PartidaController extends Controller {
 				}
 			}
 		}
-		
+
 		if($request->view == 'partidas.partidas')
 		$time = $request->time_id;
 		else
 		$time = null;
 		return redirect()->route($request->view, ['tipo' => strtolower($request->campeonato), 'temporada_id' => $temporada->id, 'rodada' => $request->rodada, 'lesionados' => $lesionados, 'time_id' => $time])->with('message', 'Resultado cadastrado com sucesso!');
 	}
-	
+
 	/**
 	* List all Temporadas.
 	*
@@ -449,7 +449,7 @@ class PartidaController extends Controller {
 		$times = Time::whereIn('id',$times_id)->lists('nome','id');
 		return view('partidas.temporada', ["temporadas" => $temporadas, "times" => $times, "filtro" => $request->filtro, "valor" => $request->valor, "caret" => $caret, "param" => $param, "signal" => $signal]);
 	}
-	
+
 	/**
 	* Store a newly created resource in storage.
 	*
@@ -473,7 +473,7 @@ class PartidaController extends Controller {
 		$linha1[] = $time->id;
 		foreach ($times->reverse() as $index => $time)
 		$linha2[] = $time->id;
-		for ($turno=0; $turno <= 1; $turno++) { 
+		for ($turno=0; $turno <= 1; $turno++) {
 			for ($r=1; $r < $times->count(); $r++) {
 				if($turno == 0)
 				$rodada = $r;
@@ -496,7 +496,7 @@ class PartidaController extends Controller {
 				}
 				// Gira as linhas no sentido horário
 				$last1 = $linha1[($times->count()/2)-1];
-				for ($i2=($times->count()/2)-1; $i2 >= 0; $i2--) { 
+				for ($i2=($times->count()/2)-1; $i2 >= 0; $i2--) {
 					if($i2 == 1)
 					$linha1[$i2] = $linha2[0];
 					elseif ($i2 != 0)
@@ -507,10 +507,10 @@ class PartidaController extends Controller {
 					$linha2[$i2] = $last1;
 					else
 					$linha2[$i2] = $linha2[$i2+1];
-				} 
+				}
 			}
 		}
-		
+
 		// Sorteio da copa
 		$times = Time::whereIn('id', $request->times)->inRandomOrder()->get();
 		foreach ([0,2,4,6] as $ordem => $index) {
@@ -533,7 +533,7 @@ class PartidaController extends Controller {
 			$partida->time2_id = $times[$index]->id;
 			$partida->save();
 		}
-		
+
 		// Dinheiro do patrocínio
 		foreach (Time::where('nome','!=','Mercado Externo')->get() as $key => $time) {
 			$valor = 15000000 + (($temporada->numero - 1) * 2500000);
@@ -541,10 +541,10 @@ class PartidaController extends Controller {
 			$time->save();
 			Financeiro::create(['valor' => $valor, 'operacao' => 0, 'descricao' => 'Patrocício da Temporada '.$temporada->numero, 'time_id' => $time->id]);
 		}
-		
+
 		return redirect()->route('partidas.temporadas')->with('message', 'Temporada '.$temporada->numero.' cadastrada com sucesso!');
 	}
-	
+
 	/**
 	* Importa as fotos da temporada
 	*
@@ -556,7 +556,7 @@ class PartidaController extends Controller {
 		$path = public_path()."/images/temporadas/$request->id";
 		if(!File::exists($path))
 		File::makeDirectory($path);
-		
+
 		$nomes = [];
 		$files = $request->file('images');
 		if($request->hasFile('images')){
@@ -571,10 +571,10 @@ class PartidaController extends Controller {
 		$fotos = $temporada->fotos."|".join('|',$nomes);
 		$temporada->fotos = $fotos;
 		$temporada->save();
-		
+
 		return redirect()->route('partidas.temporadas')->with('message', 'Fotos importadas com sucesso!');
 	}
-	
+
 	/**
 	* Lista todos os status (cartão e lesão) dos jogadores.
 	*
@@ -619,10 +619,10 @@ class PartidaController extends Controller {
 		}
 		$times = Time::whereIn('id',UserTime::where('era_id',Session::get('era')->id)->pluck('time_id')->toArray())->get();
 		$temporadas = Temporada::where('era_id',Session::get('era')->id)->get();
-		
+
 		return view('partidas.indisponivel', ["indisponiveis" => $indisponiveis, "times" => $times, "temporadas" => $temporadas, "time" => $time, "temporada" => $temporada]);
 	}
-	
+
 	/**
 	* Lista todos os status (cartão e lesão) dos jogadores.
 	*
@@ -673,7 +673,7 @@ class PartidaController extends Controller {
 			$indisponiveis['Copa'][$lesionado->time] = [];
 			$indisponiveis['Copa'][$lesionado->time][] = $lesionado->jogador;
 			if(!isset($indisponiveis['Liga']))
-			$indisponiveis['Liga'] = [];			
+			$indisponiveis['Liga'] = [];
 			if(!isset($indisponiveis['Liga'][$lesionado->time]))
 			$indisponiveis['Liga'][$lesionado->time] = [];
 			$indisponiveis['Liga'][$lesionado->time][] = $lesionado->jogador;
@@ -687,7 +687,7 @@ class PartidaController extends Controller {
 		$lesoes = Lesao::whereIn('partida_id',$partidas_id)->get();
 		return view('partidas.partidas', ["partidas" => $partidas, "temporada" => $temporada, "time" => $time, "times" => $times, "jogadores" => $jogadores, "mvps" => $mvps, "gols" => $gols, "cartoes" => $cartoes, "lesoes" => $lesoes, "indisponiveis" => $indisponiveis, "lesionados" => $request->lesionados]);
 	}
-	
+
 	/**
 	* Obtém a classificação da Liga
 	*
@@ -728,7 +728,7 @@ class PartidaController extends Controller {
 				$classificacao[$value->time1_id]["D"] += 1;
 			}
 		}
-		
+
 		$sort = array();
 		foreach ($classificacao as $k => $c){
 			$sort['P'][$k] = $c['P'];

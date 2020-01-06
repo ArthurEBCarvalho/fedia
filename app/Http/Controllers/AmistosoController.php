@@ -20,7 +20,7 @@ use Session;
 use Illuminate\Http\Request;
 
 class AmistosoController extends Controller {
-	
+
 	/**
 	* Display a listing of the resource.
 	*
@@ -61,7 +61,7 @@ class AmistosoController extends Controller {
 		}
 		return view('amistosos.index', ["amistosos" => $amistosos, "temporada" => $temporada, 'jogadores' => $jogadores, 'gols' => $gols, 'cartoes' => $cartoes, 'lesoes' => $lesoes, "indisponiveis" => $indisponiveis, 'lesionados' => $request->lesionados, 'tipo' => $request->tipo]);
 	}
-	
+
 	/**
 	* Show the form for creating a new resource.
 	*
@@ -74,7 +74,7 @@ class AmistosoController extends Controller {
 		$times = Time::whereIn('id',$times_id)->orderBy('nome')->lists('nome','id')->all();
 		return view('amistosos.form', ["amistoso" => $amistoso, 'times' => $times, 'tipo' => $request->tipo]);
 	}
-	
+
 	/**
 	* Store a newly created resource in storage.
 	*
@@ -108,7 +108,7 @@ class AmistosoController extends Controller {
 		}
 		return redirect()->route('amistosos.index', ['tipo' => $request->tipo])->with('message', 'Amistoso cadastrado com sucesso!');
 	}
-	
+
 	/**
 	* Update a old created resource in storage.
 	*
@@ -268,7 +268,7 @@ class AmistosoController extends Controller {
 			if($amistoso->tipo == "3"){
 				$partidas = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Liga' and resultado1 IS NOT NULL and resultado2 IS NOT NULL")->get();
 				$classificacao = $this->classificacao($partidas);
-				
+
 				// MVPs
 				$mvps = Partida::selectRaw("COUNT(*) as qtd, mvp_id")->where('temporada_id',$temporada->id)->where('campeonato','Liga')->whereRaw('mvp_id IS NOT NULL')->groupBy("mvp_id")->get();
 				$max = 0;
@@ -281,7 +281,7 @@ class AmistosoController extends Controller {
 				$time = null;
 				if($mvps->count() > 1){
 					// Se o MVP for do time campeão
-					for ($i=0; $i < 10; $i++) { 
+					for ($i=0; $i < 10; $i++) {
 						foreach ($mvps as $mvp) {
 							$time = $mvp->mvp()->time();
 							if($v->id == $time->id){
@@ -294,10 +294,10 @@ class AmistosoController extends Controller {
 						if(!is_null($mvp_id))
 						break;
 					}
-					
+
 					// Se o MVP for do time vice-campeão
 					if(is_null($time)){
-						for ($i=0; $i < 10; $i++) { 
+						for ($i=0; $i < 10; $i++) {
 							foreach ($mvps as $mvp) {
 								$time = $mvp->mvp()->time();
 								if($d->id == $time->id){
@@ -311,10 +311,10 @@ class AmistosoController extends Controller {
 							break;
 						}
 					}
-					
+
 					// Se o MVP for do time melhor colocado
 					if(is_null($time)){
-						for ($i=0; $i < 10; $i++) { 
+						for ($i=0; $i < 10; $i++) {
 							foreach ($mvps as $mvp) {
 								$time = $mvp->mvp()->time();
 								if($classificacao[$i]['id'] == $time->id){
@@ -335,11 +335,11 @@ class AmistosoController extends Controller {
 					$mvp_id = $mvps->first()->mvp_id;
 				}
 				Financeiro::create(['valor' => 2000000, 'operacao' => 0, 'descricao' => 'MVP da Liga FEDIA', 'time_id' => $time->id]);
-				$temporada->mvp_id = $mvp_id;
+				$temporada->mvp = Jogador::findOrFail($mvp_id)->nome;
 				$temporada->save();
-				
+
 				// Artilheiros
-				$artilheiro = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,SUM(quantidade) as qtd')->where('temporada_id',$temporada->id)->where('campeonato','Liga')->groupBy('jogador_id','times.id')->orderBy('qtd','DESC')->get();
+				$artilheiro = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',$temporada->id)->where('campeonato','Liga')->groupBy('jogador_id','jogadors.nome','times.id')->orderBy('qtd','DESC')->get();
 				$t = [];
 				$gols = null;
 				foreach ($artilheiro as $key => $value) {
@@ -348,7 +348,7 @@ class AmistosoController extends Controller {
 					if($gols != $value->qtd)
 					break;
 					$a = new Artilheiro();
-					$a->jogador_id = $value->jogador_id;
+					$a->jogador = $value->jogador;
 					$a->campeonato = 'Liga';
 					$a->temporada_id = $temporada->id;
 					$a->save();
@@ -360,7 +360,7 @@ class AmistosoController extends Controller {
 					$time->save();
 					Financeiro::create(['valor' => (2000000/count($t)), 'operacao' => 0, 'descricao' => 'Artilheiro da Liga FEDIA', 'time_id' => $value]);
 				}
-				
+
 				// Criar SuperCopa
 				if(Amistoso::where('temporada_id',$temporada->id)->where('tipo',2)->count()){
 					$supercopa = Amistoso::where('temporada_id',$temporada->id)->where('tipo',2)->get()->first();
@@ -381,7 +381,7 @@ class AmistosoController extends Controller {
 					$supercopa->tipo = 2;
 					$supercopa->save();
 				}
-				
+
 				Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 0, 'descricao' => 'Campeão da Liga FEDIA', 'time_id' => $v->id]);
 				$temporada->liga1_id = $v->id;
 				$temporada->liga2_id = $d->id;
@@ -390,7 +390,7 @@ class AmistosoController extends Controller {
 				Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 0, 'descricao' => 'Vitória do Amistoso', 'time_id' => $v->id]);
 				Financeiro::create(['valor' => $amistoso->valor, 'operacao' => 1, 'descricao' => 'Derrota no Amistoso', 'time_id' => $d->id]);
 			}
-			
+
 			$request->tipo = 3;
 			$temporada->save();
 		}
@@ -436,7 +436,7 @@ class AmistosoController extends Controller {
 		}
 		return redirect()->route('amistosos.index',['lesionados' => $lesionados, 'tipo' => $request->tipo])->with('message', 'Amistoso cadastrado com sucesso!');
 	}
-	
+
 	/**
 	* Obtém a classificação da Liga
 	*
@@ -477,7 +477,7 @@ class AmistosoController extends Controller {
 				$classificacao[$value->time1_id]["D"] += 1;
 			}
 		}
-		
+
 		$sort = array();
 		foreach ($classificacao as $k => $c){
 			$sort['P'][$k] = $c['P'];
@@ -488,5 +488,5 @@ class AmistosoController extends Controller {
 		array_multisort($sort['P'], SORT_DESC, $sort['V'], SORT_DESC, $sort['SG'], SORT_DESC, $sort['GP'], SORT_DESC, $classificacao);
 		return $classificacao;
 	}
-	
+
 }

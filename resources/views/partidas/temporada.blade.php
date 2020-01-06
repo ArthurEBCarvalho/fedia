@@ -3,12 +3,12 @@
 @section('content')
 @if (Session::has('message'))
 <div class="templatemo-content-widget green-bg">
-    <i class="fa fa-times"></i>                
+    <i class="fa fa-times"></i>
     <div class="media">
         <div class="media-body">
             <h2>{{Session::get('message')}}</h2>
-        </div>        
-    </div>                
+        </div>
+    </div>
 </div>
 @endif
 
@@ -20,11 +20,12 @@
                 <div class="input-group">
                     <select class="form-control search-filtro" name="filtro">
                         <option>Limpar</option>
-                        <option value="numero" @if ($filtro == "numero") selected @endif>Número</option>
+                        <option value="numero" @if ($filtro=="numero" ) selected @endif>Número</option>
                     </select>
                     <input type="text" class="form-control search-valor" name="valor" value="{{$valor}}">
                     <span class="input-group-btn">
-                        <button type="submit" class="btn btn-info search-button"><i class="fa fa-search"></i> Pesquisar</button>
+                        <button type="submit" class="btn btn-info search-button"><i class="fa fa-search"></i>
+                            Pesquisar</button>
                     </span>
                 </div>
             </form>
@@ -32,7 +33,9 @@
         @if(Auth::user()->isAdmin())
         <div class="col-md-4">
             <div class="pull-right">
-                <div class="pull-right"><a href="javascript:;" data-toggle="modal" data-target="#modal_times" type="button" class="btn btn-success"><i class="fa fa-plus"></i> Cadastrar Nova {{substr_replace("Temporadas", "", -1)}}</a></div>
+                <div class="pull-right"><a href="javascript:;" data-toggle="modal" data-target="#modal_times"
+                        type="button" class="btn btn-success"><i class="fa fa-plus"></i> Cadastrar Nova
+                        {{substr_replace("Temporadas", "", -1)}}</a></div>
             </div>
         </div>
         @endif
@@ -47,12 +50,18 @@
             <thead>
                 <tr>
                     @if(is_null($param))
-                    <th><a href="{{Request::fullUrl()}}{{$signal}}order=numero" class="white-text templatemo-sort-by">Número <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    <th><a href="{{Request::fullUrl()}}{{$signal}}order=numero"
+                            class="white-text templatemo-sort-by">Número <span
+                                class="fa fa-caret-{{$caret}}"></span></a></th>
                     @else
                     @if(strpos($param,'desc') !== false)
-                    <th><a href="{{str_replace(str_replace(' ','%20',$param),'numero',Request::fullUrl())}}" class="white-text templatemo-sort-by @if(strpos($param,'numero') !== false)active @endif">Número <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    <th><a href="{{str_replace(str_replace(' ','%20',$param),'numero',Request::fullUrl())}}"
+                            class="white-text templatemo-sort-by @if(strpos($param,'numero') !== false)active @endif">Número
+                            <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @else
-                    <th><a href="{{str_replace('order='.$param,'order=numero',Request::fullUrl())}} @if($param == 'numero')desc @endif" class="white-text templatemo-sort-by @if(strpos($param,'numero') !== false)active @endif">Número <span class="fa fa-caret-{{$caret}}"></span></a></th>
+                    <th><a href="{{str_replace('order='.$param,'order=numero',Request::fullUrl())}} @if($param == 'numero')desc @endif"
+                            class="white-text templatemo-sort-by @if(strpos($param,'numero') !== false)active @endif">Número
+                            <span class="fa fa-caret-{{$caret}}"></span></a></th>
                     @endif
                     @endif
                     <th>Campeão da Liga FEDIA</th>
@@ -73,13 +82,14 @@
                     <td>{{@$temporada->liga1()->nome}}</td>
                     <td>{{@$temporada->liga2()->nome}}</td>
                     <td>{{join(', ',@$temporada->artilheiro_liga())}}</td>
-                    <td>{{@$temporada->mvp()->nome}}</td>
+                    <td>{{@$temporada->mvp}}</td>
                     <td>{{@$temporada->copa1()->nome}}</td>
                     <td>{{@$temporada->copa2()->nome}}</td>
                     <td>{{join(', ',@$temporada->artilheiro_copa())}}</td>
                     @if(Auth::user()->isAdmin())
                     <td class="small" align="center" alt="Upload de Fotos">
-                        <a href="javascript:;" onClick="$('#id_temporada').val({{$temporada->id}})" data-toggle="modal" data-target="#modal_fotos">{!! Html::image('images/icons/up.png', 'Upload de Fotos') !!}</a>
+                        <a href="javascript:;" onClick="$('#id_temporada').val({{$temporada->id}})" data-toggle="modal"
+                            data-target="#modal_fotos">{!! Html::image('images/icons/up.png', 'Upload de Fotos') !!}</a>
                     </td>
                     @endif
                 </tr>
@@ -91,12 +101,12 @@
 @else
 <div class="templatemo-content-widget no-padding">
     <div class="templatemo-content-widget yellow-bg">
-        <i class="fa fa-times"></i>                
+        <i class="fa fa-times"></i>
         <div class="media">
             <div class="media-body">
                 <h2>Nenhuma {{substr_replace("Temporadas", "", -1)}} encontrada!</h2>
-            </div>        
-        </div>                
+            </div>
+        </div>
     </div>
 </div>
 @endif
@@ -106,7 +116,8 @@
         <ul class="filter-wrapper clearfix">
             <li><a href="#" data-filter="*" class="selected opc-main-bg">Todas</a></li>
             @foreach($temporadas as $temporada)
-            <li><a href="#" class="opc-main-bg" data-filter=".temporada{{$temporada->id}}">{{$temporada->numero}}ª Temporada</a></li>
+            <li><a href="#" class="opc-main-bg" data-filter=".temporada{{$temporada->id}}">{{$temporada->numero}}ª
+                    Temporada</a></li>
             @endforeach
         </ul>
         <div class="iso-box-section">
@@ -115,7 +126,8 @@
                 @foreach(explode('|',$temporada->fotos) as $foto)
                 @if(blank($foto)) <?php continue; ?> @endif
                 <div class="iso-box temporada{{$temporada->id}} col-md-3 col-sm-6 col-xs-6">
-                    <a href="images/temporadas/{{$temporada->id}}/{{$foto}}" data-lightbox-gallery="portfolio-all">{!! Html::image("images/temporadas/$temporada->id/$foto", $foto) !!}</a>
+                    <a href="images/temporadas/{{$temporada->id}}/{{$foto}}" data-lightbox-gallery="portfolio-all">{!!
+                        Html::image("images/temporadas/$temporada->id/$foto", $foto) !!}</a>
                 </div>
                 @endforeach
                 @endforeach
@@ -128,14 +140,17 @@
 <div class="modal fade" id="modal_fotos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            {!! Form::open(['route' => 'partidas.temporada_fotos', 'method' => 'post', 'enctype' => 'multipart/form-data']) !!}
+            {!! Form::open(['route' => 'partidas.temporada_fotos', 'method' => 'post', 'enctype' =>
+            'multipart/form-data']) !!}
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">Upload de Fotos</h4>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="id_temporada" name="id">
-                {!! Form::file('images[]', ['class' => 'filestyle', 'multiple' => true, 'data-placeholder' => 'Selecione as fotos para importar']) !!}
+                {!! Form::file('images[]', ['class' => 'filestyle', 'multiple' => true, 'data-placeholder' => 'Selecione
+                as fotos para importar']) !!}
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Sim</button>
@@ -149,17 +164,22 @@
 <!-- Modals -->
 <div class="modal fade" id="modal_times" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        {!! Form::open(['route' => 'partidas.temporada_store', 'method' => 'get', 'onSubmit' => "if($('select.times').find('option:selected').length == 8){return confirm('Deseja realmente cadastrar a temporada ".($temporadas->count()+1)."?')}else{alert('É necessário selecionar 8 times!');return false;}"]) !!}
+        {!! Form::open(['route' => 'partidas.temporada_store', 'method' => 'get', 'onSubmit' =>
+        "if($('select.times').find('option:selected').length == 8){return confirm('Deseja realmente cadastrar a
+        temporada ".($temporadas->count()+1)."?')}else{alert('É necessário selecionar 8 times!');return false;}"]) !!}
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">Selecione os times da Copa da próxima temporada</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        {!! Html::decode(Form::label('times', 'Times da Copa FEDIA <span class="obrigatorio">*</span>', ['class' => 'control-label'])) !!}
-                        {!! Form::select('times[]', $times, array_keys($times->toArray()), ['class' => 'chzn-select form-control times', 'multiple' => true]) !!}
+                        {!! Html::decode(Form::label('times', 'Times da Copa FEDIA <span class="obrigatorio">*</span>',
+                        ['class' => 'control-label'])) !!}
+                        {!! Form::select('times[]', $times, array_keys($times->toArray()), ['class' => 'chzn-select
+                        form-control times', 'multiple' => true]) !!}
                     </div>
                 </div>
             </div>
@@ -173,7 +193,9 @@
 </div>
 
 <style type="text/css">
-    .iso-box-section img { max-width: 100%; }
+    .iso-box-section img {
+        max-width: 100%;
+    }
 
     .filter-wrapper {
         width: 100%;
@@ -215,12 +237,14 @@
     .iso-box-section {
         width: 100%;
     }
+
     .iso-box-wrapper {
         width: 100%;
         padding: 0;
         clear: both;
         position: relative;
     }
+
     .iso-box {
         position: relative;
         min-height: 50px;
@@ -228,13 +252,15 @@
         overflow: hidden;
         margin-bottom: 20px;
     }
-    .iso-box > a {
+
+    .iso-box>a {
         display: block;
         width: 100%;
         height: 100%;
         overflow: hidden;
     }
-    .iso-box > a {
+
+    .iso-box>a {
         display: block;
         width: 100%;
         height: 100%;
@@ -243,6 +269,7 @@
         float: left;
         padding: 0 20px 20px 0;
     }
+
     .fluid-img {
         width: 100%;
         display: block;
@@ -263,9 +290,9 @@
     // ISOTOPE FILTER
     jQuery(document).ready(function($){
 
-        if ( $('.iso-box-wrapper').length > 0 ) { 
+        if ( $('.iso-box-wrapper').length > 0 ) {
 
-            var $container  = $('.iso-box-wrapper'), 
+            var $container  = $('.iso-box-wrapper'),
             $imgs       = $('.iso-box img');
 
 
@@ -305,19 +332,19 @@
 
             var $this = $(this), filterValue = $this.attr('data-filter');
 
-            $container.isotope({ 
+            $container.isotope({
                 filter: filterValue,
-                animationOptions: { 
-                    duration: 750, 
-                    easing: 'linear', 
-                    queue: false, 
-                }                
-            });             
+                animationOptions: {
+                    duration: 750,
+                    easing: 'linear',
+                    queue: false,
+                }
+            });
 
-            // don't proceed if already selected 
+            // don't proceed if already selected
 
-            if ( $this.hasClass('selected') ) { 
-                return false; 
+            if ( $this.hasClass('selected') ) {
+                return false;
             }
 
             var filter_wrapper = $this.closest('.filter-wrapper');
@@ -325,7 +352,7 @@
             $this.addClass('selected');
 
             return false;
-        }); 
+        });
 
     }
 

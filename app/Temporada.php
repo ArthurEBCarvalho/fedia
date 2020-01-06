@@ -53,7 +53,7 @@ class Temporada extends Model
     {
         $nomes = [];
         foreach ($this->hasMany('App\Artilheiro','temporada_id')->where('campeonato','Liga')->get() as $value) {
-            $nomes[] = $value->jogador()->nome;
+            $nomes[] = $value->jogador;
         }
         return $nomes;
     }
@@ -65,7 +65,7 @@ class Temporada extends Model
     {
         $nomes = [];
         foreach ($this->hasMany('App\Artilheiro','temporada_id')->where('campeonato','Copa')->get() as $value) {
-            $nomes[] = $value->jogador()->nome;
+            $nomes[] = $value->jogador;
         }
         return $nomes;
     }
