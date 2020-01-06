@@ -78,7 +78,7 @@ class IndexController extends Controller {
                 break;
             }
 
-            $final = Amistoso::where('tipo',3)->where('temporada_id',$temporada->id)->first();
+            $final = Amistoso::where('tipo',3)->where('temporada_id',@$temporada->id)->first();
 
             if(isset($final)){
                 $jogadores = [];
