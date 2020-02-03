@@ -27,7 +27,7 @@
     @if($lesoes->count())
     <ul>
       @foreach($lesoes as $lesao)
-      <li>{{$lesao->jogador()->nome}}, {{$lesao->restantes}} rodadas restantes.</li>
+      <li>{{@$lesao->jogador()->nome}}, {{$lesao->restantes}} rodadas restantes.</li>
       @endforeach
     </ul>
     @endif
@@ -37,7 +37,7 @@
     <ul>
       @foreach($cartoes as $cartao)
       @if($cartao->qtd == 1) <?php $palavra = 'cartão' ?> @else <?php $palavra = 'cartões' ?> @endif
-      <li>{{$cartao->jogador()->nome}}, {{$cartao->qtd}} {{$palavra}} @if($cartao->cor == 0) amarelo @else vermelho
+      <li>{{@$cartao->jogador()->nome}}, {{$cartao->qtd}} {{$palavra}} @if($cartao->cor == 0) amarelo @else vermelho
         @endif na {{$cartao->campeonato}} FEDIA.</li>
       @endforeach
     </ul>
