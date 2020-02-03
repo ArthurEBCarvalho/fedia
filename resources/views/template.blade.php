@@ -99,7 +99,7 @@
 					<li><a href="/indisponiveis" class="@if(Request::is('indisponiveis')) active @endif"><i
 								class="fa fa-ambulance fa-fw"></i>Cartões e Lesões</a></li>
 					<li class="submenu legislacao">
-						<a href="#"><i class="fa fa-check-square"></i> Legislação <i
+						<a href="#"><i class="fa fa-check-square"></i> Regulamento <i
 								class="caret-down fa fa-arrow-circle-down"></i></a>
 						<ul>
 							<li><a href="/legislacao/premiacoes"
