@@ -15,7 +15,7 @@
     @if($contratacoes->count())
     <ul>
       @foreach($contratacoes as $contratacao)
-      <li>{{$contratacao->nome}}, por € {{number_format($contratacao->valor,2,',','.')}}.</li>
+      <li>{{@$contratacao->nome}}, por € {{number_format($contratacao->valor,2,',','.')}}.</li>
       @endforeach
     </ul>
     @endif
