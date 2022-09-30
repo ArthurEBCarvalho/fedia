@@ -16,13 +16,13 @@ class CreatePartidasTable extends Migration {
             $table->increments('id');
             $table->string('campeonato');
             $table->integer('rodada');
-            $table-> integer('temporada');
-            $table->integer('time1_id');
-            $table->integer('time2_id');
-            $table->integer('resultado1');
-            $table->integer('resultado2');
-            $table->integer('penalti1');
-            $table->integer('penalti2');
+            $table->integer('temporada_id');
+            $table->integer('time1_id')->nullable();
+            $table->integer('time2_id')->nullable();
+            $table->integer('resultado1')->nullable();
+            $table->integer('resultado2')->nullable();
+            $table->integer('penalti1')->nullable();
+            $table->integer('penalti2')->nullable();
             $table->timestamps();
         });
 	}

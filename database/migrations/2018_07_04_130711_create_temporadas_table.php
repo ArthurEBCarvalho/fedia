@@ -14,13 +14,13 @@ class CreateTemporadasTable extends Migration
     {
         Schema::create('temporadas', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('liga1_id');
-            $table->integer('liga2_id');
-            $table->integer('liga3_id');
-            $table->integer('copa1_id');
-            $table->integer('copa2_id');
-            $table->string('artilheiro_liga');
-            $table->string('artilheiro_copa');
+            $table->integer('liga1_id')->nullable();
+            $table->integer('liga2_id')->nullable();
+            $table->integer('liga3_id')->nullable();
+            $table->integer('copa1_id')->nullable();
+            $table->integer('copa2_id')->nullable();
+            $table->integer('artilheiro_liga_id')->nullable();
+            $table->integer('artilheiro_copa_id')->nullable();
             $table->timestamps();
         });
     }

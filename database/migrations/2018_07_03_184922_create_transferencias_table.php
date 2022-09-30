@@ -14,10 +14,10 @@ class CreateTransferenciasTable extends Migration {
 	{
 		Schema::create('transferencias', function(Blueprint $table) {
             $table->increments('id');
-            $table->string('jogador');
             $table->decimal('valor', 10, 2);
             $table->integer('time1_id');
             $table->integer('time2_id');
+            $table->integer('jogador_id');
             $table->timestamps();
         });
 	}

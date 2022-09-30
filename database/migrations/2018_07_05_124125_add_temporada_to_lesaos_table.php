@@ -13,7 +13,7 @@ class AddTemporadaToLesaosTable extends Migration
     public function up()
     {
         Schema::table('lesaos', function (Blueprint $table) {
-            $table->integer('temporada');
+            $table->integer('temporada_id');
         });
     }
 

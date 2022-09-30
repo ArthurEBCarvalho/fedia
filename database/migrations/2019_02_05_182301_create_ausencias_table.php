@@ -14,7 +14,7 @@ class CreateAusenciasTable extends Migration
     {
         Schema::create('ausencias', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('data');
+            $table->string('turno')->limit(1)->nullable();
             $table->integer('user_id');
             $table->timestamps();
         });

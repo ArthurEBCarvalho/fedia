@@ -14,15 +14,15 @@ class CreateAmistososTable extends Migration {
 	{
 		Schema::create('amistosos', function(Blueprint $table) {
             $table->increments('id');
-            $table-> integer('temporada');
-            $table->integer('time11_id');
-            $table->integer('time12_id');
-            $table->integer('time21_id');
-            $table->integer('time22_id');
-            $table->integer('resultado1');
-            $table->integer('resultado2');
-            $table->integer('penalti1');
-            $table->integer('penalti2');
+            $table->integer('temporada_id');
+            $table->integer('time11_id')->nullable();
+            $table->integer('time12_id')->nullable();
+            $table->integer('time21_id')->nullable();
+            $table->integer('time22_id')->nullable();
+            $table->integer('resultado1')->nullable();
+            $table->integer('resultado2')->nullable();
+            $table->integer('penalti1')->nullable();
+            $table->integer('penalti2')->nullable();
             $table->decimal('valor', 18, 2);
             $table->timestamps();
         });

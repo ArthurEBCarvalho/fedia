@@ -13,7 +13,7 @@ class AddMvpToTemporadasTable extends Migration
     public function up()
     {
         Schema::table('temporadas', function (Blueprint $table) {
-            $table->integer('mvp_id')->nullable();
+            $table->string('mvp')->nullable();
         });
     }
 

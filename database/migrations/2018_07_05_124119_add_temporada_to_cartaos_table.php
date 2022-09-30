@@ -13,7 +13,7 @@ class AddTemporadaToCartaosTable extends Migration
     public function up()
     {
         Schema::table('cartaos', function (Blueprint $table) {
-            $table->integer('temporada');
+            $table->integer('temporada_id');
         });
     }
 

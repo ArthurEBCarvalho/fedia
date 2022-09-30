@@ -12,21 +12,6 @@ class AddEraIdToPartidasTable extends Migration
      */
     public function up()
     {
-        Schema::table('partidas', function (Blueprint $table) {
-            $table->renameColumn('temporada', 'temporada_id');
-        });
-        Schema::table('amistosos', function (Blueprint $table) {
-            $table->renameColumn('temporada', 'temporada_id');
-        });
-        Schema::table('cartaos', function (Blueprint $table) {
-            $table->renameColumn('temporada', 'temporada_id');
-        });
-        Schema::table('lesaos', function (Blueprint $table) {
-            $table->renameColumn('temporada', 'temporada_id');
-        });
-        Schema::table('gols', function (Blueprint $table) {
-            $table->renameColumn('temporada', 'temporada_id');
-        });
         Schema::table('transferencias', function (Blueprint $table) {
             $table->integer('era_id')->default(1);
         });

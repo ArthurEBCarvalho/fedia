@@ -14,10 +14,10 @@ class CreateCartaosTable extends Migration
     {
         Schema::create('cartaos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('jogador');
             $table->string('cor');
             $table->integer('time_id');
             $table->integer('partida_id');
+            $table->integer('jogador_id');
             $table->timestamps();
         });
     }

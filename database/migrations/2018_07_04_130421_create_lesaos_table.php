@@ -14,10 +14,10 @@ class CreateLesaosTable extends Migration
     {
         Schema::create('lesaos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('jogador');
             $table->integer('rodadas');
             $table->integer('time_id');
             $table->integer('partida_id');
+            $table->integer('jogador_id');
             $table->timestamps();
         });
     }

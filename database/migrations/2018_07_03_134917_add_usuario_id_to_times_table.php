@@ -13,7 +13,7 @@ class AddUsuarioIdToTimesTable extends Migration
     public function up()
     {
         Schema::table('times', function (Blueprint $table) {
-            $table->integer('user_id');
+            $table->integer('user_id')->nullable();
         });
     }
 

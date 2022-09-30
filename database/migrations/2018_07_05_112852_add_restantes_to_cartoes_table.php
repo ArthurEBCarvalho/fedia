@@ -13,7 +13,7 @@ class AddRestantesToCartoesTable extends Migration
     public function up()
     {
         Schema::table('cartaos', function (Blueprint $table) {
-            $table->integer('restantes');
+            $table->integer('cumpridos');
             $table->string('campeonato');
         });
     }

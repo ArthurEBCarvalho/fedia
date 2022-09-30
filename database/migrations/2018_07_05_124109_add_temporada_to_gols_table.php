@@ -13,7 +13,7 @@ class AddTemporadaToGolsTable extends Migration
     public function up()
     {
         Schema::table('gols', function (Blueprint $table) {
-            $table->integer('temporada');
+            $table->integer('temporada_id');
         });
     }
 

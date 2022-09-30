@@ -15,7 +15,7 @@ class CreateArtilheirosTable extends Migration
         Schema::create('artilheiros', function (Blueprint $table) {
             $table->increments('id');
             $table->string('campeonato');
-            $table->integer('jogador_id');
+            $table->string('jogador');
             $table->integer('temporada_id');
             $table->timestamps();
         });

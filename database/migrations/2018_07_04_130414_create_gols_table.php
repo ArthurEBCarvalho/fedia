@@ -14,10 +14,10 @@ class CreateGolsTable extends Migration
     {
         Schema::create('gols', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('jogador');
             $table->integer('quantidade');
             $table->integer('time_id');
             $table->integer('partida_id');
+            $table->integer('jogador_id');
             $table->timestamps();
         });
     }
