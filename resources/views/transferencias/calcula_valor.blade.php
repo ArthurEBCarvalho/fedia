@@ -85,7 +85,8 @@
       idade = -75;
     potencial = $potencial[parseInt($("#potencial").val())-parseInt($("#overall").val())];
     posicao = $posicao[$("#posicao").val()];
-    resultado = overall * (((idade + potencial + posicao) / 100) + 1);
+    // resultado = overall * (((idade + potencial + posicao) / 100) + 1);
+    resultado = overall * (((posicao) / 100) + 1);
     // alert("OVERALL: "+overall+" IDADE: "+idade+" POTENCIAL: "+potencial+" POSICAO: "+posicao+" RESULTADO: "+resultado);
     if(resultado >= 0 && resultado < 300000){
       multiplo = 10000;
