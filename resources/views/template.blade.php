@@ -84,8 +84,6 @@
 							</li>
 							<li><a href="/amistosos?tipo=2"
 									class="@if(Request::is('amistosos*') && $tipo == 2) active @endif">SuperCopa FEDIA</a></li>
-							<li><a href="/amistosos?tipo=3" class="@if(Request::is('amistosos*') && $tipo == 3) active @endif">Final
-									da Liga FEDIA</a></li>
 							<li><a href="/partidas?tipo=liga"
 									class="@if(Request::is('partidas*') && @$tipo == 'liga') active @endif">Liga FEDIA</a></li>
 							<li><a href="/partidas?tipo=copa"

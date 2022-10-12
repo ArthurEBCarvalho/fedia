@@ -200,77 +200,144 @@ class PartidaController extends Controller {
 			$lesao->save();
 		}
 
+		// Premiação final da Liga
 		if($partida->campeonato == "Liga"){
-			// Premiação Final da Liga
-			if($partida->rodada > 9) {
-				$turno = 2;
-				$where_rodada = "rodada > 9";
-			} else {
-				$turno = 1;
-				$where_rodada = "rodada < 10";
-			}
-
-			if(!Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Liga' and resultado1 IS NULL and resultado2 IS NULL and $where_rodada")->count()){
-				$p = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Liga' and $where_rodada")->get();
+			if(!Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Liga' and resultado1 IS NULL and resultado2 IS NULL")->count()){
+				$p = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Liga'")->get();
 				$classificacao = $this->classificacao($p);
 
 				$v1 = Time::findOrFail($classificacao[0]['id']);
-				$v1->dinheiro += 15000000;
+				$v1->dinheiro += 32000000;
 				$v1->save();
-				Financeiro::create(['valor' => 15000000, 'operacao' => 0, 'descricao' => 'Campeão de turno da Liga FEDIA', 'time_id' => $v1->id]);
+				Financeiro::create(['valor' => 32000000, 'operacao' => 0, 'descricao' => 'Campeão da Liga FEDIA', 'time_id' => $v1->id]);
 				$v2 = Time::findOrFail($classificacao[1]['id']);
-				$v2->dinheiro += 13000000;
+				$v2->dinheiro += 30000000;
 				$v2->save();
-				Financeiro::create(['valor' => 13000000, 'operacao' => 0, 'descricao' => 'Vice Campeão de turno da Liga FEDIA', 'time_id' => $v2->id]);
+				Financeiro::create(['valor' => 30000000, 'operacao' => 0, 'descricao' => 'Vice Campeão da Liga FEDIA', 'time_id' => $v2->id]);
 				$v3 = Time::findOrFail($classificacao[2]['id']);
-				$v3->dinheiro += 12250000;
+				$v3->dinheiro += 29000000;
 				$v3->save();
-				Financeiro::create(['valor' => 12250000, 'operacao' => 0, 'descricao' => 'Terceiro Lugar de turno da Liga FEDIA', 'time_id' => $v3->id]);
+				Financeiro::create(['valor' => 29000000, 'operacao' => 0, 'descricao' => 'Terceiro Lugar da Liga FEDIA', 'time_id' => $v3->id]);
 				$v4 = Time::findOrFail($classificacao[3]['id']);
-				$v4->dinheiro += 11500000;
+				$v4->dinheiro += 28000000;
 				$v4->save();
-				Financeiro::create(['valor' => 11500000, 'operacao' => 0, 'descricao' => 'Quarto Lugar de turno da Liga FEDIA', 'time_id' => $v4->id]);
+				Financeiro::create(['valor' => 28000000, 'operacao' => 0, 'descricao' => 'Quarto Lugar da Liga FEDIA', 'time_id' => $v4->id]);
 				$v5 = Time::findOrFail($classificacao[4]['id']);
-				$v5->dinheiro += 10750000;
+				$v5->dinheiro += 27000000;
 				$v5->save();
-				Financeiro::create(['valor' => 10750000, 'operacao' => 0, 'descricao' => 'Quinto Lugar de turno da Liga FEDIA', 'time_id' => $v5->id]);
+				Financeiro::create(['valor' => 27000000, 'operacao' => 0, 'descricao' => 'Quinto Lugar da Liga FEDIA', 'time_id' => $v5->id]);
 				$v6 = Time::findOrFail($classificacao[5]['id']);
-				$v6->dinheiro += 10000000;
+				$v6->dinheiro += 26000000;
 				$v6->save();
-				Financeiro::create(['valor' => 10000000, 'operacao' => 0, 'descricao' => 'Sexto Lugar de turno da Liga FEDIA', 'time_id' => $v6->id]);
+				Financeiro::create(['valor' => 26000000, 'operacao' => 0, 'descricao' => 'Sexto Lugar da Liga FEDIA', 'time_id' => $v6->id]);
 				$v7 = Time::findOrFail($classificacao[6]['id']);
-				$v7->dinheiro += 9250000;
+				$v7->dinheiro += 25000000;
 				$v7->save();
-				Financeiro::create(['valor' => 9250000, 'operacao' => 0, 'descricao' => 'Sétimo Lugar de turno da Liga FEDIA', 'time_id' => $v7->id]);
+				Financeiro::create(['valor' => 25000000, 'operacao' => 0, 'descricao' => 'Sétimo Lugar da Liga FEDIA', 'time_id' => $v7->id]);
 				$v8 = Time::findOrFail($classificacao[7]['id']);
-				$v8->dinheiro += 8500000;
+				$v8->dinheiro += 24000000;
 				$v8->save();
-				Financeiro::create(['valor' => 8500000, 'operacao' => 0, 'descricao' => 'Oitavo Lugar de turno da Liga FEDIA', 'time_id' => $v8->id]);
+				Financeiro::create(['valor' => 24000000, 'operacao' => 0, 'descricao' => 'Oitavo Lugar da Liga FEDIA', 'time_id' => $v8->id]);
 				$v9 = Time::findOrFail($classificacao[8]['id']);
-				$v9->dinheiro += 7750000;
+				$v9->dinheiro += 23000000;
 				$v9->save();
-				Financeiro::create(['valor' => 7750000, 'operacao' => 0, 'descricao' => 'Nono Lugar de turno da Liga FEDIA', 'time_id' => $v9->id]);
+				Financeiro::create(['valor' => 23000000, 'operacao' => 0, 'descricao' => 'Nono Lugar da Liga FEDIA', 'time_id' => $v9->id]);
 				$v10 = Time::findOrFail($classificacao[9]['id']);
-				$v10->dinheiro += 7000000;
+				$v10->dinheiro += 22000000;
 				$v10->save();
-				Financeiro::create(['valor' => 7000000, 'operacao' => 0, 'descricao' => 'Décimo Lugar de turno da Liga FEDIA', 'time_id' => $v10->id]);
+				Financeiro::create(['valor' => 22000000, 'operacao' => 0, 'descricao' => 'Décimo Lugar da Liga FEDIA', 'time_id' => $v10->id]);
+				$v11 = Time::findOrFail($classificacao[10]['id']);
+				$v11->dinheiro += 21000000;
+				$v11->save();
+				Financeiro::create(['valor' => 21000000, 'operacao' => 0, 'descricao' => 'Décimo Primeiro Lugar da Liga FEDIA', 'time_id' => $v11->id]);
+				$v12 = Time::findOrFail($classificacao[11]['id']);
+				$v12->dinheiro += 20000000;
+				$v12->save();
+				Financeiro::create(['valor' => 20000000, 'operacao' => 0, 'descricao' => 'Décimo Segundo Lugar da Liga FEDIA', 'time_id' => $v12->id]);
 
-				// Criar Final
-				if(Amistoso::where('temporada_id',$temporada->id)->where('tipo',3)->count()){
-					$final = Amistoso::where('temporada_id',$temporada->id)->where('tipo',3)->get()->first();
-					if($turno == 1) $final->time11_id = $classificacao[0]['id'];
-					else $final->time21_id = $classificacao[0]['id'];
-					$final->save();
+				$temporada->liga1_id = $v1->id;
+				$temporada->liga2_id = $v2->id;
+
+				// MVPs
+				$mvps = Partida::selectRaw("COUNT(*) as qtd, mvp_id")->where('temporada_id',$temporada->id)->where('campeonato','Liga')->whereRaw('mvp_id IS NOT NULL')->groupBy("mvp_id")->get();
+				$max = 0;
+				foreach ($mvps as $value) {
+					if($value->qtd > $max)
+					$max = $value->qtd;
+				}
+				$mvps = Partida::select("mvp_id")->where('temporada_id',$temporada->id)->where('campeonato','Liga')->whereRaw('mvp_id IS NOT NULL')->groupBy("mvp_id")->having(DB::raw('COUNT(*)'),'=',$max)->get();
+				$time = null;
+				$mvp_id = null;
+				if($mvps->count() > 1){
+					// Se o MVP for do time melhor colocado
+					if(is_null($time)){
+						for ($i=0; $i < 12; $i++) {
+							foreach ($mvps as $mvp) {
+								$time = $mvp->mvp()->time();
+								if($classificacao[$i]['id'] == $time->id){
+									$time->dinheiro += 2000000;
+									$time->save();
+									$mvp_id = $mvp->mvp_id;
+									break;
+								}
+							}
+							if(!is_null($mvp_id))
+							break;
+						}
+					}
 				} else {
-					$final = new Amistoso();
-					$final->temporada_id = $temporada->id;
-					if($turno == 1) $final->time11_id = $classificacao[0]['id'];
-					else $final->time21_id = $classificacao[0]['id'];
-					$final->valor = 3000000;
-					$final->tipo = 3;
-					$final->save();
+					$time = $mvps->first()->mvp()->time();
+					$time->dinheiro += 2000000;
+					$time->save();
+					$mvp_id = $mvps->first()->mvp_id;
+				}
+				Financeiro::create(['valor' => 2000000, 'operacao' => 0, 'descricao' => 'MVP da Liga FEDIA', 'time_id' => $time->id]);
+				$temporada->mvp = Jogador::findOrFail($mvp_id)->nome;
+				$temporada->save();
+
+				// Artilheiros
+				$artilheiro = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',$temporada->id)->where('campeonato','Liga')->groupBy('jogador_id','jogadors.nome','times.id')->orderBy('qtd','DESC')->get();
+				$t = [];
+				$gols = null;
+				foreach ($artilheiro as $key => $value) {
+					if(is_null($gols))
+					$gols = $value->qtd;
+					if($gols != $value->qtd)
+					break;
+					$a = new Artilheiro();
+					$a->jogador = $value->jogador;
+					$a->campeonato = 'Liga';
+					$a->temporada_id = $temporada->id;
+					$a->save();
+					$t[] = $value->id;
+				}
+				foreach ($t as $key => $value) {
+					$time = Time::findOrFail($value);
+					$time->dinheiro += (2000000/count($t));
+					$time->save();
+					Financeiro::create(['valor' => (2000000/count($t)), 'operacao' => 0, 'descricao' => 'Artilheiro da Liga FEDIA', 'time_id' => $value]);
 				}
 
+				// Criar SuperCopa
+				if(Amistoso::where('temporada_id',$temporada->id)->where('tipo',2)->count()){
+					$supercopa = Amistoso::where('temporada_id',$temporada->id)->where('tipo',2)->get()->first();
+					if($supercopa->time21_id == $v1->id) {
+						$partidas = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Liga' and resultado1 IS NOT NULL and resultado2 IS NOT NULL")->get();
+						$classificacao = $this->classificacao($partidas);
+						if($classificacao[0]['id'] == $supercopa->time21_id) $supercopa->time11_id = $classificacao[1]['id'];
+						else $supercopa->time11_id = $classificacao[0]['id'];
+					} else {
+						$supercopa->time11_id = $v1->id;
+					}
+					$supercopa->save();
+				} else {
+					$supercopa = new Amistoso();
+					$supercopa->temporada_id = $temporada->id;
+					$supercopa->time11_id = $v1->id;
+					$supercopa->valor = 2000000;
+					$supercopa->tipo = 2;
+					$supercopa->save();
+				}
 			}
 		}
 

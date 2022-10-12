@@ -15,6 +15,11 @@ class CreateJogadorsTable extends Migration
         Schema::create('jogadors', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome');
+            $table->string('posicoes');
+            $table->integer('idade');
+            $table->integer('overall');
+            $table->string('status');
+            $table->decimal('valor',18,2);
             $table->integer('time_id');
             $table->timestamps();
         });

@@ -142,7 +142,7 @@ if (! function_exists('get_tipo')) {
      * @return string
      */
     function get_tipo($tipo) {
-        return ['Amistosos','Classificatória da Copa FEDIA','SuperCopa FEDIA','Final da Liga FEDIA'][$tipo];
+        return ['Amistosos','Classificatória da Copa FEDIA','SuperCopa FEDIA'][$tipo];
     }
 }
 
