@@ -183,8 +183,8 @@
               <td style="border:0;"></td>
               <td @if(@$copa['4|1']->time1_id == @$copa['0|1']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['4|1']->time1_id == @$copa['0|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">{!! Html::image('images/times/'.@$copa['0|1']->time1()->escudo,
-                @$copa['0|1']->time1()->nome, ['class' => 'time_img']) !!}</td>
+                @endif align="center" width="70">@if(isset($copa['0|1']) && isset($copa['0|1']->time1_id)) {!! Html::image('images/times/'.@$copa['0|1']->time1()->escudo,
+                @$copa['0|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
               <td @if(@$copa['4|1']->time1_id == @$copa['0|1']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['4|1']->time1_id == @$copa['0|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
                 @endif align="left" width="200">{{@$copa['0|1']->time1()->nome}}</td>
@@ -211,8 +211,8 @@
               <td style="border:0;"></td>
               <td @if(@$copa['4|1']->time1_id == @$copa['0|2']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['4|1']->time1_id == @$copa['0|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">{!! Html::image('images/times/'.@$copa['0|1']->time2()->escudo,
-                @$copa['0|1']->time2()->nome, ['class' => 'time_img']) !!}</td>
+                @endif align="center" width="70">@if(isset($copa['0|1']) && isset($copa['0|1']->time1_id)) {!! Html::image('images/times/'.@$copa['0|1']->time2()->escudo,
+                @$copa['0|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
               <td @if(@$copa['4|1']->time1_id == @$copa['0|2']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['4|1']->time1_id == @$copa['0|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
                 @endif align="left" width="200">{{@$copa['0|1']->time2()->nome}}</td>
@@ -270,8 +270,8 @@
               <td style="border:0;"></td>
               <td @if(@$copa['4|2']->time1_id == @$copa['1|1']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['4|2']->time1_id == @$copa['1|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">{!! Html::image('images/times/'.@$copa['1|1']->time1()->escudo,
-                @$copa['1|1']->time1()->nome, ['class' => 'time_img']) !!}</td>
+                @endif align="center" width="70">@if(isset($copa['1|1']) && isset($copa['1|1']->time1_id)) {!! Html::image('images/times/'.@$copa['1|1']->time1()->escudo,
+                @$copa['1|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
               <td @if(@$copa['4|2']->time1_id == @$copa['1|1']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['4|2']->time1_id == @$copa['1|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
                 @endif align="left" width="200">{{@$copa['1|1']->time1()->nome}}</td>
@@ -313,8 +313,8 @@
               <td style="border:0;"></td>
               <td @if(@$copa['4|2']->time1_id == @$copa['1|2']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['4|2']->time1_id == @$copa['1|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">{!! Html::image('images/times/'.@$copa['1|1']->time2()->escudo,
-                @$copa['1|1']->time2()->nome, ['class' => 'time_img']) !!}</td>
+                @endif align="center" width="70">@if(isset($copa['1|1']) && isset($copa['1|1']->time1_id)) {!! Html::image('images/times/'.@$copa['1|1']->time2()->escudo,
+                @$copa['1|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
               <td @if(@$copa['4|2']->time1_id == @$copa['1|2']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['4|2']->time1_id == @$copa['1|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
                 @endif align="left" width="200">{{@$copa['1|1']->time2()->nome}}</td>
@@ -375,8 +375,8 @@
               <td style="border:0;"></td>
               <td @if(@$copa['5|1']->time1_id == @$copa['2|1']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['5|1']->time1_id == @$copa['2|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">{!! Html::image('images/times/'.@$copa['2|1']->time1()->escudo,
-                @$copa['2|1']->time1()->nome, ['class' => 'time_img']) !!}</td>
+                @endif align="center" width="70">@if(isset($copa['2|1']) && isset($copa['2|1']->time1_id)) {!! Html::image('images/times/'.@$copa['2|1']->time1()->escudo,
+                @$copa['2|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
               <td @if(@$copa['5|1']->time1_id == @$copa['2|1']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['5|1']->time1_id == @$copa['2|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
                 @endif align="left" width="200">{{@$copa['2|1']->time1()->nome}}</td>
@@ -419,8 +419,8 @@
               <td style="border:0;"></td>
               <td @if(@$copa['5|1']->time1_id == @$copa['2|2']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['5|1']->time1_id == @$copa['2|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">{!! Html::image('images/times/'.@$copa['2|1']->time2()->escudo,
-                @$copa['2|1']->time2()->nome, ['class' => 'time_img']) !!}</td>
+                @endif align="center" width="70">@if(isset($copa['2|1']) && isset($copa['2|1']->time1_id)) {!! Html::image('images/times/'.@$copa['2|1']->time2()->escudo,
+                @$copa['2|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
               <td @if(@$copa['5|1']->time1_id == @$copa['2|2']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['5|1']->time1_id == @$copa['2|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
                 @endif align="left" width="200">{{@$copa['2|1']->time2()->nome}}</td>
@@ -480,8 +480,8 @@
               <td style="border:0;"></td>
               <td @if(@$copa['5|2']->time1_id == @$copa['3|1']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['5|2']->time1_id == @$copa['3|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">{!! Html::image('images/times/'.@$copa['3|1']->time1()->escudo,
-                @$copa['3|1']->time1()->nome, ['class' => 'time_img']) !!}</td>
+                @endif align="center" width="70">@if(isset($copa['3|1']) && isset($copa['3|1']->time1_id)) {!! Html::image('images/times/'.@$copa['3|1']->time1()->escudo,
+                @$copa['3|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
               <td @if(@$copa['5|2']->time1_id == @$copa['3|1']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['5|2']->time1_id == @$copa['3|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
                 @endif align="left" width="200">{{@$copa['3|1']->time1()->nome}}</td>
@@ -523,8 +523,8 @@
               <td style="border:0;"></td>
               <td @if(@$copa['5|2']->time1_id == @$copa['3|2']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['5|2']->time1_id == @$copa['3|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">{!! Html::image('images/times/'.@$copa['3|1']->time2()->escudo,
-                @$copa['3|1']->time2()->nome, ['class' => 'time_img']) !!}</td>
+                @endif align="center" width="70">@if(isset($copa['3|1']) && isset($copa['3|1']->time1_id)) {!! Html::image('images/times/'.@$copa['3|1']->time2()->escudo,
+                @$copa['3|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
               <td @if(@$copa['5|2']->time1_id == @$copa['3|2']->time1_id) bgcolor="#F0FFF0" @else
                 @if(@$copa['5|2']->time1_id == @$copa['3|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
                 @endif align="left" width="200">{{@$copa['3|1']->time2()->nome}}</td>

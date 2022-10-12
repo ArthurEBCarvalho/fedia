@@ -579,7 +579,10 @@ class PartidaController extends Controller {
 		}
 
 		// Sorteio da copa
-		$times = Time::whereIn('id', $request->times)->inRandomOrder()->get();
+		if (isset($request->times) && count($request->times) == 8)
+			$times = Time::whereIn('id', $request->times)->inRandomOrder()->get();
+		else
+			$times = [];
 		foreach ([0,2,4,6] as $ordem => $index) {
 			// Ida
 			$partida = new Partida();
@@ -587,8 +590,8 @@ class PartidaController extends Controller {
 			$partida->temporada_id = $temporada->id;
 			$partida->rodada = 1;
 			$partida->ordem = $ordem;
-			$partida->time1_id = $times[$index]->id;
-			$partida->time2_id = $times[$index+1]->id;
+			$partida->time1_id = @$times[$index]->id;
+			$partida->time2_id = @$times[$index+1]->id;
 			$partida->save();
 			// Volta
 			$partida = new Partida();
@@ -596,8 +599,8 @@ class PartidaController extends Controller {
 			$partida->temporada_id = $temporada->id;
 			$partida->rodada = 2;
 			$partida->ordem = $ordem;
-			$partida->time1_id = $times[$index+1]->id;
-			$partida->time2_id = $times[$index]->id;
+			$partida->time1_id = @$times[$index+1]->id;
+			$partida->time2_id = @$times[$index]->id;
 			$partida->save();
 		}
 
