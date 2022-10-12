@@ -3,12 +3,12 @@
 @section('content')
 @if (Session::has('message'))
 <div class="templatemo-content-widget {{$color}}-bg">
-    <i class="fa fa-times"></i>                
+    <i class="fa fa-times"></i>
     <div class="media">
         <div class="media-body">
             <h2>{{Session::get('message')}}</h2>
-        </div>        
-    </div>                
+        </div>
+    </div>
 </div>
 @endif
 
@@ -34,47 +34,51 @@
                 <tbody>
                     <tr>
                         <td>Campeão</td>
-                        <td>€ 3.000.000,00</td>
+                        <td>€ 32.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Campeão do turno</td>
-                        <td>€ 15.000.000,00</td>
+                        <td>Vice-Campeão</td>
+                        <td>€ 30.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Vice-Campeão do turno</td>
-                        <td>€ 13.000.000,00</td>
+                        <td>Terceiro colocado</td>
+                        <td>€ 29.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Terceiro colocado do turno</td>
-                        <td>€ 12.250.000,00</td>
+                        <td>Quarto colocado</td>
+                        <td>€ 28.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Quarto colocado do turno</td>
-                        <td>€ 11.500.000,00</td>
+                        <td>Quinto colocado</td>
+                        <td>€ 27.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Quinto colocado do turno</td>
-                        <td>€ 10.750.000,00</td>
+                        <td>Sexto colocado</td>
+                        <td>€ 26.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Sexto colocado do turno</td>
-                        <td>€ 10.000.000,00</td>
+                        <td>Sétimo colocado</td>
+                        <td>€ 25.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Sétimo colocado do turno</td>
-                        <td>€ 9.250.000,00</td>
+                        <td>Oitavo colocado</td>
+                        <td>€ 24.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Oitavo colocado do turno</td>
-                        <td>€ 8.500.000,00</td>
+                        <td>Nono colocado</td>
+                        <td>€ 23.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Nono colocado do turno</td>
-                        <td>€ 7.750.000,00</td>
+                        <td>Décimo colocado</td>
+                        <td>€ 22.000.000,00</td>
                     </tr>
                     <tr>
-                        <td>Décimo colocado do turno</td>
-                        <td>€ 7.000.000,00</td>
+                        <td>Décimo Primeiro colocado</td>
+                        <td>€ 21.000.000,00</td>
+                    </tr>
+                    <tr>
+                        <td>Décimo Segundo colocado</td>
+                        <td>€ 20.000.000,00</td>
                     </tr>
                     <tr>
                         <td>Artilharia</td>
@@ -86,7 +90,7 @@
                     </tr>
                     <tr class="linha_total">
                         <td>Premiação Total da Liga: </td>
-                        <td>€ 111.000.000,00</td>
+                        <td>€ 311.000.000,00</td>
                     </tr>
                 </tbody>
             </table>
@@ -124,7 +128,7 @@
                     </tr>
                     <tr class="linha_total">
                         <td>Premiação Total da Liga: </td>
-                        <td>€ 17.500.000,00</td>
+                        <td>€ 17.000.000,00</td>
                     </tr>
                 </tbody>
             </table>
@@ -161,7 +165,7 @@
 
                 <tbody>
                     <tr>
-                        <td>€ 15.000.000,00 na primeira temporada, adicionando € 2.500.000,00 em cada temporada subsequente.</td>
+                        <td>€ 20.000.000,00 na primeira temporada, adicionando € 2.500.000,00 em cada temporada subsequente.</td>
                     </tr>
                 </tbody>
             </table>

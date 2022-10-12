@@ -137,7 +137,7 @@ Route::group(['middleware' => 'auth'], function() {
 	// 	}
 
 	// });
-	
+
 	Route::get('/', 'IndexController@index');
 	Route::get('/tabelas', 'IndexController@index');
 
@@ -162,6 +162,7 @@ Route::get("elencos", ['as' => 'transferencias.elencos', 'uses' => 'Transferenci
 Route::get("elencos_atualiza_status", 'TransferenciumController@update_status');
 Route::get("jogadores", ['as' => 'transferencias.jogadores', 'uses' => 'TransferenciumController@jogadores']);
 Route::get("calcula_valor", ['as' => 'transferencias.calcula_valor', 'uses' => 'TransferenciumController@calcula_valor']);
+Route::get("valores", ['as' => 'transferencias.valores', 'uses' => 'TransferenciumController@valores']);
 Route::post("administracao/eras_change", ['as' => 'administracao.eras.change', 'uses' => 'EraController@change']);
 Route::get("administracao/multa_create", ['as' => 'administracao.users.multa_create', 'uses' => 'UserController@multa_create']);
 Route::post("administracao/multa_store", ['as' => 'administracao.users.multa_store', 'uses' => 'UserController@multa_store']);

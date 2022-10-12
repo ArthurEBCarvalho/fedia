@@ -63,6 +63,7 @@
 							<li><a href="/elencos" class="@if(Request::is('elencos*')) active @endif">Todos os Elencos</a></li>
 							<li><a href="/jogadores" class="@if(Request::is('jogadores*')) active @endif">Todos os Jogadores</a></li>
 							<li><a href="/calcula_valor" class="@if(Request::is('calcula_valor*')) active @endif">Calcular Valor</a>
+							<li><a href="/valores" class="@if(Request::is('valores*')) active @endif">Tabela de Valores</a>
 							</li>
 						</ul>
 					</li>

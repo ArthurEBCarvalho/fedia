@@ -117,7 +117,7 @@ class TransferenciumController extends Controller {
 			} else {
 				$jogador = Jogador::findOrFail($request->input("jogador_id"));
 				$jogador->time_id = $request->input("time2_id");
-				if(isset($request->multa))
+				if(isset($request->atualiza_valor))
 					$jogador->valor = $transferencium->valor;
 				$jogador->save();
 			}
@@ -293,6 +293,16 @@ class TransferenciumController extends Controller {
 	public function calcula_valor()
 	{
 		return view('transferencias.calcula_valor', ["posicoes" => ['GOL' => 'GOL','ADD' => 'ADD','LD' => 'LD','ZAG' => 'ZAG','LE' => 'LE','ADE' => 'ADE','VOL' => 'VOL','MD' => 'MD','MC' => 'MC','ME' => 'ME','MEI' => 'MEI','MAD' => 'MAD','SA' => 'SA','MAE' => 'MAE','PD' => 'PD','ATA' => 'ATA','PE' => 'PE']]);
+	}
+
+	/**
+	 * Exibe a tabela de valores dos jogadores.
+	 *
+	 * @return Response
+	 */
+	public function valores()
+	{
+		return view('transferencias.valores');
 	}
 
 }
