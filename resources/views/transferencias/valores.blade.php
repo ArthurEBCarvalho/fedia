@@ -1,13 +1,32 @@
 @extends('template')
 
 @section('content')
+<style>
+  table thead {
+    position: sticky;
+    top: 0;
+  }
 
+  table tbody tr td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: #39ADB4;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .table-responsive {
+    max-height: calc(100vh - 280px);;
+    overflow: auto;
+  }
+</style>
 <div class="templatemo-content-widget no-padding">
     <div class="panel panel-default table-responsive">
         <table class="table table-striped table-bordered templatemo-user-table">
             <thead>
                 <tr>
-                    <th>Overall</th>
+                    <th>OVR</th>
                     <th>GOL</th>
                     <th>LE LD ADE ADD</th>
                     <th>ZAG</th>
