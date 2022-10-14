@@ -3,7 +3,7 @@
 @section('content')
 @if ($errors->any())
 <div class="templatemo-content-widget yellow-bg">
-    <i class="fa fa-times"></i>                
+    <i class="fa fa-times"></i>
     <div class="media">
         <div class="media-body">
             <ul>
@@ -11,9 +11,9 @@
                 <li><h2>{{ $error }}</h2></li>
                 @endforeach
             </ul>
-        </div>        
-    </div>           
-</div>     
+        </div>
+    </div>
+</div>
 @endif
 
 <div class="templatemo-content-widget white-bg">
@@ -41,7 +41,7 @@
                     {!! Form::email('email', $user->email, ['required' => 'true', 'class' => 'form-control']) !!}
                 </div>
             </div>
-        </div>     
+        </div>
     </div>
     <div class="panel panel-default no-border">
         <div class="panel-heading border-radius-10">
@@ -70,9 +70,12 @@
                 </div>
             </div>
             @endforeach
-        </div>     
+        </div>
     </div>
     @if($config)
+    @if($user->isAdmin())
+    <input type="hidden" id="admin" name="admin" value="{{$user->isAdmin()}}" />
+    @endif
     <div class="panel panel-default no-border">
         <div class="panel-heading border-radius-10">
             <h2>Credenciais</h2>
@@ -81,8 +84,8 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12 form-group">
                     <div class="templatemo-block margin-bottom-5">
-                        <input type="checkbox" name="alterar_credenciais" id="credenciais" value="true"> 
-                        <label for="credenciais" class="font-weight-400"><span></span>Alterar Credenciais</label> 
+                        <input type="checkbox" name="alterar_credenciais" id="credenciais" value="true">
+                        <label for="credenciais" class="font-weight-400"><span></span>Alterar Credenciais</label>
                     </div>
                 </div>
             </div>
@@ -106,7 +109,7 @@
                     {!! Form::password('password_confirmation', ['required' => 'true', 'class' => 'form-control', 'disabled' => 'true']) !!}
                 </div>
             </div>
-        </div>     
+        </div>
     </div>
     @else
     <div class="row form-group">
@@ -115,7 +118,7 @@
                 <input type="checkbox" id="admin" name="admin"  @if($user->isAdmin()) checked @endif/>
                 <label for="admin" class="control-label"><span></span>Admin</label>
             </div>
-        </div>                  
+        </div>
     </div>
     @endif
     <div class="form-group text-right">
@@ -185,7 +188,7 @@
                 }
             }
         });
-    });        
+    });
 
     // Alterna o campo entre CNPJ e CPF
     $( document ).ready(function() {
