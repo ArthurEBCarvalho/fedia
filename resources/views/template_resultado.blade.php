@@ -249,7 +249,7 @@
     $lesoes = [];
     $cor = ['Amarelo','Vermelho'];
 
-    <?php 
+    <?php
     if(isset($jogadores)){
         foreach($jogadores as $time_id => $list){
             echo 'if(!$jogadores[\''.$time_id.'\']){$jogadores[\''.$time_id.'\'] = [];}';
@@ -441,6 +441,7 @@
                 $("#modal_store").find('.body-title').html('Rodada '+rodada);
             }
             $("#modal_store").find('select.chzn-select > option').remove();
+            $("#mvp").append("<option value=''>Nenhum</option>");
             for(var index in $jogadores[id1])
                 $("#mvp").append("<option value='"+$jogadores[id1][index]['id']+"'>"+$jogadores[id1][index]['nome']+"</option>");
             for(var index in $jogadores[id2])

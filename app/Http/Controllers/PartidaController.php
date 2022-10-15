@@ -95,7 +95,8 @@ class PartidaController extends Controller {
 			$partida->penalti1 = $request->penalti1;
 			$partida->penalti2 = $request->penalti2;
 		}
-		$partida->mvp_id = $request->mvp;
+		if($request->mvp !== "")
+			$partida->mvp_id = $request->mvp;
 		$partida->save();
 		$lesionados = [];
 		$time1 = Time::findOrFail($partida->time1_id);
