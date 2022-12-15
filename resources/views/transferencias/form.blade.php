@@ -86,12 +86,13 @@
 
 </div>
 <script type="text/javascript">
+    $first_option = null;
     $jogadores = [];
     <?php
     foreach($jogadores as $time_id => $list){
         echo 'if(!$jogadores[\''.$time_id.'\']){$jogadores[\''.$time_id.'\'] = [];}';
         foreach ($list as $key => $value)
-            echo '$jogadores[\''.$time_id.'\'].push({\'id\': '.$value->id.', \'nome\': \''.$value->nome.'\'});';
+            echo '$jogadores[\''.$time_id.'\'].push({\'id\': '.$value->id.', \'nome\': \''.$value->nome.'\', \'valor\': \''.$value->valor.'\'});';
     }
 
     foreach($jogadores[array_keys($times)[0]] as $jogador)
@@ -113,10 +114,15 @@
         $('#jogador_id').trigger("liszt:updated");
     });
 
-    $('#posicoes, #overall, #time1_id').change(function(){
+    $('#posicoes, #overall, #time1_id, #time2_id, #jogador_id').change(function(){
+        if(event instanceof PointerEvent)
+            $first_option = null;
+
         $("#valor").val(null);
-        if($('#overall').val() && $('#posicoes').val() && $('#time1_id').find("option:selected").text() == "Mercado Externo"){
+        if(($('#overall').val() && $('#posicoes').val() && $('#time1_id').find("option:selected").text() == "Mercado Externo") || $('#time2_id').find("option:selected").text() == "Mercado Externo"){
             calcula_valor();
+        } else {
+            $first_option = null;
         }
     })
 
@@ -133,20 +139,33 @@
         overall = overall[$("#overall").val()];
         if(overall == null)
             overall = 15000;
+        if($first_option === null)
+            $first_option = $('#posicoes :checked').html();
 
-        posicao = posicao[$('#posicoes').val()[0]];
-        resultado = overall * (((posicao) / 100) + 1);
-        if(resultado >= 0 && resultado < 300000){
-        multiplo = 10000;
-        } else if(resultado >= 300000 && resultado < 1000000) {
-        multiplo = 25000;
-        } else if(resultado >= 1000000 && resultado < 5000000) {
-        multiplo = 100000;
-        } else if(resultado >= 5000000) {
-        multiplo = 500000;
+        posicao = posicao[$first_option];
+
+        if($('#time2_id').find("option:selected").text() == "Mercado Externo"){
+            valor = 0;
+            $jogadores[$('#time1_id').val()].map(jogador => {
+                if(jogador.id == $('#jogador_id').val())
+                    valor = jogador.valor
+            })
+            $("#valor").val(number_format(valor / 2,2,',','.'));
+        } else {
+            resultado = overall * (((posicao) / 100) + 1);
+            if(resultado >= 0 && resultado < 300000){
+                multiplo = 10000;
+            } else if(resultado >= 300000 && resultado < 1000000) {
+                multiplo = 25000;
+            } else if(resultado >= 1000000 && resultado < 5000000) {
+                multiplo = 100000;
+            } else if(resultado >= 5000000) {
+                multiplo = 500000;
+            }
+            resultado = Math.round((resultado-1)/multiplo)*multiplo;
+            $("#valor").val(number_format(resultado,2,',','.'));
         }
-        resultado = Math.round((resultado-1)/multiplo)*multiplo;
-        $("#valor").val(number_format(resultado,2,',','.'));
+
         return false;
     }
 </script>
