@@ -44,8 +44,8 @@ class PartidaController extends Controller {
 			$partidas = Partida::where('temporada_id',@$temporada->id)->where('rodada',$rodada)->where('campeonato','Liga')->get();
 			$partidas_id = Partida::where('temporada_id',@$temporada->id)->where('rodada',$rodada)->where('campeonato','Liga')->pluck('id');
 		} else {
-			$partidas = Partida::where('temporada_id',@$temporada->id)->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
-			$partidas_id = Partida::where('temporada_id',@$temporada->id)->where('campeonato','Copa')->pluck('id');
+			$partidas = Partida::where('temporada_id',@$temporada->id)->where('campeonato',ucfirst($request->tipo))->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
+			$partidas_id = Partida::where('temporada_id',@$temporada->id)->where('campeonato',ucfirst($request->tipo))->pluck('id');
 		}
 		$indisponiveis = [];
 		foreach(DB::table('cartaos')->join('jogadors','cartaos.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('jogadors.id, jogadors.nome as jogador,times.nome as time,COUNT(*) as qtd')->where('temporada_id',@$temporada->id)->where('campeonato',ucfirst($request->tipo))->where('cumprido',0)->where('cor',0)->where('jogadors.time_id','!=',11)->groupBy('jogadors.id','cartaos.time_id','times.nome')->having(DB::raw('COUNT(*)'),'=',2)->get() as $suspenso){
@@ -140,9 +140,9 @@ class PartidaController extends Controller {
 			$cartao->jogador_id = $value;
 			$cartao->cor = $request->cartoes_cor1[$key];
 			if($cartao->cor == "1"){
-				$time1->dinheiro -= 1000000;
+				$time1->dinheiro -= 500000;
 				$time1->save();
-				Financeiro::create(['valor' => 1000000, 'operacao' => 1, 'descricao' => 'Multa por expulsão', 'time_id' => $time1->id]);
+				Financeiro::create(['valor' => 500000, 'operacao' => 1, 'descricao' => 'Multa por expulsão', 'time_id' => $time1->id]);
 			}
 			$cartao->campeonato = $request->campeonato;
 			$cartao->cumprido = 0;
@@ -157,9 +157,9 @@ class PartidaController extends Controller {
 			$cartao->jogador_id = $value;
 			$cartao->cor = $request->cartoes_cor2[$key];
 			if($cartao->cor == "1"){
-				$time2->dinheiro -= 1000000;
+				$time2->dinheiro -= 500000;
 				$time2->save();
-				Financeiro::create(['valor' => 1000000, 'operacao' => 1, 'descricao' => 'Multa por expulsão', 'time_id' => $time2->id]);
+				Financeiro::create(['valor' => 500000, 'operacao' => 1, 'descricao' => 'Multa por expulsão', 'time_id' => $time2->id]);
 			}
 			$cartao->campeonato = $request->campeonato;
 			$cartao->temporada_id = $temporada->id;
@@ -188,8 +188,8 @@ class PartidaController extends Controller {
 			if($value == '') continue;
 			$lesao = new Lesao();
 			$lesao->jogador_id = $value;
-			if($request->lesoes_tipo1[$key] == 0) $rodadas = rand(1,2);
-			elseif ($request->lesoes_tipo1[$key] == 1) $rodadas = rand(0,2);
+			if($request->lesoes_tipo2[$key] == 0) $rodadas = rand(1,2);
+			elseif ($request->lesoes_tipo2[$key] == 1) $rodadas = rand(0,2);
 			else $rodadas = rand(3,7);
 			$jogador = Jogador::findOrFail($value);
 			$lesionados[$jogador->nome] = $rodadas;
@@ -421,38 +421,49 @@ class PartidaController extends Controller {
 
 		// Criar próxima fase das partidas de Copa
 		if($partida->campeonato == "Copa" && $partida->rodada == 2){
-			$anterior = Partida::where('temporada_id',$temporada->id)->where('ordem',$partida->ordem)->where('rodada',1)->first();
+			$anterior = Partida::where('temporada_id',$temporada->id)->where('ordem',$partida->ordem)->where('campeonato', $partida->campeonato)->where('rodada',1)->first();
 			if((isset($request->penalti1) && $request->penalti1 != '') && (isset($request->penalti2) && $request->penalti2 != '')){
-				if($request->penalti1 > $request->penalti2)
-				$vencedor = $partida->time1_id;
-				else
-				$vencedor = $partida->time2_id;
-			} else {
-				if(($partida->resultado1 + $anterior->resultado2) == ($partida->resultado2 + $anterior->resultado1)){
-					if($anterior->resultado2 > $partida->resultado2)
+				if($request->penalti1 > $request->penalti2){
 					$vencedor = $partida->time1_id;
-					else
-					$vencedor = $partida->time2_id;
+					$perdedor = $partida->time2_id;
 				} else {
-					if(($partida->resultado1 + $anterior->resultado2) > ($partida->resultado2 + $anterior->resultado1))
-					$vencedor = $partida->time1_id;
-					else
 					$vencedor = $partida->time2_id;
+					$perdedor = $partida->time1_id;
+				}
+			} else {
+
+				if(($partida->resultado1 + $anterior->resultado2) == ($partida->resultado2 + $anterior->resultado1)){
+					if($anterior->resultado2 > $partida->resultado2){
+						$vencedor = $partida->time1_id;
+						$perdedor = $partida->time2_id;
+					} else {
+						$vencedor = $partida->time2_id;
+						$perdedor = $partida->time1_id;
+					}
+				} else {
+					if(($partida->resultado1 + $anterior->resultado2) > ($partida->resultado2 + $anterior->resultado1)){
+						$vencedor = $partida->time1_id;
+						$perdedor = $partida->time2_id;
+					} else {
+						$vencedor = $partida->time2_id;
+						$perdedor = $partida->time1_id;
+					}
 				}
 			}
+			//  Colocar o vencedor na próxima fase
 			$v = Time::findOrFail($vencedor);
 			if(in_array($partida->ordem, [0,1])){
 				$ordem = 4;
-				$v->dinheiro += 4000000;
-				Financeiro::create(['valor' => 4000000, 'operacao' => 0, 'descricao' => 'Passou das Quartas de Finais da Copa FEDIA', 'time_id' => $v->id]);
+				$v->dinheiro += 8000000;
+				Financeiro::create(['valor' => 8000000, 'operacao' => 0, 'descricao' => 'Passou das Quartas de Finais da Copa FEDIA', 'time_id' => $v->id]);
 			} elseif(in_array($partida->ordem, [2,3])){
 				$ordem = 5;
-				$v->dinheiro += 4000000;
-				Financeiro::create(['valor' => 4000000, 'operacao' => 0, 'descricao' => 'Passou das Quartas de Finais da Copa FEDIA', 'time_id' => $v->id]);
+				$v->dinheiro += 8000000;
+				Financeiro::create(['valor' => 8000000, 'operacao' => 0, 'descricao' => 'Passou das Quartas de Finais da Copa FEDIA', 'time_id' => $v->id]);
 			} elseif(in_array($partida->ordem, [4,5])){
 				$ordem = 6;
-				$v->dinheiro += 8000000;
-				Financeiro::create(['valor' => 8000000, 'operacao' => 0, 'descricao' => 'Passou das Semi Finais da Copa FEDIA', 'time_id' => $v->id]);
+				$v->dinheiro += 4000000;
+				Financeiro::create(['valor' => 4000000, 'operacao' => 0, 'descricao' => 'Passou das Semi Finais da Copa FEDIA', 'time_id' => $v->id]);
 			}
 			$v->save();
 			if($partida->rodada == 2){
@@ -492,13 +503,164 @@ class PartidaController extends Controller {
 					}
 				}
 			}
+
+			//  Colocar o perdedor na taça
+			if(in_array($partida->ordem, [0,1,2,3])){
+				$partida_taca = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Taca' and ordem IN (0,1,2,3) and (time1_id IS NULL or time2_id IS NULL) and rodada = 1")->inRandomOrder()->first();
+
+				if(is_null($partida_taca->time1_id)){
+					$partida_taca->time1_id = $perdedor;
+					$segunda_rodada = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Taca' and ordem = $partida_taca->ordem and rodada = 2")->first();
+					$segunda_rodada->time2_id = $perdedor;
+					$partida_taca->save();
+					$segunda_rodada->save();
+				} else {
+					$partida_taca->time2_id = $perdedor;
+					$segunda_rodada = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Taca' and ordem = $partida_taca->ordem and rodada = 2")->first();
+					$segunda_rodada->time1_id = $perdedor;
+					$partida_taca->save();
+					$segunda_rodada->save();
+				}
+			}
+		}
+
+		// Premiação Final da Taça
+		if($partida->campeonato == "Taca" && $partida->ordem == 6){
+			if((isset($request->penalti1) && $request->penalti1 != '') && (isset($request->penalti2) && $request->penalti2 != '')){
+				if($request->penalti1 > $request->penalti2){
+					$v = Time::findOrFail($partida->time1_id);
+					$d = Time::findOrFail($partida->time2_id);
+					$temporada->taca1_id = $partida->time1_id;
+					$temporada->taca2_id = $partida->time2_id;
+				} else {
+					$v = Time::findOrFail($partida->time2_id);
+					$d = Time::findOrFail($partida->time1_id);
+					$temporada->taca1_id = $partida->time2_id;
+					$temporada->taca2_id = $partida->time1_id;
+				}
+			} else {
+				if($request->resultado1 > $request->resultado2) {
+					$v = Time::findOrFail($partida->time1_id);
+					$d = Time::findOrFail($partida->time2_id);
+					$temporada->taca1_id = $partida->time1_id;
+					$temporada->taca2_id = $partida->time2_id;
+				} else {
+					$v = Time::findOrFail($partida->time2_id);
+					$d = Time::findOrFail($partida->time1_id);
+					$temporada->taca1_id = $partida->time2_id;
+					$temporada->taca2_id = $partida->time1_id;
+				}
+			}
+			$campeao = $v;
+			$v->dinheiro += 1500000;
+			$v->save();
+			Financeiro::create(['valor' => 1500000, 'operacao' => 0, 'descricao' => 'Campeão da Taça FEDIA', 'time_id' => $v->id]);
+
+			// Artilheiros
+			$artilheiro = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.id,times.nome,times.escudo,jogador_id,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',$temporada->id)->where('campeonato','Taca')->groupBy('jogador_id','jogadors.nome','times.id')->orderBy('qtd','DESC')->get();
+			$t = [];
+			$gols = null;
+			foreach ($artilheiro as $key => $value) {
+				if(is_null($gols))
+				$gols = $value->qtd;
+				if($gols != $value->qtd)
+				break;
+				$a = new Artilheiro();
+				$a->jogador = $value->jogador;
+				$a->campeonato = 'Taca';
+				$a->temporada_id = $temporada->id;
+				$a->save();
+				$t[] = $value->id;
+			}
+			foreach ($t as $key => $value) {
+				$v = Time::findOrFail($value);
+				$v->dinheiro += (1000000/count($t));
+				$v->save();
+				Financeiro::create(['valor' => (1000000/count($t)), 'operacao' => 0, 'descricao' => 'Artilheiro da Taça FEDIA', 'time_id' => $value]);
+			}
+			$temporada->save();
+		}
+
+		// Criar próxima fase das partidas de Taça
+		if($partida->campeonato == "Taca" && $partida->rodada == 2){
+			$anterior = Partida::where('temporada_id',$temporada->id)->where('ordem',$partida->ordem)->where('campeonato', $partida->campeonato)->where('rodada',1)->first();
+			if((isset($request->penalti1) && $request->penalti1 != '') && (isset($request->penalti2) && $request->penalti2 != '')){
+				if($request->penalti1 > $request->penalti2)
+				$vencedor = $partida->time1_id;
+				else
+				$vencedor = $partida->time2_id;
+			} else {
+				if(($partida->resultado1 + $anterior->resultado2) == ($partida->resultado2 + $anterior->resultado1)){
+					if($anterior->resultado2 > $partida->resultado2)
+					$vencedor = $partida->time1_id;
+					else
+					$vencedor = $partida->time2_id;
+				} else {
+					if(($partida->resultado1 + $anterior->resultado2) > ($partida->resultado2 + $anterior->resultado1))
+					$vencedor = $partida->time1_id;
+					else
+					$vencedor = $partida->time2_id;
+				}
+			}
+			$v = Time::findOrFail($vencedor);
+			if(in_array($partida->ordem, [0,1])){
+				$ordem = 4;
+				$v->dinheiro += 4000000;
+				Financeiro::create(['valor' => 4000000, 'operacao' => 0, 'descricao' => 'Passou das Quartas de Finais da Taça FEDIA', 'time_id' => $v->id]);
+			} elseif(in_array($partida->ordem, [2,3])){
+				$ordem = 5;
+				$v->dinheiro += 4000000;
+				Financeiro::create(['valor' => 4000000, 'operacao' => 0, 'descricao' => 'Passou das Quartas de Finais da Taça FEDIA', 'time_id' => $v->id]);
+			} elseif(in_array($partida->ordem, [4,5])){
+				$ordem = 6;
+				$v->dinheiro += 2000000;
+				Financeiro::create(['valor' => 2000000, 'operacao' => 0, 'descricao' => 'Passou das Semi Finais da Taça FEDIA', 'time_id' => $v->id]);
+			}
+			$v->save();
+			if($partida->rodada == 2){
+				$pendente = Partida::whereRaw("temporada_id = $temporada->id and campeonato = 'Taca' and ordem = $ordem and (time1_id IS NULL or time2_id IS NULL)")->get();
+				if($pendente->count()){
+					foreach ($pendente as $key => $value) {
+						if(is_null($value->time1_id))
+						$value->time1_id = $vencedor;
+						else
+						$value->time2_id = $vencedor;
+						$value->save();
+					}
+				} else {
+					// Ida
+					$ida = new Partida();
+					$ida->campeonato = "Taca";
+					$ida->rodada = 1;
+					$ida->temporada_id = $temporada->id;
+					$ida->ordem = $ordem;
+					if($partida->ordem % 2 == 0)
+					$ida->time1_id = $vencedor;
+					else
+					$ida->time2_id = $vencedor;
+					$ida->save();
+					// Volta
+					if(!in_array($partida->ordem, [4,5])){
+						$volta = new Partida();
+						$volta->campeonato = "Taca";
+						$volta->rodada = 2;
+						$volta->temporada_id = $temporada->id;
+						$volta->ordem = $ordem;
+						if($partida->ordem % 2 == 1)
+						$volta->time1_id = $vencedor;
+						else
+						$volta->time2_id = $vencedor;
+						$volta->save();
+					}
+				}
+			}
 		}
 
 		if($request->view == 'partidas.partidas')
 		$time = $request->time_id;
 		else
 		$time = null;
-		return redirect()->route($request->view, ['tipo' => strtolower($request->campeonato), 'temporada_id' => $temporada->id, 'rodada' => $request->rodada, 'lesionados' => $lesionados, 'time_id' => $time])->with('message', 'Resultado cadastrado com sucesso!');
+		return redirect()->route($request->view, ['tipo' => strtolower($request->campeonato), 'temporada' => $temporada->id, 'rodada' => $request->rodada, 'lesionados' => $lesionados, 'time_id' => $time])->with('message', 'Resultado cadastrado com sucesso!');
 	}
 
 	/**
@@ -580,10 +742,14 @@ class PartidaController extends Controller {
 		}
 
 		// Sorteio da copa
-		if (isset($request->times) && count($request->times) == 8)
-			$times = Time::whereIn('id', $request->times)->inRandomOrder()->get();
-		else
-			$times = [];
+		$temporada_anterior = $temporada->id - 1;
+		$p = Partida::whereRaw("temporada_id = $temporada_anterior and campeonato = 'Liga'")->get();
+		$classificacao = $this->classificacao($p);
+		$times_id = [];
+		foreach ([0,1,2,3,4,5,6,7] as $index) {
+			array_push($times_id, $classificacao[$index]['id']);
+		}
+		$times = Time::whereIn('id', $times_id)->inRandomOrder()->get();
 		foreach ([0,2,4,6] as $ordem => $index) {
 			// Ida
 			$partida = new Partida();
@@ -602,6 +768,36 @@ class PartidaController extends Controller {
 			$partida->ordem = $ordem;
 			$partida->time1_id = @$times[$index+1]->id;
 			$partida->time2_id = @$times[$index]->id;
+			$partida->save();
+		}
+
+		// Sorteio da taça
+		$times_id = [];
+		foreach ([8,9,10,11] as $index) {
+			array_push($times_id, $classificacao[$index]['id']);
+		}
+		$times = Time::whereIn('id', $times_id)->inRandomOrder()->get();
+		$indexes = [0,1,2,3,100,100,100,100];
+		shuffle($indexes);
+		for ($i = 0; $i < 8; $i += 2) {
+		// for ($indexes as $ordem => $index) {
+			// Ida
+			$partida = new Partida();
+			$partida->campeonato = "Taca";
+			$partida->temporada_id = $temporada->id;
+			$partida->rodada = 1;
+			$partida->ordem = $i / 2;
+			$partida->time1_id = @$times[$indexes[$i]]->id;
+			$partida->time2_id = @$times[$indexes[$i+1]]->id;
+			$partida->save();
+			// Volta
+			$partida = new Partida();
+			$partida->campeonato = "Taca";
+			$partida->temporada_id = $temporada->id;
+			$partida->rodada = 2;
+			$partida->ordem = $i / 2;
+			$partida->time1_id = @$times[$indexes[$i+1]]->id;
+			$partida->time2_id = @$times[$indexes[$i]]->id;
 			$partida->save();
 		}
 
@@ -710,7 +906,7 @@ class PartidaController extends Controller {
 		else
 		$time = Auth::user()->time(Session::get('era')->id);
 		$times = Time::whereIn('id',UserTime::where('era_id',Session::get('era')->id)->pluck('time_id')->toArray())->lists('nome','id')->all();
-		$partidas = ['Liga' => [], 'Copa' => []];
+		$partidas = ['Liga' => [], 'Copa' => [], 'Taca' => []];
 		$partidas_id = [];
 		foreach (Partida::whereRaw("(time1_id = $time->id or time2_id = $time->id)")->where("temporada_id",@$temporada->id)->orderByRaw('ordem,rodada')->get() as $value){
 			$partidas[$value->campeonato][] = $value;

@@ -89,6 +89,8 @@
 									class="@if(Request::is('partidas*') && @$tipo == 'liga') active @endif">Liga FEDIA</a></li>
 							<li><a href="/partidas?tipo=copa"
 									class="@if(Request::is('partidas*') && @$tipo == 'copa') active @endif">Copa FEDIA</a></li>
+							<li><a href="/partidas?tipo=taca"
+									class="@if(Request::is('partidas*') && @$tipo == 'taca') active @endif">Taça FEDIA</a></li>
 						</ul>
 					</li>
 					<li><a href="{{ url('artilharia') }}" class="@if(Request::is('artilharia')) active @endif"><i
@@ -122,7 +124,7 @@
 							<li><a href="/administracao/wo_create"
 									class="@if(Request::is('administracao/wo_create')) active @endif">Aplicar WO</a></li>
 							<li><a href="/administracao/copa_create"
-									class="@if(Request::is('administracao/copa_create')) active @endif">Gerenciar Copa FEDIA</a></li>
+									class="@if(Request::is('administracao/copa_create')) active @endif">Gerenciar Copa/Taça FEDIA</a></li>
 						</ul>
 					</li>
 					@endif

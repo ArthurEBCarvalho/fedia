@@ -43,6 +43,7 @@
           <select class="form-control" name="campeonato">
             <option value="0" @if ($is_liga) selected @endif>Liga</option>
             <option value="1" @if ($is_copa) selected @endif>Copa</option>
+            <option value="2" @if ($is_taca) selected @endif>Taça</option>
           </select>
           <span class="input-group-btn">
             <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Selecionar</button>
@@ -219,13 +220,14 @@
 </div>
 @endif
 
-@if($is_copa)
+@if($is_copa || $is_taca)
+@if($is_copa) @php $campeonato = 'Copa' @endphp @else @php $campeonato = 'Taca' @endphp @endif
 <!-- Copa -->
 <div class="templatemo-flex-row flex-content-row">
   <div class="col-1">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
       <div class="panel-heading templatemo-position-relative">
-        <h2 class="text-uppercase">Copa - Temporada {{$temporada->numero}}</h2>
+        <h2 class="text-uppercase">@if($is_taca) Taça @else {{ucfirst($campeonato)}} @endif - Temporada {{$temporada->numero}}</h2>
       </div>
       <div class="table-responsive">
         <table class="table table-bordered templatemo-user-table">
@@ -248,20 +250,20 @@
             </tr>
             <tr>
               <td style="border:0;"></td>
-              <td @if(@$copa['4|1']->time1_id == @$copa['0|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|1']->time1_id == @$copa['0|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">@if(isset($copa['0|1']) && isset($copa['0|1']->time1_id)) {!! Html::image('images/times/'.@$copa['0|1']->time1()->escudo,
-                @$copa['0|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
-              <td @if(@$copa['4|1']->time1_id == @$copa['0|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|1']->time1_id == @$copa['0|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="left" width="200">{{@$copa['0|1']->time1()->nome}}</td>
-              <td @if(@$copa['4|1']->time1_id == @$copa['0|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|1']->time1_id == @$copa['0|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['0|1']->resultado1}}</td>
-              <td @if(@$copa['4|1']->time1_id == @$copa['0|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|1']->time1_id == @$copa['0|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['0|2']->resultado2}} @if(isset($copa['0|2']->penalti2))
-                ({{$copa['0|2']->penalti2}}) @endif</td>
+              <td @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|1']->time1_id && isset($copa[$campeonato.'|0|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|1']->time2_id && isset($copa[$campeonato.'|0|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="70">@if(isset($copa[$campeonato.'|0|1']) && isset($copa[$campeonato.'|0|1']->time1_id)) {!! Html::image('images/times/'.@$copa[$campeonato.'|0|1']->time1()->escudo,
+                @$copa[$campeonato.'|0|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
+              <td @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|1']->time1_id && isset($copa[$campeonato.'|0|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|1']->time2_id && isset($copa[$campeonato.'|0|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="left" width="200">@if(isset($copa[$campeonato.'|0|1']) && isset($copa[$campeonato.'|0|1']->time1_id)) {{@$copa[$campeonato.'|0|1']->time1()->nome}} @endif</td>
+              <td @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|1']->time1_id && isset($copa[$campeonato.'|0|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|1']->time2_id && isset($copa[$campeonato.'|0|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|0|1']->resultado1}}</td>
+              <td @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|1']->time1_id && isset($copa[$campeonato.'|0|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|1']->time2_id && isset($copa[$campeonato.'|0|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|0|2']->resultado2}} @if(isset($copa[$campeonato.'|0|2']->penalti2))
+                ({{@$copa[$campeonato.'|0|2']->penalti2}}) @endif</td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
@@ -276,40 +278,40 @@
             </tr>
             <tr>
               <td style="border:0;"></td>
-              <td @if(@$copa['4|1']->time1_id == @$copa['0|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|1']->time1_id == @$copa['0|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">@if(isset($copa['0|1']) && isset($copa['0|1']->time1_id)) {!! Html::image('images/times/'.@$copa['0|1']->time2()->escudo,
-                @$copa['0|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
-              <td @if(@$copa['4|1']->time1_id == @$copa['0|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|1']->time1_id == @$copa['0|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="left" width="200">{{@$copa['0|1']->time2()->nome}}</td>
-              <td @if(@$copa['4|1']->time1_id == @$copa['0|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|1']->time1_id == @$copa['0|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['0|1']->resultado2}}</td>
-              <td @if(@$copa['4|1']->time1_id == @$copa['0|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|1']->time1_id == @$copa['0|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['0|2']->resultado1}} @if(isset($copa['0|2']->penalti1))
-                ({{$copa['0|2']->penalti1}}) @endif</td>
+              <td @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|2']->time1_id && isset($copa[$campeonato.'|0|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|2']->time2_id && isset($copa[$campeonato.'|0|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="70">@if(isset($copa[$campeonato.'|0|1']) && isset($copa[$campeonato.'|0|1']->time2_id)) {!! Html::image('images/times/'.@$copa[$campeonato.'|0|1']->time2()->escudo,
+                @$copa[$campeonato.'|0|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
+              <td @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|2']->time1_id && isset($copa[$campeonato.'|0|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|2']->time2_id && isset($copa[$campeonato.'|0|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="left" width="200">@if(isset($copa[$campeonato.'|0|1']) && isset($copa[$campeonato.'|0|1']->time2_id)) {{@$copa[$campeonato.'|0|1']->time2()->nome}} @endif</td>
+              <td @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|2']->time1_id && isset($copa[$campeonato.'|0|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|2']->time2_id && isset($copa[$campeonato.'|0|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|0|1']->resultado2}}</td>
+              <td @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|2']->time1_id && isset($copa[$campeonato.'|0|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|1']->time1_id == @$copa[$campeonato.'|0|2']->time2_id && isset($copa[$campeonato.'|0|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|0|2']->resultado1}} @if(isset($copa[$campeonato.'|0|2']->penalti1))
+                ({{@$copa[$campeonato.'|0|2']->penalti1}}) @endif</td>
               <td style="border:0;"></td>
-              <td @if((@$copa['6|1']->time1_id == @$copa['4|1']->time1_id) && !is_null(@$copa['6|1']->time1_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time1_id == @$copa['4|1']->time2_id) &&
-                !is_null(@$copa['6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="70">@if(isset($copa['4|1']) && isset($copa['4|1']->time1_id)) {!!
-                Html::image('images/times/'.@$copa['4|1']->time1()->escudo, @$copa['4|1']->time1()->nome, ['class' =>
+              <td @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|1']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time1_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|1']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="70">@if(isset($copa[$campeonato.'|4|1']) && isset($copa[$campeonato.'|4|1']->time1_id)) {!!
+                Html::image('images/times/'.@$copa[$campeonato.'|4|1']->time1()->escudo, @$copa[$campeonato.'|4|1']->time1()->nome, ['class' =>
                 'time_img']) !!} @endif</td>
-              <td @if((@$copa['6|1']->time1_id == @$copa['4|1']->time1_id) && !is_null(@$copa['6|1']->time1_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time1_id == @$copa['4|1']->time2_id) &&
-                !is_null(@$copa['6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="left"
-                width="200">@if(isset($copa['4|1'])) {{@$copa['4|1']->time1()->nome}} @endif</td>
-              <td @if((@$copa['6|1']->time1_id == @$copa['4|1']->time1_id) && !is_null(@$copa['6|1']->time1_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time1_id == @$copa['4|1']->time2_id) &&
-                !is_null(@$copa['6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="60">@if(isset($copa['4|1'])) {{$copa['4|1']->resultado1}} @endif</td>
-              <td @if((@$copa['6|1']->time1_id == @$copa['4|1']->time1_id) && !is_null(@$copa['6|1']->time1_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time1_id == @$copa['4|1']->time2_id) &&
-                !is_null(@$copa['6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="60">@if(isset($copa['4|2'])) {{$copa['4|2']->resultado2}} @if(isset($copa['4|2']->penalti1))
-                ({{$copa['4|2']->penalti1}}) @endif @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|1']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time1_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|1']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="left"
+                width="200">@if(isset($copa[$campeonato.'|4|1'])) {{@$copa[$campeonato.'|4|1']->time1()->nome}} @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|1']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time1_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|1']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="60">@if(isset($copa[$campeonato.'|4|1'])) {{@$copa[$campeonato.'|4|1']->resultado1}} @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|1']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time1_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|1']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="60">@if(isset($copa[$campeonato.'|4|2'])) {{@$copa[$campeonato.'|4|2']->resultado2}} @if(isset($copa[$campeonato.'|4|2']->penalti1))
+                ({{@$copa[$campeonato.'|4|2']->penalti1}}) @endif @endif</td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
@@ -335,40 +337,40 @@
             </tr>
             <tr>
               <td style="border:0;"></td>
-              <td @if(@$copa['4|2']->time1_id == @$copa['1|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|2']->time1_id == @$copa['1|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">@if(isset($copa['1|1']) && isset($copa['1|1']->time1_id)) {!! Html::image('images/times/'.@$copa['1|1']->time1()->escudo,
-                @$copa['1|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
-              <td @if(@$copa['4|2']->time1_id == @$copa['1|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|2']->time1_id == @$copa['1|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="left" width="200">{{@$copa['1|1']->time1()->nome}}</td>
-              <td @if(@$copa['4|2']->time1_id == @$copa['1|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|2']->time1_id == @$copa['1|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['1|1']->resultado1}}</td>
-              <td @if(@$copa['4|2']->time1_id == @$copa['1|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|2']->time1_id == @$copa['1|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['1|2']->resultado2}} @if(isset($copa['1|2']->penalti2))
-                ({{$copa['1|2']->penalti2}}) @endif</td>
+              <td @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|1']->time1_id && isset($copa[$campeonato.'|1|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|1']->time2_id && isset($copa[$campeonato.'|1|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="70">@if(isset($copa[$campeonato.'|1|1']) && isset($copa[$campeonato.'|1|1']->time1_id)) {!! Html::image('images/times/'.@$copa[$campeonato.'|1|1']->time1()->escudo,
+                @$copa[$campeonato.'|1|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
+              <td @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|1']->time1_id && isset($copa[$campeonato.'|1|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|1']->time2_id && isset($copa[$campeonato.'|1|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="left" width="200">@if(isset($copa[$campeonato.'|1|1']) && isset($copa[$campeonato.'|1|1']->time1_id)) {{@$copa[$campeonato.'|1|1']->time1()->nome}} @endif</td>
+              <td @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|1']->time1_id && isset($copa[$campeonato.'|1|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|1']->time2_id && isset($copa[$campeonato.'|1|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|1|1']->resultado1}}</td>
+              <td @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|1']->time1_id && isset($copa[$campeonato.'|1|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|1']->time2_id && isset($copa[$campeonato.'|1|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|1|2']->resultado2}} @if(isset($copa[$campeonato.'|1|2']->penalti2))
+                ({{@$copa[$campeonato.'|1|2']->penalti2}}) @endif</td>
               <td style="border:0;"></td>
-              <td @if((@$copa['6|1']->time1_id == @$copa['4|2']->time1_id) && !is_null(@$copa['6|1']->time1_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time1_id == @$copa['4|2']->time2_id) &&
-                !is_null(@$copa['6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="70">@if(isset($copa['4|1']) && isset($copa['4|1']->time2_id)) {!!
-                Html::image('images/times/'.@$copa['4|1']->time2()->escudo, @$copa['4|1']->time2()->nome, ['class' =>
+              <td @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|2']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time1_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|2']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="70">@if(isset($copa[$campeonato.'|4|1']) && isset($copa[$campeonato.'|4|1']->time2_id)) {!!
+                Html::image('images/times/'.@$copa[$campeonato.'|4|1']->time2()->escudo, @$copa[$campeonato.'|4|1']->time2()->nome, ['class' =>
                 'time_img']) !!} @endif</td>
-              <td @if((@$copa['6|1']->time1_id == @$copa['4|2']->time1_id) && !is_null(@$copa['6|1']->time1_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time1_id == @$copa['4|2']->time2_id) &&
-                !is_null(@$copa['6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="left"
-                width="200">@if(isset($copa['4|1'])) {{@$copa['4|1']->time2()->nome}} @endif</td>
-              <td @if((@$copa['6|1']->time1_id == @$copa['4|2']->time1_id) && !is_null(@$copa['6|1']->time1_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time1_id == @$copa['4|2']->time2_id) &&
-                !is_null(@$copa['6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="60">@if(isset($copa['4|1'])) {{$copa['4|1']->resultado2}} @endif</td>
-              <td @if((@$copa['6|1']->time1_id == @$copa['4|2']->time1_id) && !is_null(@$copa['6|1']->time1_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time1_id == @$copa['4|2']->time2_id) &&
-                !is_null(@$copa['6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="60">@if(isset($copa['4|2'])) {{$copa['4|2']->resultado1}} @if(isset($copa['4|2']->penalti2))
-                ({{$copa['4|2']->penalti2}}) @endif @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|2']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time1_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|2']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="left"
+                width="200">@if(isset($copa[$campeonato.'|4|1'])) {{@$copa[$campeonato.'|4|1']->time2()->nome}} @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|2']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time1_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|2']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="60">@if(isset($copa[$campeonato.'|4|1'])) {{@$copa[$campeonato.'|4|1']->resultado2}} @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|2']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time1_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time1_id == @$copa[$campeonato.'|4|2']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time1_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="60">@if(isset($copa[$campeonato.'|4|2'])) {{@$copa[$campeonato.'|4|2']->resultado1}} @if(isset($copa[$campeonato.'|4|2']->penalti2))
+                ({{@$copa[$campeonato.'|4|2']->penalti2}}) @endif @endif</td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
@@ -378,45 +380,45 @@
             </tr>
             <tr>
               <td style="border:0;"></td>
-              <td @if(@$copa['4|2']->time1_id == @$copa['1|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|2']->time1_id == @$copa['1|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">@if(isset($copa['1|1']) && isset($copa['1|1']->time1_id)) {!! Html::image('images/times/'.@$copa['1|1']->time2()->escudo,
-                @$copa['1|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
-              <td @if(@$copa['4|2']->time1_id == @$copa['1|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|2']->time1_id == @$copa['1|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="left" width="200">{{@$copa['1|1']->time2()->nome}}</td>
-              <td @if(@$copa['4|2']->time1_id == @$copa['1|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|2']->time1_id == @$copa['1|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['1|1']->resultado2}}</td>
-              <td @if(@$copa['4|2']->time1_id == @$copa['1|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['4|2']->time1_id == @$copa['1|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['1|2']->resultado1}} @if(isset($copa['1|2']->penalti1))
-                ({{$copa['1|2']->penalti1}}) @endif</td>
+              <td @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|2']->time1_id && isset($copa[$campeonato.'|1|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|2']->time2_id && isset($copa[$campeonato.'|1|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="70">@if(isset($copa[$campeonato.'|1|1']) && isset($copa[$campeonato.'|1|1']->time2_id)) {!! Html::image('images/times/'.@$copa[$campeonato.'|1|1']->time2()->escudo,
+                @$copa[$campeonato.'|1|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
+              <td @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|2']->time1_id && isset($copa[$campeonato.'|1|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|2']->time2_id && isset($copa[$campeonato.'|1|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="left" width="200">@if(isset($copa[$campeonato.'|1|1']) && isset($copa[$campeonato.'|1|1']->time2_id)) {{@$copa[$campeonato.'|1|1']->time2()->nome}} @endif</td>
+              <td @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|2']->time1_id && isset($copa[$campeonato.'|1|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|2']->time2_id && isset($copa[$campeonato.'|1|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|1|1']->resultado2}}</td>
+              <td @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|2']->time1_id && isset($copa[$campeonato.'|1|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|4|2']->time1_id == @$copa[$campeonato.'|1|2']->time2_id && isset($copa[$campeonato.'|1|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|1|2']->resultado1}} @if(isset($copa[$campeonato.'|1|2']->penalti1))
+                ({{@$copa[$campeonato.'|1|2']->penalti1}}) @endif</td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
-              <td @if(is_null(@$copa['6|1']->penalti1) && is_null(@$copa['6|1']->penalti2))
-                @if(is_null(@$copa['6|1']->resultado1) && is_null(@$copa['6|1']->resultado2)) bgcolor="F9F9F9" @else
-                @if(@$copa['6|1']->resultado1 > @$copa['6|1']->resultado2) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
-                @endif @endif @else @if(@$copa['6|1']->penalti1 > @$copa['6|1']->penalti2) bgcolor="F0FFF0" @else
-                bgcolor="FFF0F0" @endif @endif align="center" width="70">@if(isset($copa['6|1']) &&
-                isset($copa['6|1']->time1_id)) {!! Html::image('images/times/'.@$copa['6|1']->time1()->escudo,
-                @$copa['6|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
-              <td @if(is_null(@$copa['6|1']->penalti1) && is_null(@$copa['6|1']->penalti2))
-                @if(is_null(@$copa['6|1']->resultado1) && is_null(@$copa['6|1']->resultado2)) bgcolor="F9F9F9" @else
-                @if(@$copa['6|1']->resultado1 > @$copa['6|1']->resultado2) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
-                @endif @endif @else @if(@$copa['6|1']->penalti1 > @$copa['6|1']->penalti2) bgcolor="F0FFF0" @else
-                bgcolor="FFF0F0" @endif @endif align="left" width="200">@if(isset($copa['6|1']))
-                {{@$copa['6|1']->time1()->nome}} @endif</td>
-              <td @if(is_null(@$copa['6|1']->penalti1) && is_null(@$copa['6|1']->penalti2))
-                @if(is_null(@$copa['6|1']->resultado1) && is_null(@$copa['6|1']->resultado2)) bgcolor="F9F9F9" @else
-                @if(@$copa['6|1']->resultado1 > @$copa['6|1']->resultado2) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
-                @endif @endif @else @if(@$copa['6|1']->penalti1 > @$copa['6|1']->penalti2) bgcolor="F0FFF0" @else
-                bgcolor="FFF0F0" @endif @endif align="center" width="60">@if(isset($copa['6|1']))
-                {{$copa['6|1']->resultado1}} @if(isset($copa['6|1']->penalti1)) ({{$copa['6|1']->penalti1}}) @endif
+              <td @if(is_null(@$copa[$campeonato.'|6|1']->penalti1) && is_null(@$copa[$campeonato.'|6|1']->penalti2))
+                @if(is_null(@$copa[$campeonato.'|6|1']->resultado1) && is_null(@$copa[$campeonato.'|6|1']->resultado2)) bgcolor="F9F9F9" @else
+                @if(@$copa[$campeonato.'|6|1']->resultado1 > @$copa[$campeonato.'|6|1']->resultado2) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
+                @endif @endif @else @if(@$copa[$campeonato.'|6|1']->penalti1 > @$copa[$campeonato.'|6|1']->penalti2) bgcolor="F0FFF0" @else
+                bgcolor="FFF0F0" @endif @endif align="center" width="70">@if(isset($copa[$campeonato.'|6|1']) &&
+                isset($copa[$campeonato.'|6|1']->time1_id)) {!! Html::image('images/times/'.@$copa[$campeonato.'|6|1']->time1()->escudo,
+                @$copa[$campeonato.'|6|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
+              <td @if(is_null(@$copa[$campeonato.'|6|1']->penalti1) && is_null(@$copa[$campeonato.'|6|1']->penalti2))
+                @if(is_null(@$copa[$campeonato.'|6|1']->resultado1) && is_null(@$copa[$campeonato.'|6|1']->resultado2)) bgcolor="F9F9F9" @else
+                @if(@$copa[$campeonato.'|6|1']->resultado1 > @$copa[$campeonato.'|6|1']->resultado2) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
+                @endif @endif @else @if(@$copa[$campeonato.'|6|1']->penalti1 > @$copa[$campeonato.'|6|1']->penalti2) bgcolor="F0FFF0" @else
+                bgcolor="FFF0F0" @endif @endif align="left" width="200">@if(isset($copa[$campeonato.'|6|1']))
+                {{@$copa[$campeonato.'|6|1']->time1()->nome}} @endif</td>
+              <td @if(is_null(@$copa[$campeonato.'|6|1']->penalti1) && is_null(@$copa[$campeonato.'|6|1']->penalti2))
+                @if(is_null(@$copa[$campeonato.'|6|1']->resultado1) && is_null(@$copa[$campeonato.'|6|1']->resultado2)) bgcolor="F9F9F9" @else
+                @if(@$copa[$campeonato.'|6|1']->resultado1 > @$copa[$campeonato.'|6|1']->resultado2) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
+                @endif @endif @else @if(@$copa[$campeonato.'|6|1']->penalti1 > @$copa[$campeonato.'|6|1']->penalti2) bgcolor="F0FFF0" @else
+                bgcolor="FFF0F0" @endif @endif align="center" width="60">@if(isset($copa[$campeonato.'|6|1']))
+                {{@$copa[$campeonato.'|6|1']->resultado1}} @if(isset($copa[$campeonato.'|6|1']->penalti1)) ({{@$copa[$campeonato.'|6|1']->penalti1}}) @endif
                 @endif</td>
               <td style="border:0;"></td>
             </tr>
@@ -440,84 +442,84 @@
             </tr>
             <tr>
               <td style="border:0;"></td>
-              <td @if(@$copa['5|1']->time1_id == @$copa['2|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|1']->time1_id == @$copa['2|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">@if(isset($copa['2|1']) && isset($copa['2|1']->time1_id)) {!! Html::image('images/times/'.@$copa['2|1']->time1()->escudo,
-                @$copa['2|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
-              <td @if(@$copa['5|1']->time1_id == @$copa['2|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|1']->time1_id == @$copa['2|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="left" width="200">{{@$copa['2|1']->time1()->nome}}</td>
-              <td @if(@$copa['5|1']->time1_id == @$copa['2|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|1']->time1_id == @$copa['2|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['2|1']->resultado1}}</td>
-              <td @if(@$copa['5|1']->time1_id == @$copa['2|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|1']->time1_id == @$copa['2|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['2|2']->resultado2}} @if(isset($copa['2|2']->penalti2))
-                ({{$copa['2|2']->penalti2}}) @endif</td>
+              <td @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|1']->time1_id && isset($copa[$campeonato.'|2|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|1']->time2_id && isset($copa[$campeonato.'|2|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="70">@if(isset($copa[$campeonato.'|2|1']) && isset($copa[$campeonato.'|2|1']->time1_id)) {!! Html::image('images/times/'.@$copa[$campeonato.'|2|1']->time1()->escudo,
+                @$copa[$campeonato.'|2|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
+              <td @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|1']->time1_id && isset($copa[$campeonato.'|2|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|1']->time2_id && isset($copa[$campeonato.'|2|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="left" width="200">@if(isset($copa[$campeonato.'|2|1']) && isset($copa[$campeonato.'|2|1']->time1_id)) {{@$copa[$campeonato.'|2|1']->time1()->nome}} @endif</td>
+              <td @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|1']->time1_id && isset($copa[$campeonato.'|2|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|1']->time2_id && isset($copa[$campeonato.'|2|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|2|1']->resultado1}}</td>
+              <td @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|1']->time1_id && isset($copa[$campeonato.'|2|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|1']->time2_id && isset($copa[$campeonato.'|2|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|2|2']->resultado2}} @if(isset($copa[$campeonato.'|2|2']->penalti2))
+                ({{@$copa[$campeonato.'|2|2']->penalti2}}) @endif</td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
-              <td @if(is_null(@$copa['6|1']->penalti1) && is_null(@$copa['6|1']->penalti2))
-                @if(is_null(@$copa['6|1']->resultado1) && is_null(@$copa['6|1']->resultado2)) bgcolor="F9F9F9" @else
-                @if(@$copa['6|1']->resultado2 > @$copa['6|1']->resultado1) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
-                @endif @endif @else @if(@$copa['6|1']->penalti2 > @$copa['6|1']->penalti1) bgcolor="F0FFF0" @else
-                bgcolor="FFF0F0" @endif @endif align="center" width="70">@if(isset($copa['6|1']) &&
-                isset($copa['6|1']->time2_id)) {!! Html::image('images/times/'.@$copa['6|1']->time2()->escudo,
-                @$copa['6|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
-              <td @if(is_null(@$copa['6|1']->penalti1) && is_null(@$copa['6|1']->penalti2))
-                @if(is_null(@$copa['6|1']->resultado1) && is_null(@$copa['6|1']->resultado2)) bgcolor="F9F9F9" @else
-                @if(@$copa['6|1']->resultado2 > @$copa['6|1']->resultado1) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
-                @endif @endif @else @if(@$copa['6|1']->penalti2 > @$copa['6|1']->penalti1) bgcolor="F0FFF0" @else
-                bgcolor="FFF0F0" @endif @endif align="left" width="200">@if(isset($copa['6|1']))
-                {{@$copa['6|1']->time2()->nome}} @endif</td>
-              <td @if(is_null(@$copa['6|1']->penalti1) && is_null(@$copa['6|1']->penalti2))
-                @if(is_null(@$copa['6|1']->resultado1) && is_null(@$copa['6|1']->resultado2)) bgcolor="F9F9F9" @else
-                @if(@$copa['6|1']->resultado2 > @$copa['6|1']->resultado1) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
-                @endif @endif @else @if(@$copa['6|1']->penalti2 > @$copa['6|1']->penalti1) bgcolor="F0FFF0" @else
-                bgcolor="FFF0F0" @endif @endif align="center" width="60">@if(isset($copa['6|1']))
-                {{$copa['6|1']->resultado2}} @if(isset($copa['6|1']->penalti2)) ({{$copa['6|1']->penalti2}}) @endif
+              <td @if(is_null(@$copa[$campeonato.'|6|1']->penalti1) && is_null(@$copa[$campeonato.'|6|1']->penalti2))
+                @if(is_null(@$copa[$campeonato.'|6|1']->resultado1) && is_null(@$copa[$campeonato.'|6|1']->resultado2)) bgcolor="F9F9F9" @else
+                @if(@$copa[$campeonato.'|6|1']->resultado2 > @$copa[$campeonato.'|6|1']->resultado1) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
+                @endif @endif @else @if(@$copa[$campeonato.'|6|1']->penalti2 > @$copa[$campeonato.'|6|1']->penalti1) bgcolor="F0FFF0" @else
+                bgcolor="FFF0F0" @endif @endif align="center" width="70">@if(isset($copa[$campeonato.'|6|1']) &&
+                isset($copa[$campeonato.'|6|1']->time2_id)) {!! Html::image('images/times/'.@$copa[$campeonato.'|6|1']->time2()->escudo,
+                @$copa[$campeonato.'|6|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
+              <td @if(is_null(@$copa[$campeonato.'|6|1']->penalti1) && is_null(@$copa[$campeonato.'|6|1']->penalti2))
+                @if(is_null(@$copa[$campeonato.'|6|1']->resultado1) && is_null(@$copa[$campeonato.'|6|1']->resultado2)) bgcolor="F9F9F9" @else
+                @if(@$copa[$campeonato.'|6|1']->resultado2 > @$copa[$campeonato.'|6|1']->resultado1) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
+                @endif @endif @else @if(@$copa[$campeonato.'|6|1']->penalti2 > @$copa[$campeonato.'|6|1']->penalti1) bgcolor="F0FFF0" @else
+                bgcolor="FFF0F0" @endif @endif align="left" width="200">@if(isset($copa[$campeonato.'|6|1']))
+                {{@$copa[$campeonato.'|6|1']->time2()->nome}} @endif</td>
+              <td @if(is_null(@$copa[$campeonato.'|6|1']->penalti1) && is_null(@$copa[$campeonato.'|6|1']->penalti2))
+                @if(is_null(@$copa[$campeonato.'|6|1']->resultado1) && is_null(@$copa[$campeonato.'|6|1']->resultado2)) bgcolor="F9F9F9" @else
+                @if(@$copa[$campeonato.'|6|1']->resultado2 > @$copa[$campeonato.'|6|1']->resultado1) bgcolor="F0FFF0" @else bgcolor="FFF0F0"
+                @endif @endif @else @if(@$copa[$campeonato.'|6|1']->penalti2 > @$copa[$campeonato.'|6|1']->penalti1) bgcolor="F0FFF0" @else
+                bgcolor="FFF0F0" @endif @endif align="center" width="60">@if(isset($copa[$campeonato.'|6|1']))
+                {{@$copa[$campeonato.'|6|1']->resultado2}} @if(isset($copa[$campeonato.'|6|1']->penalti2)) ({{@$copa[$campeonato.'|6|1']->penalti2}}) @endif
                 @endif</td>
               <td style="border:0;"></td>
             </tr>
             <tr>
               <td style="border:0;"></td>
-              <td @if(@$copa['5|1']->time1_id == @$copa['2|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|1']->time1_id == @$copa['2|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">@if(isset($copa['2|1']) && isset($copa['2|1']->time1_id)) {!! Html::image('images/times/'.@$copa['2|1']->time2()->escudo,
-                @$copa['2|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
-              <td @if(@$copa['5|1']->time1_id == @$copa['2|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|1']->time1_id == @$copa['2|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="left" width="200">{{@$copa['2|1']->time2()->nome}}</td>
-              <td @if(@$copa['5|1']->time1_id == @$copa['2|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|1']->time1_id == @$copa['2|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['2|1']->resultado2}}</td>
-              <td @if(@$copa['5|1']->time1_id == @$copa['2|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|1']->time1_id == @$copa['2|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['2|2']->resultado1}} @if(isset($copa['2|2']->penalti1))
-                ({{$copa['2|2']->penalti1}}) @endif</td>
+              <td @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|2']->time1_id && isset($copa[$campeonato.'|2|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|2']->time2_id && isset($copa[$campeonato.'|2|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="70">@if(isset($copa[$campeonato.'|2|1']) && isset($copa[$campeonato.'|2|1']->time2_id)) {!! Html::image('images/times/'.@$copa[$campeonato.'|2|1']->time2()->escudo,
+                @$copa[$campeonato.'|2|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
+              <td @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|2']->time1_id && isset($copa[$campeonato.'|2|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|2']->time2_id && isset($copa[$campeonato.'|2|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="left" width="200">@if(isset($copa[$campeonato.'|2|1']) && isset($copa[$campeonato.'|2|1']->time2_id)) {{@$copa[$campeonato.'|2|1']->time2()->nome}} @endif</td>
+              <td @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|2']->time1_id && isset($copa[$campeonato.'|2|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|2']->time2_id && isset($copa[$campeonato.'|2|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|2|1']->resultado2}}</td>
+              <td @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|2']->time1_id && isset($copa[$campeonato.'|2|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|1']->time1_id == @$copa[$campeonato.'|2|2']->time2_id && isset($copa[$campeonato.'|2|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|2|2']->resultado1}} @if(isset($copa[$campeonato.'|2|2']->penalti1))
+                ({{@$copa[$campeonato.'|2|2']->penalti1}}) @endif</td>
               <td style="border:0;"></td>
-              <td @if((@$copa['6|1']->time2_id == @$copa['5|1']->time1_id) && !is_null(@$copa['6|1']->time2_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time2_id == @$copa['5|1']->time2_id) &&
-                !is_null(@$copa['6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="70">@if(isset($copa['5|1']) && isset($copa['5|1']->time1_id)) {!!
-                Html::image('images/times/'.@$copa['5|1']->time1()->escudo, @$copa['5|1']->time1()->nome, ['class' =>
+              <td @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|1']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time2_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|1']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="70">@if(isset($copa[$campeonato.'|5|1']) && isset($copa[$campeonato.'|5|1']->time1_id)) {!!
+                Html::image('images/times/'.@$copa[$campeonato.'|5|1']->time1()->escudo, @$copa[$campeonato.'|5|1']->time1()->nome, ['class' =>
                 'time_img']) !!} @endif</td>
-              <td @if((@$copa['6|1']->time2_id == @$copa['5|1']->time1_id) && !is_null(@$copa['6|1']->time2_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time2_id == @$copa['5|1']->time2_id) &&
-                !is_null(@$copa['6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="left"
-                width="200">@if(isset($copa['5|1'])) {{@$copa['5|1']->time1()->nome}} @endif</td>
-              <td @if((@$copa['6|1']->time2_id == @$copa['5|1']->time1_id) && !is_null(@$copa['6|1']->time2_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time2_id == @$copa['5|1']->time2_id) &&
-                !is_null(@$copa['6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="60">@if(isset($copa['5|1'])) {{$copa['5|1']->resultado1}} @endif</td>
-              <td @if((@$copa['6|1']->time2_id == @$copa['5|1']->time1_id) && !is_null(@$copa['6|1']->time2_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time2_id == @$copa['5|1']->time2_id) &&
-                !is_null(@$copa['6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="60">@if(isset($copa['5|2'])) {{$copa['5|2']->resultado2}} @if(isset($copa['5|2']->penalti1))
-                ({{$copa['5|2']->penalti1}}) @endif @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|1']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time2_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|1']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="left"
+                width="200">@if(isset($copa[$campeonato.'|5|1'])) {{@$copa[$campeonato.'|5|1']->time1()->nome}} @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|1']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time2_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|1']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="60">@if(isset($copa[$campeonato.'|5|1'])) {{@$copa[$campeonato.'|5|1']->resultado1}} @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|1']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time2_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|1']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="60">@if(isset($copa[$campeonato.'|5|2'])) {{@$copa[$campeonato.'|5|2']->resultado2}} @if(isset($copa[$campeonato.'|5|2']->penalti1))
+                ({{@$copa[$campeonato.'|5|2']->penalti1}}) @endif @endif</td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
@@ -545,40 +547,40 @@
             </tr>
             <tr>
               <td style="border:0;"></td>
-              <td @if(@$copa['5|2']->time1_id == @$copa['3|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|2']->time1_id == @$copa['3|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">@if(isset($copa['3|1']) && isset($copa['3|1']->time1_id)) {!! Html::image('images/times/'.@$copa['3|1']->time1()->escudo,
-                @$copa['3|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
-              <td @if(@$copa['5|2']->time1_id == @$copa['3|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|2']->time1_id == @$copa['3|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="left" width="200">{{@$copa['3|1']->time1()->nome}}</td>
-              <td @if(@$copa['5|2']->time1_id == @$copa['3|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|2']->time1_id == @$copa['3|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['3|1']->resultado1}}</td>
-              <td @if(@$copa['5|2']->time1_id == @$copa['3|1']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|2']->time1_id == @$copa['3|1']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['3|2']->resultado2}} @if(isset($copa['3|2']->penalti2))
-                ({{$copa['3|2']->penalti2}}) @endif</td>
+              <td @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|1']->time1_id && isset($copa[$campeonato.'|3|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|1']->time2_id && isset($copa[$campeonato.'|3|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="70">@if(isset($copa[$campeonato.'|3|1']) && isset($copa[$campeonato.'|3|1']->time1_id)) {!! Html::image('images/times/'.@$copa[$campeonato.'|3|1']->time1()->escudo,
+                @$copa[$campeonato.'|3|1']->time1()->nome, ['class' => 'time_img']) !!} @endif</td>
+              <td @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|1']->time1_id && isset($copa[$campeonato.'|3|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|1']->time2_id && isset($copa[$campeonato.'|3|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="left" width="200">@if(isset($copa[$campeonato.'|3|1']) && isset($copa[$campeonato.'|3|1']->time1_id)) {{@$copa[$campeonato.'|3|1']->time1()->nome}} @endif</td>
+              <td @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|1']->time1_id && isset($copa[$campeonato.'|3|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|1']->time2_id && isset($copa[$campeonato.'|3|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|3|1']->resultado1}}</td>
+              <td @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|1']->time1_id && isset($copa[$campeonato.'|3|1']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|1']->time2_id && isset($copa[$campeonato.'|3|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|3|2']->resultado2}} @if(isset($copa[$campeonato.'|3|2']->penalti2))
+                ({{@$copa[$campeonato.'|3|2']->penalti2}}) @endif</td>
               <td style="border:0;"></td>
-              <td @if((@$copa['6|1']->time2_id == @$copa['5|2']->time1_id) && !is_null(@$copa['6|1']->time2_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time2_id == @$copa['5|2']->time2_id) &&
-                !is_null(@$copa['6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="70">@if(isset($copa['5|1']) && isset($copa['5|1']->time2_id)) {!!
-                Html::image('images/times/'.@$copa['5|1']->time2()->escudo, @$copa['5|1']->time2()->nome, ['class' =>
+              <td @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|2']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time2_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|2']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="70">@if(isset($copa[$campeonato.'|5|1']) && isset($copa[$campeonato.'|5|1']->time2_id)) {!!
+                Html::image('images/times/'.@$copa[$campeonato.'|5|1']->time2()->escudo, @$copa[$campeonato.'|5|1']->time2()->nome, ['class' =>
                 'time_img']) !!} @endif</td>
-              <td @if((@$copa['6|1']->time2_id == @$copa['5|2']->time1_id) && !is_null(@$copa['6|1']->time2_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time2_id == @$copa['5|2']->time2_id) &&
-                !is_null(@$copa['6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="left"
-                width="200">@if(isset($copa['5|1'])) {{@$copa['5|1']->time2()->nome}} @endif</td>
-              <td @if((@$copa['6|1']->time2_id == @$copa['5|2']->time1_id) && !is_null(@$copa['6|1']->time2_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time2_id == @$copa['5|2']->time2_id) &&
-                !is_null(@$copa['6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="60">@if(isset($copa['5|1'])) {{$copa['5|1']->resultado2}} @endif</td>
-              <td @if((@$copa['6|1']->time2_id == @$copa['5|2']->time1_id) && !is_null(@$copa['6|1']->time2_id))
-                bgcolor="#F0FFF0" @else @if((@$copa['6|1']->time2_id == @$copa['5|2']->time2_id) &&
-                !is_null(@$copa['6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
-                width="60">@if(isset($copa['5|2'])) {{$copa['5|2']->resultado1}} @if(isset($copa['5|2']->penalti2))
-                ({{$copa['5|2']->penalti2}}) @endif @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|2']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time2_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|2']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="left"
+                width="200">@if(isset($copa[$campeonato.'|5|1'])) {{@$copa[$campeonato.'|5|1']->time2()->nome}} @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|2']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time2_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|2']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="60">@if(isset($copa[$campeonato.'|5|1'])) {{@$copa[$campeonato.'|5|1']->resultado2}} @endif</td>
+              <td @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|2']->time1_id) && !is_null(@$copa[$campeonato.'|6|1']->time2_id))
+                bgcolor="#F0FFF0" @else @if((@$copa[$campeonato.'|6|1']->time2_id == @$copa[$campeonato.'|5|2']->time2_id) &&
+                !is_null(@$copa[$campeonato.'|6|1']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif @endif align="center"
+                width="60">@if(isset($copa[$campeonato.'|5|2'])) {{@$copa[$campeonato.'|5|2']->resultado1}} @if(isset($copa[$campeonato.'|5|2']->penalti2))
+                ({{@$copa[$campeonato.'|5|2']->penalti2}}) @endif @endif</td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
@@ -588,20 +590,20 @@
             </tr>
             <tr>
               <td style="border:0;"></td>
-              <td @if(@$copa['5|2']->time1_id == @$copa['3|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|2']->time1_id == @$copa['3|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="70">@if(isset($copa['3|1']) && isset($copa['3|1']->time1_id)) {!! Html::image('images/times/'.@$copa['3|1']->time2()->escudo,
-                @$copa['3|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
-              <td @if(@$copa['5|2']->time1_id == @$copa['3|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|2']->time1_id == @$copa['3|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="left" width="200">{{@$copa['3|1']->time2()->nome}}</td>
-              <td @if(@$copa['5|2']->time1_id == @$copa['3|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|2']->time1_id == @$copa['3|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['3|1']->resultado2}}</td>
-              <td @if(@$copa['5|2']->time1_id == @$copa['3|2']->time1_id) bgcolor="#F0FFF0" @else
-                @if(@$copa['5|2']->time1_id == @$copa['3|2']->time2_id) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
-                @endif align="center" width="60">{{$copa['3|2']->resultado1}} @if(isset($copa['3|2']->penalti1))
-                ({{$copa['3|2']->penalti1}}) @endif</td>
+              <td @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|2']->time1_id && isset($copa[$campeonato.'|3|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|2']->time2_id && isset($copa[$campeonato.'|3|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="70">@if(isset($copa[$campeonato.'|3|1']) && isset($copa[$campeonato.'|3|1']->time2_id)) {!! Html::image('images/times/'.@$copa[$campeonato.'|3|1']->time2()->escudo,
+                @$copa[$campeonato.'|3|1']->time2()->nome, ['class' => 'time_img']) !!} @endif</td>
+              <td @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|2']->time1_id && isset($copa[$campeonato.'|3|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|2']->time2_id && isset($copa[$campeonato.'|3|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="left" width="200">@if(isset($copa[$campeonato.'|3|1']) && isset($copa[$campeonato.'|3|1']->time2_id)) {{@$copa[$campeonato.'|3|1']->time2()->nome}} @endif</td>
+              <td @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|2']->time1_id && isset($copa[$campeonato.'|3|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|2']->time2_id && isset($copa[$campeonato.'|3|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|3|1']->resultado2}}</td>
+              <td @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|2']->time1_id && isset($copa[$campeonato.'|3|2']->time1_id)) bgcolor="#F0FFF0" @else
+                @if(@$copa[$campeonato.'|5|2']->time1_id == @$copa[$campeonato.'|3|2']->time2_id && isset($copa[$campeonato.'|3|2']->time2_id)) bgcolor="FFF0F0" @else bgcolor="F9F9F9" @endif
+                @endif align="center" width="60">{{@$copa[$campeonato.'|3|2']->resultado1}} @if(isset($copa[$campeonato.'|3|2']->penalti1))
+                ({{@$copa[$campeonato.'|3|2']->penalti1}}) @endif</td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>
               <td style="border:0;"></td>

@@ -88,10 +88,6 @@
                         <td>Melhor Jogador</td>
                         <td>€ 2.000.000,00</td>
                     </tr>
-                    <tr class="linha_total">
-                        <td>Premiação Total da Liga: </td>
-                        <td>€ 311.000.000,00</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -112,11 +108,11 @@
                 <tbody>
                     <tr>
                         <td>Passar das Quartas de Final</td>
-                        <td>€ 4.000.000,00</td>
+                        <td>€ 8.000.000,00</td>
                     </tr>
                     <tr>
                         <td>Passar das Semifinais</td>
-                        <td>€ 8.000.000,00</td>
+                        <td>€ 4.000.000,00</td>
                     </tr>
                     <tr>
                         <td>Campeão</td>
@@ -126,9 +122,37 @@
                         <td>Artilharia</td>
                         <td>€ 2.000.000,00</td>
                     </tr>
-                    <tr class="linha_total">
-                        <td>Premiação Total da Liga: </td>
-                        <td>€ 17.000.000,00</td>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel panel-default table-responsive">
+            <table class="table table-striped table-bordered templatemo-user-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Taça</th>
+                    </tr>
+                    <tr>
+                        <th>Conquista</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Passar das Quartas de Final</td>
+                        <td>€ 4.000.000,00</td>
+                    </tr>
+                    <tr>
+                        <td>Passar das Semifinais</td>
+                        <td>€ 2.000.000,00</td>
+                    </tr>
+                    <tr>
+                        <td>Campeão</td>
+                        <td>€ 1.500.000,00</td>
+                    </tr>
+                    <tr>
+                        <td>Artilharia</td>
+                        <td>€ 1.000.000,00</td>
                     </tr>
                 </tbody>
             </table>

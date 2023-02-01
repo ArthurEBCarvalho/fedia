@@ -25,7 +25,7 @@
                     <input type="text" class="form-control search-valor" name="valor" value="{{$valor}}">
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-info search-button"><i class="fa fa-search"></i>
-                            Pesquisar</button>
+                        Pesquisar</button>
                     </span>
                 </div>
             </form>
@@ -33,9 +33,11 @@
         @if(Auth::user()->isAdmin())
         <div class="col-md-4">
             <div class="pull-right">
-                <div class="pull-right"><a href="javascript:;" data-toggle="modal" data-target="#modal_times"
-                        type="button" class="btn btn-success"><i class="fa fa-plus"></i> Cadastrar Nova
-                        {{substr_replace("Temporadas", "", -1)}}</a></div>
+                {!! Form::open(['route' => 'partidas.temporada_store', 'method' => 'get', 'onSubmit' =>
+                    "return confirm('Deseja realmente cadastrar a temporada ".($temporadas->count()+1)."?')"]) !!}
+                <div class="pull-right"><button type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Cadastrar Nova
+                        {{substr_replace("Temporadas", "", -1)}}</button></div>
+                {!! Form::close() !!}
             </div>
         </div>
         @endif
@@ -71,6 +73,9 @@
                     <th>Campeão da Copa FEDIA</th>
                     <th>Vice Campeão da Copa FEDIA</th>
                     <th>Artilheiro da Copa FEDIA</th>
+                    <th>Campeão da Taça FEDIA</th>
+                    <th>Vice Campeão da Taça FEDIA</th>
+                    <th>Artilheiro da Taça FEDIA</th>
                     @if(Auth::user()->isAdmin())<th></th>@endif
                 </tr>
             </thead>
@@ -86,6 +91,9 @@
                     <td>{{@$temporada->copa1()->nome}}</td>
                     <td>{{@$temporada->copa2()->nome}}</td>
                     <td>{{join(', ',@$temporada->artilheiro_copa())}}</td>
+                    <td>{{@$temporada->taca1()->nome}}</td>
+                    <td>{{@$temporada->taca2()->nome}}</td>
+                    <td>{{join(', ',@$temporada->artilheiro_taca())}}</td>
                     @if(Auth::user()->isAdmin())
                     <td class="small" align="center" alt="Upload de Fotos">
                         <a href="javascript:;" onClick="$('#id_temporada').val({{$temporada->id}})" data-toggle="modal"
@@ -158,37 +166,6 @@
             </div>
             {!! Form::close() !!}
         </div>
-    </div>
-</div>
-
-<!-- Modals -->
-<div class="modal fade" id="modal_times" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        {!! Form::open(['route' => 'partidas.temporada_store', 'method' => 'get', 'onSubmit' =>
-        "if($('select.times').find('option:selected').length == 8){return confirm('Deseja realmente cadastrar a
-        temporada ".($temporadas->count()+1)."?')}else{alert('É necessário selecionar 8 times!');return false;}"]) !!}
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Selecione os times da Copa da próxima temporada</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        {!! Html::decode(Form::label('times', 'Times da Copa FEDIA <span class="obrigatorio">*</span>',
-                        ['class' => 'control-label'])) !!}
-                        {!! Form::select('times[]', $times, array_keys($times->toArray()), ['class' => 'chzn-select
-                        form-control times', 'multiple' => true]) !!}
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Sim</button>
-                <button type="reset" class="btn btn-default" data-dismiss="modal">Não</button>
-            </div>
-        </div>
-        {!! Form::close() !!}
     </div>
 </div>
 

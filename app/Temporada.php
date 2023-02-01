@@ -47,6 +47,22 @@ class Temporada extends Model
     }
 
     /**
+     * Get the time record associated with the user.
+     */
+    public function taca1()
+    {
+        return $this->hasOne('App\Time', 'id', 'taca1_id')->first();
+    }
+
+    /**
+     * Get the time record associated with the user.
+     */
+    public function taca2()
+    {
+        return $this->hasOne('App\Time', 'id', 'taca2_id')->first();
+    }
+
+    /**
      * Get the jogador record associated with the user.
      */
     public function artilheiro_liga()
@@ -65,6 +81,18 @@ class Temporada extends Model
     {
         $nomes = [];
         foreach ($this->hasMany('App\Artilheiro','temporada_id')->where('campeonato','Copa')->get() as $value) {
+            $nomes[] = $value->jogador;
+        }
+        return $nomes;
+    }
+
+    /**
+     * Get the jogador record associated with the user.
+     */
+    public function artilheiro_taca()
+    {
+        $nomes = [];
+        foreach ($this->hasMany('App\Artilheiro','temporada_id')->where('campeonato','Taca')->get() as $value) {
             $nomes[] = $value->jogador;
         }
         return $nomes;

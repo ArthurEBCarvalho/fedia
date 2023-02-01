@@ -300,7 +300,7 @@
             $("#modal_show .body-title").html('Amistoso');
         } else {
             $("#modal_store form").attr('action','{{Request::root()}}/partidas');
-            if(campeonato == "Copa" && (rodada == "Volta" || ordem == 6))
+            if((campeonato == "Copa" || campeonato == 'Taca') && (rodada == "Volta" || ordem == 6))
                 $(".penaltis").show();
             else
                 $(".penaltis").hide();
@@ -326,7 +326,7 @@
             $(".time_2").html($(".time_2").html()+" e "+time22);
         }
         if(tipo == 'show'){
-            if(campeonato == 'Copa'){
+            if(campeonato == 'Copa' || campeonato == 'Taca'){
                 $("#modal_show").find('.modal-title').html('Visualizar Resultado da Copa FEDIA');
                 if([0,1,2,3].includes(ordem))
                     $message = 'Quartas de Final'+' - '+rodada;
@@ -427,7 +427,7 @@
             $("#modal_show").find('tbody#lesoes').append($row);
         } else {
             $("#modal_store").find('#rodada').val(rodada);
-            if(campeonato == 'Copa'){
+            if(campeonato == 'Copa' || campeonato == 'Taca'){
                 $("#modal_store").find('.modal-title').html('Cadastrar Resultado da Copa FEDIA');
                 if([0,1,2,3].includes(ordem))
                     $message = 'Quartas de Final'+' - '+rodada;

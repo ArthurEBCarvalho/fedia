@@ -41,7 +41,7 @@ class UserController extends Controller
         } else {
             $order = "users.id";
         }
-        
+
         if(isset($request->filtro)){
             if($request->filtro == "Limpar"){
                 $request->valor = NULL;
@@ -60,7 +60,7 @@ class UserController extends Controller
         $users = \DB::table('users')->join('user_times','user_times.user_id','=','users.id')->join('times','times.id','=','user_times.time_id')->select('users.id', 'users.nome','users.email','times.nome as time','times.dinheiro','users.admin')->where('user_times.era_id',Session::get('era')->id)->orderByRaw($order)->paginate(30);
         return view('users.index', ["users" => $users, "filtro" => $request->filtro, "valor" => $request->valor, "signal" => $signal, "param" => $param, "caret" => $caret, "params" => $params]);
     }
-    
+
     /**
     * Show the form for creating a new resource.
     *
@@ -72,7 +72,7 @@ class UserController extends Controller
         $eras = Era::all();
         return view('users.form', ["user" => $user, "eras" => $eras, "url" => "users.store", "method" => "post", "permit" => true, "config" => false]);
     }
-    
+
     /**
     * Store a newly created resource in storage.
     *
@@ -108,7 +108,7 @@ class UserController extends Controller
         }
         return redirect()->route('users.index')->with('message', 'Usuário cadastrado com sucesso!');
     }
-    
+
     /**
     * Show the form for editing the specified resource.
     *
@@ -122,7 +122,7 @@ class UserController extends Controller
         (is_null($request->config)) ? $config = false : $config = true;
         return view('users.form', ["user" => $user, "eras" => $eras, "url" => "users.update", "method" => "put", "config" => $config]);
     }
-    
+
     /**
     * Update the specified resource in storage.
     *
@@ -172,7 +172,7 @@ class UserController extends Controller
         }
         return redirect()->route('users.index')->with('message', 'Usuário atualizado com sucesso!');
     }
-    
+
     /**
     * Remove the specified resource from storage.
     *
@@ -191,7 +191,7 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('message', 'Usuário deletado com sucesso!');
     }
-    
+
     /**
     * Get the OrdemHistorico from the specified resource.
     *
@@ -204,7 +204,7 @@ class UserController extends Controller
         else
         return "false";
     }
-    
+
     /**
     * Get the OrdemHistorico from the specified resource.
     *
@@ -224,7 +224,7 @@ class UserController extends Controller
             return "true";
         }
     }
-    
+
     /**
     * Formulário para aplicar multa
     *
@@ -235,7 +235,7 @@ class UserController extends Controller
         $times = Time::join('user_times','user_times.time_id','=','times.id')->join('users','users.id','=','user_times.user_id')->selectRaw("times.id,CONCAT(times.nome,' - ',users.nome) as nome")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
         return view('users.multa_create', ["times" => $times]);
     }
-    
+
     /**
     * Aplica Multa ao time selecionado, creditando do dinheiro e criando o registro financeiro
     *
@@ -250,7 +250,7 @@ class UserController extends Controller
         Financeiro::create(['valor' => $request->valor, 'operacao' => 1, 'descricao' => "Multa: $request->descricao", 'time_id' => $time->id]);
         return redirect()->route('administracao.users.multa_create')->with('message', 'Multa aplicada com sucesso!');
     }
-    
+
     /**
     * Formulário para aplicar multa
     *
@@ -259,10 +259,10 @@ class UserController extends Controller
     public function ausencia_create(Request $request)
     {
         if(!isset($request->tipo)) $request->tipo = 'temporada';
-        
+
         if(isset($request->user_id) && $request->user_id != "Todos") $users = User::join('user_times','users.id','=','user_times.user_id')->selectRaw("users.*")->where("user_times.era_id",Session::get('era')->id)->where('users.id',$request->user_id)->lists('nome','id')->all();
         else $users = User::join('user_times','users.id','=','user_times.user_id')->selectRaw("users.*")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
-        
+
         $all_users = User::join('user_times','users.id','=','user_times.user_id')->selectRaw("users.*")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
         $temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('id DESC')->first();
         $temporadas_option = Temporada::where('era_id',Session::get('era')->id)->orderBy('numero')->lists('numero','id')->all();
@@ -282,7 +282,7 @@ class UserController extends Controller
         // dd($ausencias);
         return view('users.ausencia_create', ["users" => $users, "all_users" => $all_users, "tipo" => $request->tipo, "temporadas" => $temporadas, "temporada" => $temporada, "temporadas_option" => $temporadas_option, "ausencias" => $ausencias, "user_id" => $request->user_id]);
     }
-    
+
     /**
     * Aplica ausência aos usuários selecionado, creditando do dinheiro e criando o registro financeiro
     *
@@ -290,12 +290,12 @@ class UserController extends Controller
     */
     public function ausencia_store(Request $request)
     {
-        
+
         foreach ($request->users as $id)
         Ausencia::create(['user_id' => $id, 'turno' => $request->turno, 'temporada_id' => $request->temporada_id]);
         return redirect()->route('administracao.users.ausencia_create', ['tipo' => $request->tipo])->with('message', 'Ausências cadastradas com sucesso!');
     }
-    
+
     /**
     * Formulário para aplicar WO
     *
@@ -308,7 +308,7 @@ class UserController extends Controller
         $temporadas = Temporada::where('era_id',Session::get('era')->id)->orderBy('numero')->lists('numero','id')->all();
         return view('users.wo_create', ["times" => $times, "temporadas" => $temporadas, "temporada" => $temporada]);
     }
-    
+
     /**
     * Aplica WO ao time selecionado
     *
@@ -318,11 +318,11 @@ class UserController extends Controller
     {
         $time = Time::findOrFail($request->time_id);
         $copas = 0;
-        
+
         if($request->turno == '0') $where_rodada = "";
         if($request->turno == '1') $where_rodada = "and rodada < 10";
         if($request->turno == '2') $where_rodada = "and rodada > 9";
-        
+
         foreach (Partida::whereRaw("temporada_id = $request->temporada_id and (time1_id = $time->id or time2_id = $time->id) and campeonato = 'Liga' $where_rodada")->orderBy('id','DESC')->get() as $partida) {
             if($partida->time1_id == $time->id){
                 $partida->resultado1 = 0;
@@ -339,7 +339,7 @@ class UserController extends Controller
 
             $partida->save();
         }
-        
+
         foreach (Partida::whereRaw("temporada_id = $request->temporada_id and (time1_id = $time->id or time2_id = $time->id) and campeonato = 'Copa'")->orderBy('id','DESC')->get() as $partida) {
             $copas++;
             if($partida->time1_id == $time->id){
@@ -351,14 +351,14 @@ class UserController extends Controller
                 $partida->resultado2 = NULL;
                 $partida->time2_id = NULL;
             }
-            
+
             Gol::where("partida_id",$partida->id)->delete();
             Cartao::where("partida_id",$partida->id)->delete();
             Lesao::where("partida_id",$partida->id)->delete();
-            
+
             $partida->save();
         }
-        
+
         if($copas > 2){
             if($copas == 4){
                 $time->dinheiro -= 6000000;
@@ -371,23 +371,32 @@ class UserController extends Controller
         }
         return redirect()->route('administracao.users.wo_create')->with('message', "WO aplicado com sucesso no $time->nome!");
     }
-    
+
     /**
     * Adicionar time na Copa em confrontos errados
     *
     * @return Response
     */
-    public function copa_create()
+    public function copa_create(Request $request)
     {
         if(isset($request->temporada))
         $temporada = Temporada::where('era_id',Session::get('era')->id)->where('numero',$request->temporada)->first();
         else
         $temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('numero DESC')->first();
-        $partidas = Partida::where('temporada_id',@$temporada->id)->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
+
+        if(isset($request->campeonato))
+        $campeonato = $request->campeonato;
+        else
+        $campeonato = 'Copa';
+
+        error_log($request->temporada);
+        error_log($campeonato);
+
+        $partidas = Partida::where('temporada_id',@$temporada->id)->where('campeonato',$campeonato)->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
         $times = Time::join('user_times','user_times.time_id','=','times.id')->join('users','users.id','=','user_times.user_id')->selectRaw("times.id,CONCAT(times.nome,' - ',users.nome) as nome")->where("user_times.era_id",Session::get('era')->id)->lists('nome','id')->all();
-        return view('users.copa_create', ["partidas" => $partidas, "temporada" => $temporada, "times" => $times]);
+        return view('users.copa_create', ["partidas" => $partidas, "temporada" => $temporada, "campeonato" => $campeonato, "times" => $times]);
     }
-    
+
     /**
     * Aplica o time no confronto da Copa selecionado
     *
@@ -397,19 +406,22 @@ class UserController extends Controller
     {
         $partida = Partida::findOrFail($request->partida_id);
         if($request->mandante == 'casa'){
-            $volta = Partida::where("temporada_id",$partida->temporada_id)->where("campeonato","Copa")->where("ordem",$partida->ordem)->where("rodada",2)->first();
+            $volta = Partida::where("temporada_id",$partida->temporada_id)->where("campeonato",$request->campeonato)->where("ordem",$partida->ordem)->where("rodada",2)->first();
             $partida->time1_id = $request->time_id;
             $volta->time2_id = $request->time_id;
         } else {
-            $volta = Partida::where("temporada_id",$partida->temporada_id)->where("campeonato","Copa")->where("ordem",$partida->ordem)->where("rodada",1)->first();
+            $volta = Partida::where("temporada_id",$partida->temporada_id)->where("campeonato",$request->campeonato)->where("ordem",$partida->ordem)->where("rodada",2)->first();
             $partida->time2_id = $request->time_id;
             $volta->time1_id = $request->time_id;
         }
         $partida->save();
         $volta->save();
-        return redirect()->route('administracao.users.copa_create')->with('message', 'Time inserido com sucesso na Copa!');
+        if($request->campeonato == 'Copa')
+            return redirect()->route('administracao.users.copa_create', ['campeonato' => 'Copa', 'temporada' => $partida->temporada_id])->with('message', 'Time inserido com sucesso na Copa!');
+        else
+            return redirect()->route('administracao.users.copa_create', ['campeonato' => 'Taca', 'temporada' => $partida->temporada_id])->with('message', 'Time inserido com sucesso na Taça!');
     }
-    
+
     /**
     * Get a validator for an incoming registration request.
     *
@@ -430,4 +442,3 @@ class UserController extends Controller
                 ]);
             }
         }
-        

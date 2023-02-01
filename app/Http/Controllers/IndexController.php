@@ -50,17 +50,25 @@ class IndexController extends Controller {
             $where_rodada = "";
             $is_liga = true;
             $is_copa = true;
+            $is_taca = true;
         } else {
             if(!isset($request->campeonato)) {
                 $is_liga = true;
                 $is_copa = false;
+                $is_taca = false;
             } else {
                 if($request->campeonato == "0") {
                     $is_liga = true;
                     $is_copa = false;
-                } else {
+                    $is_taca = false;
+                } elseif ($request->campeonato == "1") {
                     $is_liga = false;
                     $is_copa = true;
+                    $is_taca = false;
+                } else {
+                    $is_liga = false;
+                    $is_copa = false;
+                    $is_taca = true;
                 }
             }
 
@@ -168,9 +176,9 @@ class IndexController extends Controller {
                 $artilheiros['Liga'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',@$temporada->id)->where('jogadors.time_id','!=','13')->where('campeonato','Liga')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(12)->get();
             }
 
-            if($is_copa){
+            if($is_copa || $is_taca){
                 // Copa
-                $copa = Partida::where('temporada_id',@$temporada->id)->where('campeonato','Copa')->get()->keyBy(function($item){return $item['ordem']."|".$item['rodada'];});
+                $copa = Partida::where('temporada_id',@$temporada->id)->whereIn('campeonato',['Copa','Taca'])->get()->keyBy(function($item){return $item['campeonato']."|".$item['ordem']."|".$item['rodada'];});
                 foreach ($copa as $key => $value) {
                     if(is_null($value->resultado1) || is_null($value->resultado2)) continue;
                     if($value->time1_id == @Auth::user()->time(Session::get('era')->id)->id){
@@ -192,13 +200,14 @@ class IndexController extends Controller {
 
                 // Artilheiros Copa
                 $artilheiros['Copa'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',@$temporada->id)->where('campeonato','Copa')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
+                $artilheiros['Taca'] = DB::table('gols')->join('jogadors','gols.jogador_id','=','jogadors.id')->join('times','jogadors.time_id','=','times.id')->selectRaw('times.nome,times.escudo,jogadors.nome as jogador,SUM(quantidade) as qtd')->where('temporada_id',@$temporada->id)->where('campeonato','Taca')->groupBy('jogadors.nome','times.nome','times.escudo')->orderBy('qtd','desc')->limit(8)->get();
             }
 
             if($index) return view("index", ['temporada' => $temporada, 'classificacao' => $classificacao, 'copa' => $copa, 'times' => $times, 'artilheiros' => $artilheiros, 'mvps' => $mvps, 'contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'noticias' => $noticias, 'aproveitamento' => $aproveitamento, 'era' => Session::get('era')]);
-            else return view("partidas.tabelas", ['temporada' => $temporada, 'classificacao' => @$classificacao, 'copa' => @$copa, 'times' => @$times, 'artilheiros' => $artilheiros, 'mvps' => @$mvps, 'aproveitamento' => $aproveitamento, 'era' => Session::get('era'), 'is_liga' => $is_liga, 'is_copa' => $is_copa, 'turno' => $request->turno, 'campeonato' => $request->campeonato, 'final' => $final, 'jogadores' => @$jogadores, 'gols' => @$gols, 'cartoes' => @$cartoes, 'lesoes' => @$lesoes]);
+            else return view("partidas.tabelas", ['temporada' => $temporada, 'classificacao' => @$classificacao, 'copa' => @$copa, 'times' => @$times, 'artilheiros' => $artilheiros, 'mvps' => @$mvps, 'aproveitamento' => $aproveitamento, 'era' => Session::get('era'), 'is_liga' => $is_liga, 'is_copa' => $is_copa, 'is_taca' => $is_taca, 'turno' => $request->turno, 'campeonato' => $request->campeonato, 'final' => $final, 'jogadores' => @$jogadores, 'gols' => @$gols, 'cartoes' => @$cartoes, 'lesoes' => @$lesoes]);
         } else {
             if($index) return view("index", ['contratacoes' => $contratacoes, 'lesoes' => $lesoes, 'cartoes' => $cartoes, 'gols' => $gols, 'noticias' => $noticias, 'era' => Session::get('era')]);
-            else return view("partidas.tabelas", ['is_liga' => $is_liga, 'is_copa' => $is_copa, 'turno' => $request->turno, 'campeonato' => $request->campeonato, 'final' => $final, 'jogadores' => @$jogadores, 'gols' => @$gols, 'cartoes' => @$cartoes, 'lesoes' => @$lesoes]);
+            else return view("partidas.tabelas", ['is_liga' => $is_liga, 'is_copa' => $is_copa, 'is_taca' => $is_taca, 'turno' => $request->turno, 'campeonato' => $request->campeonato, 'final' => $final, 'jogadores' => @$jogadores, 'gols' => @$gols, 'cartoes' => @$cartoes, 'lesoes' => @$lesoes]);
         }
     }
 
