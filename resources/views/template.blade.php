@@ -165,12 +165,7 @@
 			<div class="templatemo-content-container">
 				@yield('content')
 				<footer class="text-right">
-					<p>
-						Copyright &copy; 2018 I9 Technology
-						<a href="http://www.i9technology.com.br" target="_blank">
-							{!! Html::image("/images/logo.png", "I9 Technology", ['id' => 'logo']) !!}
-						</a>
-					</p>
+					<p>Copyright &copy; {{date("Y")}} A&G</p>
 				</footer>
 			</div>
 		</div>

@@ -155,6 +155,7 @@
 </div>
 @foreach(['Copa','Taca'] as $key => $campeonato)
 <!-- Copa -->
+@if(isset($copa[$campeonato.'|0|1']))
 <div class="templatemo-flex-row flex-content-row">
   <div class="col-1">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
@@ -600,6 +601,7 @@
     </div>
   </div>
 </div>
+@endif
 @endforeach
 @endif
 
