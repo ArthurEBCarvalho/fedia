@@ -316,12 +316,13 @@ class UserController extends Controller
     */
     public function wo_store(Request $request)
     {
+        $times_count = UserTime::where("era_id",Session::get('era')->id)->count();
         $time = Time::findOrFail($request->time_id);
         $copas = 0;
 
         if($request->turno == '0') $where_rodada = "";
-        if($request->turno == '1') $where_rodada = "and rodada < 10";
-        if($request->turno == '2') $where_rodada = "and rodada > 9";
+        if($request->turno == '1') $where_rodada = "and rodada < $times_count";
+        if($request->turno == '2') $where_rodada = "and rodada > ".($times_count-1);
 
         foreach (Partida::whereRaw("temporada_id = $request->temporada_id and (time1_id = $time->id or time2_id = $time->id) and campeonato = 'Liga' $where_rodada")->orderBy('id','DESC')->get() as $partida) {
             if($partida->time1_id == $time->id){
