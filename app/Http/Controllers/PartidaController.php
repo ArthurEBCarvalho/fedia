@@ -688,66 +688,68 @@ class PartidaController extends Controller {
 	*/
 	public function temporada_store(Request $request)
 	{
-		$temporadas = Temporada::where('era_id',Session::get('era')->id)->get();
-		$temporada = new Temporada();
-		$temporada->numero = $temporadas->count()+1;
-		$temporada->era_id = Session::get('era')->id;
-		$temporada->save();
-		// Sorteio da liga
-		$times_id = UserTime::where("era_id",Session::get('era')->id)->pluck('time_id')->toArray();
-		$times = Time::whereIn('id',$times_id)->inRandomOrder()->get();
-		$linha1 = [];
-		$linha2 = [];
-		$last1 = null;
-		foreach ($times as $index => $time)
-		$linha1[] = $time->id;
-		foreach ($times->reverse() as $index => $time)
-		$linha2[] = $time->id;
-		for ($turno=0; $turno <= 1; $turno++) {
-			for ($r=1; $r < $times->count(); $r++) {
-				if($turno == 0)
-				$rodada = $r;
-				else
-				$rodada = $r+$times->count()-1;
-				for ($i=0; $i < $times->count()/2; $i++) {
-					$partida = new Partida();
-					$partida->campeonato = "Liga";
-					$partida->temporada_id = $temporada->id;
-					if($rodada % 2 == 0){
-						$partida->rodada = $rodada;
-						$partida->time1_id = $linha1[$i];
-						$partida->time2_id = $linha2[$i];
-					} else {
-						$partida->rodada = $rodada;
-						$partida->time1_id = $linha2[$i];
-						$partida->time2_id = $linha1[$i];
-					}
-					$partida->save();
-				}
-				// Gira as linhas no sentido horário
-				$last1 = $linha1[($times->count()/2)-1];
-				for ($i2=($times->count()/2)-1; $i2 >= 0; $i2--) {
-					if($i2 == 1)
-					$linha1[$i2] = $linha2[0];
-					elseif ($i2 != 0)
-					$linha1[$i2] = $linha1[$i2-1];
-				}
-				for ($i2=0; $i2 < $times->count()/2; $i2++) {
-					if ($i2 == ($times->count()/2)-1)
-					$linha2[$i2] = $last1;
-					else
-					$linha2[$i2] = $linha2[$i2+1];
-				}
-			}
-		}
+		$temporada = Temporada::where('era_id',Session::get('era')->id)->orderByRaw('numero DESC')->first();
+		// $temporadas = Temporada::where('era_id',Session::get('era')->id)->get();
+		// $temporada = new Temporada();
+		// $temporada->numero = $temporadas->count()+1;
+		// $temporada->era_id = Session::get('era')->id;
+		// $temporada->save();
+		// // Sorteio da liga
+		// $times_id = UserTime::where("era_id",Session::get('era')->id)->pluck('time_id')->toArray();
+		// $times = Time::whereIn('id',$times_id)->inRandomOrder()->get();
+		// $linha1 = [];
+		// $linha2 = [];
+		// $last1 = null;
+		// foreach ($times as $index => $time)
+		// $linha1[] = $time->id;
+		// foreach ($times->reverse() as $index => $time)
+		// $linha2[] = $time->id;
+		// for ($turno=0; $turno <= 1; $turno++) {
+		// 	for ($r=1; $r < $times->count(); $r++) {
+		// 		if($turno == 0)
+		// 		$rodada = $r;
+		// 		else
+		// 		$rodada = $r+$times->count()-1;
+		// 		for ($i=0; $i < $times->count()/2; $i++) {
+		// 			$partida = new Partida();
+		// 			$partida->campeonato = "Liga";
+		// 			$partida->temporada_id = $temporada->id;
+		// 			if($rodada % 2 == 0){
+		// 				$partida->rodada = $rodada;
+		// 				$partida->time1_id = $linha1[$i];
+		// 				$partida->time2_id = $linha2[$i];
+		// 			} else {
+		// 				$partida->rodada = $rodada;
+		// 				$partida->time1_id = $linha2[$i];
+		// 				$partida->time2_id = $linha1[$i];
+		// 			}
+		// 			$partida->save();
+		// 		}
+		// 		// Gira as linhas no sentido horário
+		// 		$last1 = $linha1[($times->count()/2)-1];
+		// 		for ($i2=($times->count()/2)-1; $i2 >= 0; $i2--) {
+		// 			if($i2 == 1)
+		// 			$linha1[$i2] = $linha2[0];
+		// 			elseif ($i2 != 0)
+		// 			$linha1[$i2] = $linha1[$i2-1];
+		// 		}
+		// 		for ($i2=0; $i2 < $times->count()/2; $i2++) {
+		// 			if ($i2 == ($times->count()/2)-1)
+		// 			$linha2[$i2] = $last1;
+		// 			else
+		// 			$linha2[$i2] = $linha2[$i2+1];
+		// 		}
+		// 	}
+		// }
 
-		// Sorteio da copa
-		$temporada_anterior = $temporada->id - 1;
-		$p = Partida::whereRaw("temporada_id = $temporada_anterior and campeonato = 'Liga'")->get();
-		$classificacao = $this->classificacao($p);
-		$times_id = [];
+		// // Sorteio da copa
+		// $temporada_anterior = $temporada->id - 1;
+		// $p = Partida::whereRaw("temporada_id = $temporada_anterior and campeonato = 'Liga'")->get();
+		// $classificacao = $this->classificacao($p);
+		$classificacao = []
+		$times_id = [11,8,3,1,12,4,7,5,2,6,14,15];
 		foreach ([0,1,2,3,4,5,6,7] as $index) {
-			array_push($times_id, $classificacao[$index]['id']);
+			array_push($times_id, $classificacao[$index]);
 		}
 		$times = Time::whereIn('id', $times_id)->inRandomOrder()->get();
 		foreach ([0,2,4,6] as $ordem => $index) {
@@ -774,7 +776,7 @@ class PartidaController extends Controller {
 		// Sorteio da taça
 		$times_id = [];
 		foreach ([8,9,10,11] as $index) {
-			array_push($times_id, $classificacao[$index]['id']);
+			array_push($times_id, $classificacao[$index]);
 		}
 		$times = Time::whereIn('id', $times_id)->inRandomOrder()->get();
 		$indexes = [0,1,2,3,100,100,100,100];
