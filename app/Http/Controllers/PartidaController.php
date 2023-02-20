@@ -746,8 +746,8 @@ class PartidaController extends Controller {
 		// $temporada_anterior = $temporada->id - 1;
 		// $p = Partida::whereRaw("temporada_id = $temporada_anterior and campeonato = 'Liga'")->get();
 		// $classificacao = $this->classificacao($p);
-		$classificacao = [];
-		$times_id = [11,8,3,1,12,4,7,5,2,6,14,15];
+		$classificacao = [11,8,3,1,12,4,7,5,2,6,14,15];
+		$times_id = [];
 		foreach ([0,1,2,3,4,5,6,7] as $index) {
 			array_push($times_id, $classificacao[$index]);
 		}
