@@ -573,7 +573,7 @@
   <div class="col-2">
     <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
       <div class="panel-heading templatemo-position-relative">
-        <h2 class="text-uppercase">Artilharia da Copa - Temporada {{$temporada->numero}}</h2>
+        <h2 class="text-uppercase">Artilharia da @if($campeonato == 'Taca') Taça @else {{$campeonato}} @endif - Temporada {{$temporada->numero}}</h2>
       </div>
       <div class="table-responsive">
         <table class="table table-bordered">
@@ -586,7 +586,7 @@
           </thead>
           <tbody>
             <?php $count = 1; ?>
-            @foreach($artilheiros['Copa'] as $key => $value)
+            @foreach($artilheiros[$campeonato] as $key => $value)
             <tr>
               <td align="center">{{$value->qtd}}</td>
               <td align="center">{{$value->jogador}}</td>
