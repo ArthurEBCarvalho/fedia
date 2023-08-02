@@ -772,39 +772,39 @@ class PartidaController extends Controller {
 		}
 
 		// Sorteio da taça
-		$times_id = [];
-		foreach ([8,9,10,11] as $index) {
-			array_push($times_id, $classificacao[$index]['id']);
-		}
-		$times = Time::whereIn('id', $times_id)->inRandomOrder()->get();
-		$indexes = [0,1,2,3,100,100,100,100];
-		shuffle($indexes);
-		for ($i = 0; $i < 8; $i += 2) {
-		// for ($indexes as $ordem => $index) {
-			// Ida
-			$partida = new Partida();
-			$partida->campeonato = "Taca";
-			$partida->temporada_id = $temporada->id;
-			$partida->rodada = 1;
-			$partida->ordem = $i / 2;
-			$partida->time1_id = @$times[$indexes[$i]]->id;
-			$partida->time2_id = @$times[$indexes[$i+1]]->id;
-			$partida->save();
-			// Volta
-			$partida = new Partida();
-			$partida->campeonato = "Taca";
-			$partida->temporada_id = $temporada->id;
-			$partida->rodada = 2;
-			$partida->ordem = $i / 2;
-			$partida->time1_id = @$times[$indexes[$i+1]]->id;
-			$partida->time2_id = @$times[$indexes[$i]]->id;
-			$partida->save();
-		}
+		// $times_id = [];
+		// foreach ([8,9,10,11] as $index) {
+		// 	array_push($times_id, $classificacao[$index]['id']);
+		// }
+		// $times = Time::whereIn('id', $times_id)->inRandomOrder()->get();
+		// $indexes = [0,1,2,3,100,100,100,100];
+		// shuffle($indexes);
+		// for ($i = 0; $i < 8; $i += 2) {
+		// // for ($indexes as $ordem => $index) {
+		// 	// Ida
+		// 	$partida = new Partida();
+		// 	$partida->campeonato = "Taca";
+		// 	$partida->temporada_id = $temporada->id;
+		// 	$partida->rodada = 1;
+		// 	$partida->ordem = $i / 2;
+		// 	$partida->time1_id = @$times[$indexes[$i]]->id;
+		// 	$partida->time2_id = @$times[$indexes[$i+1]]->id;
+		// 	$partida->save();
+		// 	// Volta
+		// 	$partida = new Partida();
+		// 	$partida->campeonato = "Taca";
+		// 	$partida->temporada_id = $temporada->id;
+		// 	$partida->rodada = 2;
+		// 	$partida->ordem = $i / 2;
+		// 	$partida->time1_id = @$times[$indexes[$i+1]]->id;
+		// 	$partida->time2_id = @$times[$indexes[$i]]->id;
+		// 	$partida->save();
+		// }
 
 		// Dinheiro do patrocínio
 		foreach (Time::where('nome','!=','Mercado Externo')->get() as $key => $time) {
 			$valor = 20000000 + (($temporada->numero - 1) * 5000000);
-			$time->dinheiro += $valor;
+			$time->dinheiro += $valor / 2;
 			$time->save();
 			Financeiro::create(['valor' => $valor, 'operacao' => 0, 'descricao' => 'Patrocício da Temporada '.$temporada->numero, 'time_id' => $time->id]);
 		}
